@@ -7,8 +7,16 @@
       "RelativeMoniker": "D:0:0:{D1A7DB3B-21C5-43D7-9A3D-5655D01B2C95}|PizarraColaborativa\\PizarraColaborativa.csproj|solutionrelative:pizarracolaborativa\\wwwroot\\css\\site.css||{A5401142-F49D-43DB-90B1-F57BA349E55C}"
     },
     {
+      "AbsoluteMoniker": "D:0:0:{D1A7DB3B-21C5-43D7-9A3D-5655D01B2C95}|PizarraColaborativa\\PizarraColaborativa.csproj|c:\\users\\lautaro gerez\\source\\repos\\pizarracolaborativa\\pizarracolaborativa\\wwwroot\\js\\site.js||{14D17961-FE51-464D-9111-C4AF11D7D99A}",
+      "RelativeMoniker": "D:0:0:{D1A7DB3B-21C5-43D7-9A3D-5655D01B2C95}|PizarraColaborativa\\PizarraColaborativa.csproj|solutionrelative:pizarracolaborativa\\wwwroot\\js\\site.js||{14D17961-FE51-464D-9111-C4AF11D7D99A}"
+    },
+    {
       "AbsoluteMoniker": "D:0:0:{D1A7DB3B-21C5-43D7-9A3D-5655D01B2C95}|PizarraColaborativa\\PizarraColaborativa.csproj|c:\\users\\lautaro gerez\\source\\repos\\pizarracolaborativa\\pizarracolaborativa\\views\\home\\index.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
       "RelativeMoniker": "D:0:0:{D1A7DB3B-21C5-43D7-9A3D-5655D01B2C95}|PizarraColaborativa\\PizarraColaborativa.csproj|solutionrelative:pizarracolaborativa\\views\\home\\index.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{D1A7DB3B-21C5-43D7-9A3D-5655D01B2C95}|PizarraColaborativa\\PizarraColaborativa.csproj|c:\\users\\lautaro gerez\\source\\repos\\pizarracolaborativa\\pizarracolaborativa\\views\\shared\\_layout.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{D1A7DB3B-21C5-43D7-9A3D-5655D01B2C95}|PizarraColaborativa\\PizarraColaborativa.csproj|solutionrelative:pizarracolaborativa\\views\\shared\\_layout.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
     },
     {
       "AbsoluteMoniker": "D:0:0:{D1A7DB3B-21C5-43D7-9A3D-5655D01B2C95}|PizarraColaborativa\\PizarraColaborativa.csproj|c:\\users\\lautaro gerez\\source\\repos\\pizarracolaborativa\\pizarracolaborativa\\controllers\\homecontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
@@ -22,8 +30,22 @@
       "DocumentGroups": [
         {
           "DockedWidth": 200,
-          "SelectedChildIndex": 3,
+          "SelectedChildIndex": 5,
           "Children": [
+            {
+              "$type": "Document",
+              "DocumentIndex": 1,
+              "Title": "site.js",
+              "DocumentMoniker": "C:\\Users\\Lautaro Gerez\\source\\repos\\PizarraColaborativa\\PizarraColaborativa\\wwwroot\\js\\site.js",
+              "RelativeDocumentMoniker": "PizarraColaborativa\\wwwroot\\js\\site.js",
+              "ToolTip": "C:\\Users\\Lautaro Gerez\\source\\repos\\PizarraColaborativa\\PizarraColaborativa\\wwwroot\\js\\site.js",
+              "RelativeToolTip": "PizarraColaborativa\\wwwroot\\js\\site.js",
+              "ViewState": "AgIAAFYAAAAAAAAAAAAAAFYAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001646|",
+              "WhenOpened": "2025-05-18T01:11:40.283Z",
+              "IsPinned": true,
+              "EditorCaption": ""
+            },
             {
               "$type": "Bookmark",
               "Name": "ST:0:0:{3ae79031-e1bc-11d0-8f78-00a0c9110057}"
@@ -38,33 +60,46 @@
             },
             {
               "$type": "Document",
+              "DocumentIndex": 3,
+              "Title": "_Layout.cshtml",
+              "DocumentMoniker": "C:\\Users\\Lautaro Gerez\\source\\repos\\PizarraColaborativa\\PizarraColaborativa\\Views\\Shared\\_Layout.cshtml",
+              "RelativeDocumentMoniker": "PizarraColaborativa\\Views\\Shared\\_Layout.cshtml",
+              "ToolTip": "C:\\Users\\Lautaro Gerez\\source\\repos\\PizarraColaborativa\\PizarraColaborativa\\Views\\Shared\\_Layout.cshtml",
+              "RelativeToolTip": "PizarraColaborativa\\Views\\Shared\\_Layout.cshtml",
+              "ViewState": "AgIAAA8AAAAAAAAAAAAAACEAAAAjAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
+              "WhenOpened": "2025-05-18T01:00:06.51Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
               "DocumentIndex": 0,
               "Title": "site.css",
               "DocumentMoniker": "C:\\Users\\Lautaro Gerez\\source\\repos\\PizarraColaborativa\\PizarraColaborativa\\wwwroot\\css\\site.css",
               "RelativeDocumentMoniker": "PizarraColaborativa\\wwwroot\\css\\site.css",
               "ToolTip": "C:\\Users\\Lautaro Gerez\\source\\repos\\PizarraColaborativa\\PizarraColaborativa\\wwwroot\\css\\site.css",
               "RelativeToolTip": "PizarraColaborativa\\wwwroot\\css\\site.css",
-              "ViewState": "AgIAAAwAAAAAAAAAAAAAABkAAAAyAAAAAAAAAA==",
+              "ViewState": "AgIAABQAAAAAAAAAAAAAACYAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003000|",
               "WhenOpened": "2025-05-18T00:57:03.607Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 1,
+              "DocumentIndex": 2,
               "Title": "Index.cshtml",
               "DocumentMoniker": "C:\\Users\\Lautaro Gerez\\source\\repos\\PizarraColaborativa\\PizarraColaborativa\\Views\\Home\\Index.cshtml",
               "RelativeDocumentMoniker": "PizarraColaborativa\\Views\\Home\\Index.cshtml",
-              "ToolTip": "C:\\Users\\Lautaro Gerez\\source\\repos\\PizarraColaborativa\\PizarraColaborativa\\Views\\Home\\Index.cshtml*",
-              "RelativeToolTip": "PizarraColaborativa\\Views\\Home\\Index.cshtml*",
-              "ViewState": "AgIAAAwAAAAAAAAAAAAAABgAAAAGAAAAAAAAAA==",
+              "ToolTip": "C:\\Users\\Lautaro Gerez\\source\\repos\\PizarraColaborativa\\PizarraColaborativa\\Views\\Home\\Index.cshtml",
+              "RelativeToolTip": "PizarraColaborativa\\Views\\Home\\Index.cshtml",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAABsAAAAVAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
               "WhenOpened": "2025-05-18T00:28:41.48Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 2,
+              "DocumentIndex": 4,
               "Title": "HomeController.cs",
               "DocumentMoniker": "C:\\Users\\Lautaro Gerez\\source\\repos\\PizarraColaborativa\\PizarraColaborativa\\Controllers\\HomeController.cs",
               "RelativeDocumentMoniker": "PizarraColaborativa\\Controllers\\HomeController.cs",
