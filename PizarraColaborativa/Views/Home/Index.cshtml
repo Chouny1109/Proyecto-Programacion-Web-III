@@ -2,7 +2,28 @@
     ViewData["Title"] = "Home Page";
 }
 
-<div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    <p>Learn about <a href="https://learn.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
+<div class="d-flex align-items-center gap-2 ">
+
+    <label class="text-light" for="color_lapiz">Color</label>
+    <input type="color" for="color_lapiz" id="color_lapiz" />
+    <label class="text-light" for="color_fondo">Fondo</label>
+    <input type="color" for="color_fondo" id="color_fondo" value="#ffffff" />
+
+    <label class="text-light" for="tamanio">Tamaño</label>
+    <select id="tamanio_lapiz" for="tamanio">
+        <option value="1">1px</option>
+        <option value="2">2px</option>
+        <option value="3">3px</option>
+        <option value="4">4px</option>
+        <option value="5">5px</option>
+        <option value="6">6px</option>
+        <option value="7">7px</option>
+        <option value="8">8px</option>
+    </select>
+    <input type="submit" id="limpiar" value="Limpiar" />
+
+</div>
+
+<div class="d-flex justify-content-center align-items-center canvas">
+    <canvas id="area" width="950" height="500">F</canvas>
 </div>

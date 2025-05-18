@@ -1,4 +1,7 @@
-# Visual Studio cache and build folders
+
+# Archivos y carpetas a ignorar
 .vs/
-bin/
-obj/
+PizarraColaborativa/bin/
+PizarraColaborativa/obj/
+
+
