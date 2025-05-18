@@ -1,3 +1,4 @@
+# Visual Studio cache and build folders
 .vs/
-PizarraColaborativa/bin/
-PizarraColaborativa/obj/
+bin/
+obj/
