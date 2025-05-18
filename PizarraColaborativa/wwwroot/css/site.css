@@ -17,6 +17,23 @@ html {
   min-height: 100%;
 }
 
+footer{
+    background-color: black;
+}
+
 body {
-  margin-bottom: 60px;
+    background-image: url('../imagenes/photo-pizarra.jpg');
+    margin-bottom: 60px;
+}
+
+.canvas {
+
+    border-radius: 5px;
+   
+}
+
+canvas{
+    margin-top:5px;
+    background-color:white;
+    border-radius:10px;
 }

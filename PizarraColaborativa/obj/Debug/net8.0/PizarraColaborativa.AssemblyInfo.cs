@@ -14,7 +14,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("PizarraColaborativa")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+e9b5472513f440ead88be45014e5f7b253eea083")]
 [assembly: System.Reflection.AssemblyProductAttribute("PizarraColaborativa")]
 [assembly: System.Reflection.AssemblyTitleAttribute("PizarraColaborativa")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]
