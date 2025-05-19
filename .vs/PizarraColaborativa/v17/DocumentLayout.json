@@ -3,16 +3,20 @@
   "WorkspaceRootPath": "C:\\Users\\Lautaro Gerez\\source\\repos\\PizarraColaborativa\\",
   "Documents": [
     {
-      "AbsoluteMoniker": "D:0:0:{D1A7DB3B-21C5-43D7-9A3D-5655D01B2C95}|PizarraColaborativa\\PizarraColaborativa.csproj|c:\\users\\lautaro gerez\\source\\repos\\pizarracolaborativa\\pizarracolaborativa\\wwwroot\\css\\site.css||{A5401142-F49D-43DB-90B1-F57BA349E55C}",
-      "RelativeMoniker": "D:0:0:{D1A7DB3B-21C5-43D7-9A3D-5655D01B2C95}|PizarraColaborativa\\PizarraColaborativa.csproj|solutionrelative:pizarracolaborativa\\wwwroot\\css\\site.css||{A5401142-F49D-43DB-90B1-F57BA349E55C}"
-    },
-    {
       "AbsoluteMoniker": "D:0:0:{D1A7DB3B-21C5-43D7-9A3D-5655D01B2C95}|PizarraColaborativa\\PizarraColaborativa.csproj|c:\\users\\lautaro gerez\\source\\repos\\pizarracolaborativa\\pizarracolaborativa\\wwwroot\\js\\site.js||{14D17961-FE51-464D-9111-C4AF11D7D99A}",
       "RelativeMoniker": "D:0:0:{D1A7DB3B-21C5-43D7-9A3D-5655D01B2C95}|PizarraColaborativa\\PizarraColaborativa.csproj|solutionrelative:pizarracolaborativa\\wwwroot\\js\\site.js||{14D17961-FE51-464D-9111-C4AF11D7D99A}"
     },
     {
+      "AbsoluteMoniker": "D:0:0:{D1A7DB3B-21C5-43D7-9A3D-5655D01B2C95}|PizarraColaborativa\\PizarraColaborativa.csproj|c:\\users\\lautaro gerez\\source\\repos\\pizarracolaborativa\\pizarracolaborativa\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{D1A7DB3B-21C5-43D7-9A3D-5655D01B2C95}|PizarraColaborativa\\PizarraColaborativa.csproj|solutionrelative:pizarracolaborativa\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
       "AbsoluteMoniker": "D:0:0:{D1A7DB3B-21C5-43D7-9A3D-5655D01B2C95}|PizarraColaborativa\\PizarraColaborativa.csproj|c:\\users\\lautaro gerez\\source\\repos\\pizarracolaborativa\\pizarracolaborativa\\views\\home\\index.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
       "RelativeMoniker": "D:0:0:{D1A7DB3B-21C5-43D7-9A3D-5655D01B2C95}|PizarraColaborativa\\PizarraColaborativa.csproj|solutionrelative:pizarracolaborativa\\views\\home\\index.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{D1A7DB3B-21C5-43D7-9A3D-5655D01B2C95}|PizarraColaborativa\\PizarraColaborativa.csproj|c:\\users\\lautaro gerez\\source\\repos\\pizarracolaborativa\\pizarracolaborativa\\wwwroot\\css\\site.css||{A5401142-F49D-43DB-90B1-F57BA349E55C}",
+      "RelativeMoniker": "D:0:0:{D1A7DB3B-21C5-43D7-9A3D-5655D01B2C95}|PizarraColaborativa\\PizarraColaborativa.csproj|solutionrelative:pizarracolaborativa\\wwwroot\\css\\site.css||{A5401142-F49D-43DB-90B1-F57BA349E55C}"
     },
     {
       "AbsoluteMoniker": "D:0:0:{D1A7DB3B-21C5-43D7-9A3D-5655D01B2C95}|PizarraColaborativa\\PizarraColaborativa.csproj|c:\\users\\lautaro gerez\\source\\repos\\pizarracolaborativa\\pizarracolaborativa\\views\\shared\\_layout.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
@@ -30,17 +34,17 @@
       "DocumentGroups": [
         {
           "DockedWidth": 200,
-          "SelectedChildIndex": 5,
+          "SelectedChildIndex": 0,
           "Children": [
             {
               "$type": "Document",
-              "DocumentIndex": 1,
+              "DocumentIndex": 0,
               "Title": "site.js",
               "DocumentMoniker": "C:\\Users\\Lautaro Gerez\\source\\repos\\PizarraColaborativa\\PizarraColaborativa\\wwwroot\\js\\site.js",
               "RelativeDocumentMoniker": "PizarraColaborativa\\wwwroot\\js\\site.js",
               "ToolTip": "C:\\Users\\Lautaro Gerez\\source\\repos\\PizarraColaborativa\\PizarraColaborativa\\wwwroot\\js\\site.js",
               "RelativeToolTip": "PizarraColaborativa\\wwwroot\\js\\site.js",
-              "ViewState": "AgIAAFYAAAAAAAAAAAAAAFYAAAAAAAAAAAAAAA==",
+              "ViewState": "AgIAAAkAAAAAAAAAAAAjwBYAAAAbAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001646|",
               "WhenOpened": "2025-05-18T01:11:40.283Z",
               "IsPinned": true,
@@ -60,26 +64,39 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 3,
+              "DocumentIndex": 1,
+              "Title": "Program.cs",
+              "DocumentMoniker": "C:\\Users\\Lautaro Gerez\\source\\repos\\PizarraColaborativa\\PizarraColaborativa\\Program.cs",
+              "RelativeDocumentMoniker": "PizarraColaborativa\\Program.cs",
+              "ToolTip": "C:\\Users\\Lautaro Gerez\\source\\repos\\PizarraColaborativa\\PizarraColaborativa\\Program.cs",
+              "RelativeToolTip": "PizarraColaborativa\\Program.cs",
+              "ViewState": "AgIAAAcAAAAAAAAAAAAAABYAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-05-19T02:35:44.339Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 4,
               "Title": "_Layout.cshtml",
               "DocumentMoniker": "C:\\Users\\Lautaro Gerez\\source\\repos\\PizarraColaborativa\\PizarraColaborativa\\Views\\Shared\\_Layout.cshtml",
               "RelativeDocumentMoniker": "PizarraColaborativa\\Views\\Shared\\_Layout.cshtml",
               "ToolTip": "C:\\Users\\Lautaro Gerez\\source\\repos\\PizarraColaborativa\\PizarraColaborativa\\Views\\Shared\\_Layout.cshtml",
               "RelativeToolTip": "PizarraColaborativa\\Views\\Shared\\_Layout.cshtml",
-              "ViewState": "AgIAAA8AAAAAAAAAAAAAACEAAAAjAAAAAAAAAA==",
+              "ViewState": "AgIAAB4AAAAAAAAAAAAAACsAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
               "WhenOpened": "2025-05-18T01:00:06.51Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 0,
+              "DocumentIndex": 3,
               "Title": "site.css",
               "DocumentMoniker": "C:\\Users\\Lautaro Gerez\\source\\repos\\PizarraColaborativa\\PizarraColaborativa\\wwwroot\\css\\site.css",
               "RelativeDocumentMoniker": "PizarraColaborativa\\wwwroot\\css\\site.css",
               "ToolTip": "C:\\Users\\Lautaro Gerez\\source\\repos\\PizarraColaborativa\\PizarraColaborativa\\wwwroot\\css\\site.css",
               "RelativeToolTip": "PizarraColaborativa\\wwwroot\\css\\site.css",
-              "ViewState": "AgIAABQAAAAAAAAAAAAAACYAAAAAAAAAAAAAAA==",
+              "ViewState": "AgIAAAQAAAAAAAAAAAAswCYAAAABAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003000|",
               "WhenOpened": "2025-05-18T00:57:03.607Z",
               "EditorCaption": ""
@@ -99,7 +116,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 4,
+              "DocumentIndex": 5,
               "Title": "HomeController.cs",
               "DocumentMoniker": "C:\\Users\\Lautaro Gerez\\source\\repos\\PizarraColaborativa\\PizarraColaborativa\\Controllers\\HomeController.cs",
               "RelativeDocumentMoniker": "PizarraColaborativa\\Controllers\\HomeController.cs",
@@ -107,8 +124,7 @@
               "RelativeToolTip": "PizarraColaborativa\\Controllers\\HomeController.cs",
               "ViewState": "AgIAAAYAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-05-18T00:28:28.77Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-05-18T00:28:28.77Z"
             }
           ]
         }
