@@ -1,14 +1,28 @@
-﻿let canvas = document.getElementById("area");
+﻿let conexion = new signalR.HubConnectionBuilder()
+    .withUrl("/dibujohub").build();
+
+let canvas = document.getElementById("area");
 let papel = canvas.getContext('2d');
 
-    function dibujar(color, corX, corY, corXFinal, corYFinal) {
+function dibujar(color1, corX, corY, corXFinal, corYFinal, tamanioLinea, enviar = true) {
         papel.beginPath();
-        papel.strokeStyle = color;
-        papel.lineWidth = tamanioInicial
+        papel.strokeStyle = color1;
+        papel.lineWidth = tamanioLinea
         papel.moveTo(corX, corY);
         papel.lineTo(corXFinal, corYFinal);
         papel.stroke();
         papel.closePath();
+
+
+        if (enviar && conexion.state === signalR.HubConnectionState.Connected) {
+            conexion.invoke("SendDibujo", color, corX, corY, corXFinal, corYFinal, tamanioInicial)
+                .catch(function (err) {
+                    return console.error("Error al enviar dibujo:", err.toString());
+                });
+        } else if (!enviar) {
+            // No envía, solo dibuja
+        }
+
 
     }
 
@@ -17,7 +31,7 @@ let papel = canvas.getContext('2d');
     function dibujarConMouse(event) {
 
         if (presionMouse) {
-            dibujar(color, x, y, event.offsetX, event.offsetY);
+            dibujar(color, x, y, event.offsetX, event.offsetY, tamanioInicial);
         }
 
         x = event.offsetX;
@@ -49,7 +63,7 @@ let papel = canvas.getContext('2d');
     document.addEventListener("change", tamanioLapizz);
 
     function tamanioLapizz() {
-        tamanioInicial = tamanioLapiz.value;
+        tamanioInicial = parseInt(tamanioLapiz.value);
 }
 
 document.addEventListener("change", colorLinea);
@@ -76,8 +90,31 @@ let limpiarLineas = document.getElementById("limpiar");
 
 limpiarLineas.addEventListener("click",limpiarTodo)
 function limpiarTodo() {
-    papel.clearRect(0, 0, canvas.width, canvas.height);
+
+        conexion.invoke("SendLimpiar")
+            .catch(err => console.error(err.toString()));
+    
 }
+
+// Escuchar evento de limpieza que viene del servidor... no anda xD
+conexion.on("ReceiveLimpiar", function () {
+    papel.clearRect(0, 0, canvas.width, canvas.height);
+});
+
+conexion.on("ReceivePosition", function (colorHub, xInicial, yInicial, xFinal, yFinal, tamanioInicialHub) {
+    console.log("Dibujo recibido:", colorHub, xInicial, yInicial, xFinal, yFinal, tamanioInicialHub);
+    dibujar(colorHub, xInicial, yInicial, xFinal, yFinal, tamanioInicialHub, false);
+
+});
+
+
+
+// empieza la conexión
+conexion.start().then(() => {
+    console.log("conectado correctamente");
+}).catch(function (err) {
+    return console.error("Error al iniciar:", err.toString());
+});
 
 
 
