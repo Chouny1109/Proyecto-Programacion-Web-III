@@ -20,10 +20,21 @@
         <option value="7">7px</option>
         <option value="8">8px</option>
     </select>
+    <input type="text" id="textoContenido" placeholder="Escribí algo">
+    <input type="color" id="colorTexto" value="#000000">
+    <input type="number" id="tamanioTexto" value="20" min="10">
+    <button id="btnInsertarTexto">Insertar texto</button>
     <input type="submit" id="limpiar" value="Limpiar" />
 
 </div>
 
-<div class="d-flex justify-content-center align-items-center canvas">
+<!--<div class="d-flex justify-content-center align-items-center canvas">
     <canvas id="area" width="950" height="500">F</canvas>
+    <div id="contenedorTextos" style="position: absolute; top: 0; left: 0; width: 950px; height: 500px;"></div>
+
+</div>-->
+<div class="d-flex justify-content-center align-items-center canvas" style="position: relative;">
+    <canvas id="area" width="950" height="500"></canvas>
+    <div id="contenedorTextos" style="position: absolute; top: 0; left: 0; pointer-events: none;"></div>
+
 </div>

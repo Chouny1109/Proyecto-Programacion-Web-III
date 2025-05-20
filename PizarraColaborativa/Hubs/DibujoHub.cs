@@ -17,7 +17,16 @@ namespace PizarraColaborativa.Hubs
             await Clients.All.SendAsync("ReceiveLimpiar");
         }
 
+        public async Task CrearOEditarTexto(Texto texto)
+        {
+            await Clients.All.SendAsync("TextoActualizado", texto);
+        }
+
+        public async Task MoverTexto(string id, int x, int y)
+        {
+            await Clients.All.SendAsync("TextoMovido", id, x, y);
+        }
     }
 
-   
+    
 }
