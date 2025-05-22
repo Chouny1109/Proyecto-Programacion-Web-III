@@ -5,28 +5,42 @@ namespace PizarraColaborativa.Hubs
 {
     public class DibujoHub : Hub
     {
-      
-        public async Task SendDibujo(string color,int xInicial, int yInicial, int xFinal, int yFinal, int tamanioInicial)
+
+        public override async Task OnConnectedAsync()
         {
-          
-            await Clients.Others.SendAsync("ReceivePosition",color, xInicial, yInicial,xFinal,yFinal, tamanioInicial);
+            var httpContext = Context.GetHttpContext();
+            var pizarraId = httpContext.Request.Query["pizarraId"];
+
+            if (!string.IsNullOrEmpty(pizarraId))
+            {
+                await Groups.AddToGroupAsync(Context.ConnectionId, pizarraId);
+            }
+
+            await base.OnConnectedAsync();
         }
-        public async Task SendLimpiar()
+        public async Task SendDibujo(string pizarraId, string color, int xInicial, int yInicial, int xFinal, int yFinal, int tamanioInicial)
         {
-        
-            await Clients.All.SendAsync("ReceiveLimpiar");
+            await Clients.GroupExcept(pizarraId, Context.ConnectionId)
+                .SendAsync("ReceivePosition", color, xInicial, yInicial, xFinal, yFinal, tamanioInicial);
         }
 
-        public async Task CrearOEditarTexto(Texto texto)
+        public async Task SendLimpiar(string pizarraId)
         {
-            await Clients.All.SendAsync("TextoActualizado", texto);
+            await Clients.Group(pizarraId).SendAsync("ReceiveLimpiar");
         }
 
-        public async Task MoverTexto(string id, int x, int y)
+        public async Task CrearOEditarTexto(string pizarraId, Texto texto)
         {
-            await Clients.All.SendAsync("TextoMovido", id, x, y);
+            await Clients.Group(pizarraId).SendAsync("TextoActualizado", texto);
         }
+
+
+        public async Task MoverTexto(string pizarraId, string id, int x, int y)
+        {
+            await Clients.Group(pizarraId).SendAsync("TextoMovido", id, x, y);
+        }
+
     }
 
-    
+
 }

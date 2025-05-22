@@ -1,5 +1,9 @@
-﻿let conexion = new signalR.HubConnectionBuilder()
-    .withUrl("/dibujohub").build();
+﻿let pizarraId = document.getElementById("info-pizarra").dataset.pizarraid;
+
+let conexion = new signalR.HubConnectionBuilder()
+    .withUrl("/dibujohub?pizarraid=" + encodeURIComponent(pizarraId))
+    .build();
+
 
 let canvas = document.getElementById("area");
 let papel = canvas.getContext('2d');
@@ -15,7 +19,7 @@ function dibujar(color1, corX, corY, corXFinal, corYFinal, tamanioLinea, enviar 
 
 
         if (enviar && conexion.state === signalR.HubConnectionState.Connected) {
-            conexion.invoke("SendDibujo", color, corX, corY, corXFinal, corYFinal, tamanioInicial)
+            conexion.invoke("SendDibujo", pizarraId, color, corX, corY, corXFinal, corYFinal, tamanioInicial)
                 .catch(function (err) {
                     return console.error("Error al enviar dibujo:", err.toString());
                 });
@@ -91,7 +95,8 @@ let limpiarLineas = document.getElementById("limpiar");
 limpiarLineas.addEventListener("click",limpiarTodo)
 function limpiarTodo() {
     if (conexion.state === signalR.HubConnectionState.Connected) {
-        conexion.invoke("SendLimpiar")
+        conexion.invoke("SendLimpiar", pizarraId)
+
             .catch(err => console.error(err.toString()));
     }
     limpiarTextos(); // también limpia localmente
@@ -143,7 +148,7 @@ function crearTextoEditable(texto, x, y, color = 'black', tamano = 20, id = null
 
     // Enviar al servidor si corresponde
     if (enviar && conexion.state === signalR.HubConnectionState.Connected) {
-        conexion.invoke("CrearOEditarTexto", {
+        conexion.invoke("CrearOEditarTexto", pizarraId, {
             id: id,
             contenido: texto,
             x: x,
@@ -175,7 +180,7 @@ function crearTextoEditable(texto, x, y, color = 'black', tamano = 20, id = null
         textos[id].y = ny;
 
         if (conexion.state === signalR.HubConnectionState.Connected) {
-            conexion.invoke("MoverTexto", id, nx, ny)
+            conexion.invoke("MoverTexto", pizarraId, id, nx, ny)
                 .catch(e => console.error(e));
         }
     });

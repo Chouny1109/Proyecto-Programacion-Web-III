@@ -1,4 +1,7 @@
+using Entidades.EF;
+using Microsoft.EntityFrameworkCore;
 using PizarraColaborativa.Hubs;
+using Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -6,6 +9,12 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddControllersWithViews();
 
 builder.Services.AddSignalR();
+builder.Services.AddScoped<IPizarraService, PizarraService>();
+
+builder.Services.AddDbContext<ProyectoPizarraContext>(options =>
+    options.UseSqlServer(builder.Configuration.GetConnectionString("Connection")));
+
+
 
 var app = builder.Build();
 
