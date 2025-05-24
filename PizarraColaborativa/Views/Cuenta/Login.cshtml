@@ -1,0 +1,10 @@
+﻿
+<form  method="post" asp-action="Login">
+    <input type="text" name="email" placeholder="Email" required />
+    <input type="password" name="password" placeholder="Contraseña" required />
+    <button type="submit">Iniciar sesión</button>
+</form>
+@Html.ValidationSummary(false, "", new { @class = "text-danger" })
+
+<a asp-action="Registrar">No estas registrado? Hazlo aqui.</a>
+

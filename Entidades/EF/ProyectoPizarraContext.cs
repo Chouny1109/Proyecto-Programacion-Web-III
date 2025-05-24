@@ -1,10 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 
 namespace Entidades.EF;
 
-public partial class ProyectoPizarraContext : DbContext
+public partial class ProyectoPizarraContext : IdentityDbContext<IdentityUser>
 {
     public ProyectoPizarraContext()
     {
@@ -29,6 +31,8 @@ public partial class ProyectoPizarraContext : DbContext
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
+        base.OnModelCreating(modelBuilder);
+
         modelBuilder.Entity<Pizarra>(entity =>
         {
             entity.HasKey(e => e.Id).HasName("PK__Pizarra__3214EC077B42F457");

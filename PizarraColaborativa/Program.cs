@@ -1,4 +1,5 @@
 using Entidades.EF;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using PizarraColaborativa.Hubs;
 using Services;
@@ -14,7 +15,25 @@ builder.Services.AddScoped<IPizarraService, PizarraService>();
 builder.Services.AddDbContext<ProyectoPizarraContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("Connection")));
 
+builder.Services.AddIdentity<IdentityUser, IdentityRole>(options =>
+{
+    options.Password.RequireDigit = false;
+    options.Password.RequiredLength = 4;
+    options.Password.RequireNonAlphanumeric = false; 
+    options.Password.RequireUppercase = false;
+    options.Password.RequireLowercase = false;
+})
+.AddEntityFrameworkStores<ProyectoPizarraContext>()
+.AddDefaultTokenProviders();
 
+
+
+
+builder.Services.ConfigureApplicationCookie(options =>
+{
+    options.LoginPath = "/Cuenta/Login";
+    options.AccessDeniedPath = "/Cuenta/AccesoDenegado";
+});
 
 var app = builder.Build();
 
@@ -30,6 +49,7 @@ app.UseHttpsRedirection();
 app.UseStaticFiles();
 
 app.UseRouting();
+app.UseAuthentication();
 
 app.UseAuthorization();
 
@@ -37,7 +57,7 @@ app.MapHub<DibujoHub>("/dibujohub");
 
 app.MapControllerRoute(
     name: "default",
-    pattern: "{controller=Home}/{action=Index}/{id?}");
+    pattern: "{controller=Cuenta}/{action=Login}/{id?}");
 
 
 

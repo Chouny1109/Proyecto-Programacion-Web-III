@@ -1,9 +1,12 @@
 using System.Diagnostics;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using PizarraColaborativa.Models;
 
 namespace PizarraColaborativa.Controllers
 {
+    [Authorize(Roles = "Usuario")]
+
     public class HomeController : Controller
     {
         private readonly ILogger<HomeController> _logger;
@@ -18,11 +21,7 @@ namespace PizarraColaborativa.Controllers
             return View();
         }
 
-        public IActionResult Privacy()
-        {
-            return View();
-        }
-
+      
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
         public IActionResult Error()
         {

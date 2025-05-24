@@ -1,10 +1,12 @@
 ﻿using Entidades.EF;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Services;
 
 namespace PizarraColaborativa.Controllers
 {
+    [Authorize(Roles ="Usuario")]
     public class PizarraController : Controller
     {
         private readonly IPizarraService _service;
