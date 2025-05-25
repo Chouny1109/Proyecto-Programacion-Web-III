@@ -5,3 +5,28 @@ PizarraColaborativa/bin/
 PizarraColaborativa/obj/
 
 
+# Ignore build output folders
+bin/
+obj/
+
+# User-specific files
+*.user
+*.rsuser
+*.suo
+*.userosscache
+*.sln.docstates
+
+# Visual Studio folders
+.vs/
+
+# Rider IDE folders (si usás Rider)
+.idea/
+
+# NuGet Packages folder
+packages/
+
+# Otros archivos generados temporales o caches
+*.cache
+*.log
+*.vspscc
+
