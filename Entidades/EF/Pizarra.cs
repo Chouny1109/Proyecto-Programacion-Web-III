@@ -13,6 +13,8 @@ public partial class Pizarra
 
     public DateTime FechaCreacion { get; set; }
 
+    public virtual ICollection<InvitacionPizarra> InvitacionPizarras { get; set; } = new List<InvitacionPizarra>();
+
     public virtual ICollection<PizarraUsuario> PizarraUsuarios { get; set; } = new List<PizarraUsuario>();
 
     public virtual ICollection<Texto> Textos { get; set; } = new List<Texto>();

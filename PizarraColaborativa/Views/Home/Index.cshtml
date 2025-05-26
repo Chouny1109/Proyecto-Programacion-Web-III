@@ -1,2 +1,13 @@
-﻿
+﻿@model List<PizarraColaborativa.DTO.PizarraResumenDTO>
 <a asp-action="CrearPizarra" asp-controller="Pizarra"> Crear Pizarra</a>
+
+<h2 class="text-white bg-dark">Mis pizarras :)</h2>
+
+@foreach(var p in Model){
+	<div>
+
+		<h3 class="text-white bg-dark">@p.FechaCreacion.ToShortDateString()</h3>
+
+		<a class="text-white bg-dark" asp-controller="Pizarra" asp-action="Dibujar" asp-route-id="@p.Id"> Pizarra= @p.Nombre </a>
+	</div>
+}

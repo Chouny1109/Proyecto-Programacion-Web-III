@@ -14,3 +14,5 @@ C:\Users\Gonza\OneDrive\Escritorio\proyecto web3\Proyecto-Programacion-Web-III\S
 C:\Users\Gonza\OneDrive\Escritorio\proyecto web3\Proyecto-Programacion-Web-III\Services\obj\Debug\net8.0\refint\Services.dll
 C:\Users\Gonza\OneDrive\Escritorio\proyecto web3\Proyecto-Programacion-Web-III\Services\obj\Debug\net8.0\Services.pdb
 C:\Users\Gonza\OneDrive\Escritorio\proyecto web3\Proyecto-Programacion-Web-III\Services\obj\Debug\net8.0\ref\Services.dll
+C:\Users\Gonza\OneDrive\Escritorio\proyecto web3\Proyecto-Programacion-Web-III\Services\bin\Debug\net8.0\DTO.dll
+C:\Users\Gonza\OneDrive\Escritorio\proyecto web3\Proyecto-Programacion-Web-III\Services\bin\Debug\net8.0\DTO.pdb

@@ -13,3 +13,6 @@ C:\Users\Gonza\OneDrive\Escritorio\proyecto web3\Proyecto-Programacion-Web-III\E
 C:\Users\Gonza\OneDrive\Escritorio\proyecto web3\Proyecto-Programacion-Web-III\Entidades\obj\Debug\net8.0\Entidades.pdb
 C:\Users\Gonza\OneDrive\Escritorio\proyecto web3\Proyecto-Programacion-Web-III\Entidades\obj\Debug\net8.0\Entidades.genruntimeconfig.cache
 C:\Users\Gonza\OneDrive\Escritorio\proyecto web3\Proyecto-Programacion-Web-III\Entidades\obj\Debug\net8.0\ref\Entidades.dll
+C:\Users\Gonza\OneDrive\Escritorio\proyecto web3\Proyecto-Programacion-Web-III\Entidades\bin\Debug\net8.0\DTO.dll
+C:\Users\Gonza\OneDrive\Escritorio\proyecto web3\Proyecto-Programacion-Web-III\Entidades\bin\Debug\net8.0\DTO.pdb
+C:\Users\Gonza\OneDrive\Escritorio\proyecto web3\Proyecto-Programacion-Web-III\Entidades\obj\Debug\net8.0\Entidades.csproj.Up2Date
