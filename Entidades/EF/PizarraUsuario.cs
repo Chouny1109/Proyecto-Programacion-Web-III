@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using Microsoft.AspNetCore.Identity;
 
 namespace Entidades.EF;
 
@@ -13,5 +14,5 @@ public partial class PizarraUsuario
 
     public virtual Pizarra Pizarra { get; set; } = null!;
 
-    public virtual AspNetUser Usuario { get; set; } = null!;
+    public virtual IdentityUser Usuario { get; set; } = null!;
 }
