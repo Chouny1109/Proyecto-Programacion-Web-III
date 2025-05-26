@@ -8,6 +8,28 @@ let conexion = new signalR.HubConnectionBuilder()
 let canvas = document.getElementById("area");
 let papel = canvas.getContext('2d');
 
+conexion.on("CargarTrazos", function (trazos) {
+    trazos.forEach(t => dibujarTrazo(t));
+});
+
+function dibujarTrazo(trazo) {
+    const xInicio = trazo.xinicio ?? 0;
+    const yInicio = trazo.yinicio ?? 0;
+    const xFin = trazo.xfin ?? 0;
+    const yFin = trazo.yfin ?? 0;
+    const color = trazo.color ?? '#000000';
+    const grosor = trazo.grosor ?? 2;
+
+    papel.beginPath();
+    papel.strokeStyle = color;
+    papel.lineWidth = grosor;
+    papel.moveTo(xInicio, yInicio);
+    papel.lineTo(xFin, yFin);
+    papel.stroke();
+}
+
+
+
 function dibujar(color1, corX, corY, corXFinal, corYFinal, tamanioLinea, enviar = true) {
         papel.beginPath();
         papel.strokeStyle = color1;
