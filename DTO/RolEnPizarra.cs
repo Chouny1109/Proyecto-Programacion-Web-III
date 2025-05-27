@@ -9,7 +9,8 @@ namespace DTO
     public enum RolEnPizarra
     {
         Escritura = 1,
-        Lectura = 2
+        Lectura = 2,
+        Admin= 3
        
     }
 }

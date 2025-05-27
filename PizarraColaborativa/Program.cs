@@ -13,6 +13,8 @@ builder.Services.AddHostedService<PizarraPersistenceService>();
 
 builder.Services.AddSignalR();
 builder.Services.AddScoped<IPizarraService, PizarraService>();
+builder.Services.AddScoped<IInvitacionService, InvitacionService>();
+
 
 builder.Services.AddDbContext<ProyectoPizarraContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("Connection")));

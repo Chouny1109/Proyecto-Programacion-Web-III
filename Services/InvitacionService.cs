@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Entidades.EF;
+using Microsoft.EntityFrameworkCore;
 
 namespace Services
 {
@@ -14,15 +15,23 @@ namespace Services
     }
     public class InvitacionService : IInvitacionService
     {
+        private readonly ProyectoPizarraContext _context;
+        public InvitacionService(ProyectoPizarraContext context)
+        {
+            _context = context;
+        }
         public void AgregarInvitacion(InvitacionPizarra invitacion)
         {
-            throw new NotImplementedException();
+            _context.InvitacionPizarras.Add(invitacion);
+            _context.SaveChanges();
         }
 
         public Task<InvitacionPizarra> ObtenerInvitacionPorCodigo(string codigo)
         {
-            throw new NotImplementedException();
-        }
+            return _context.InvitacionPizarras
+                .FirstOrDefaultAsync(i => i.CodigoInvitacion == codigo);
+        
+    }
     }
 
 

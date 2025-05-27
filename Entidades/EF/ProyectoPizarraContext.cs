@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using DTO;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
@@ -99,7 +100,7 @@ public partial class ProyectoPizarraContext : IdentityDbContext<IdentityUser>
             entity.Property(e => e.FechaInvitacion)
                 .HasDefaultValueSql("(getdate())")
                 .HasColumnType("datetime");
-            entity.Property(e => e.Rol).HasDefaultValue(1);
+            entity.Property(e => e.Rol).HasDefaultValue(RolEnPizarra.Escritura);
             entity.Property(e => e.UsuarioRemitenteId).HasMaxLength(450);
 
             entity.HasOne(d => d.Pizarra).WithMany(p => p.InvitacionPizarras)

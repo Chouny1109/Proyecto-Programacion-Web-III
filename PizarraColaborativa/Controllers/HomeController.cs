@@ -1,5 +1,6 @@
 using System.Diagnostics;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using PizarraColaborativa.DTO;
 using PizarraColaborativa.Models;
@@ -13,16 +14,18 @@ namespace PizarraColaborativa.Controllers
     {
         private readonly ILogger<HomeController> _logger;
         private readonly IPizarraService _service;
+        private readonly UserManager<IdentityUser> _userManager;
 
-        public HomeController(ILogger<HomeController> logger, IPizarraService service)
+        public HomeController(ILogger<HomeController> logger, IPizarraService service, UserManager<IdentityUser> userManager)
         {
             _logger = logger;
             _service = service;
+            _userManager = userManager; 
         }
 
         public IActionResult Index()
         {
-            var idUsuario = User.Identity?.Name;
+            var idUsuario = _userManager.GetUserId(User);
             List<PizarraResumenDTO> pizarrasID = _service.ObtenerPizarrasDelUsuario(idUsuario);
             return View(pizarrasID);
         }

@@ -1,5 +1,7 @@
-﻿using Entidades.EF;
+﻿using DTO;
+using Entidades.EF;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Services;
@@ -10,10 +12,13 @@ namespace PizarraColaborativa.Controllers
     public class PizarraController : Controller
     {
         private readonly IPizarraService _service;
+        private readonly UserManager<IdentityUser> _userManager;
 
-        public PizarraController(IPizarraService service)
+
+        public PizarraController(IPizarraService service, UserManager<IdentityUser> userManager)
         {
             _service= service;
+            _userManager= userManager;
         }
 
         [HttpGet]
@@ -25,15 +30,24 @@ namespace PizarraColaborativa.Controllers
         [HttpPost]
         public async Task<IActionResult> Crear()
         {
+            var creadorId = _userManager.GetUserId(User);
+            var idPizarra = Guid.NewGuid();
             var pizarra = new Pizarra
             {
-                Id = Guid.NewGuid(),
-                CreadorId = User.Identity?.Name ?? "Invitado"
+                Id = idPizarra,
+                CreadorId = creadorId
             };
-
+            var usuarioPizarra = new PizarraUsuario()
+            {
+                PizarraId = idPizarra,
+                UsuarioId = creadorId,
+                Rol = RolEnPizarra.Admin
+            };
             await _service.CrearPizarra(pizarra);
+            await _service.AgregarUsuarioALaPizarra(usuarioPizarra);
             return RedirectToAction("Dibujar", new { id = pizarra.Id });
         }
+
         public async Task<IActionResult> Dibujar(Guid id)
         {
             var pizarra = await _service.ObtenerPizarra(id);
@@ -41,6 +55,16 @@ namespace PizarraColaborativa.Controllers
             {
                 return NotFound("La pizarra no existe");
             }
+            //logica para no acceder si no pertenece a la pizarra
+            var idUsuario = _userManager.GetUserId(User);
+
+           var existe = await _service.ExisteUsuarioEnPizarra(idUsuario,pizarra.Id);
+
+            if (!existe)
+            {
+                return Forbid("No tiene permiso para acceder a la pizarra.");
+            }
+
 
             ViewData["PizarraId"] = id;
             return View(); 

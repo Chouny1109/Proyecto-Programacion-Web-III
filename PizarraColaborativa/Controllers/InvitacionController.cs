@@ -56,11 +56,18 @@ namespace PizarraColaborativa.Controllers
             }
             var usuarioInvitado= await _userManager.GetUserAsync(User);
 
-            var yaExiste = await _pizarraService.ExisteUsuarioEnPizarra(usuarioInvitado);
+            var yaExiste = await _pizarraService.ExisteUsuarioEnPizarra(usuarioInvitado.Id,invitacion.PizarraId);
 
             if (!yaExiste)
             {
-               
+                var pizarraUsuario = new PizarraUsuario
+                {
+                    PizarraId = invitacion.PizarraId,
+                    UsuarioId = usuarioInvitado.Id,
+                    Rol= invitacion.Rol
+                    
+                };
+               await _pizarraService.AgregarUsuarioALaPizarra(pizarraUsuario);
             }
             return RedirectToAction("Dibujar", "Pizarra", new { id = invitacion.PizarraId });
 

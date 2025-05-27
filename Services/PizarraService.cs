@@ -1,6 +1,7 @@
 ﻿using System.Collections.Concurrent;
 using Entidades.EF;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Primitives;
 using PizarraColaborativa.DTO;
 
@@ -8,9 +9,9 @@ namespace Services
 {
     public interface IPizarraService
     {
-
+       Task AgregarUsuarioALaPizarra(PizarraUsuario pizarraUsuario);
         Task CrearPizarra(Pizarra pizarra);
-        Task<bool>ExisteUsuarioEnPizarra(IdentityUser? usuarioInvitado);
+        Task<bool> ExisteUsuarioEnPizarra(string id, Guid pizarraId);
         Task<Pizarra> ObtenerPizarra(Guid id);
         List<PizarraResumenDTO> ObtenerPizarrasDelUsuario(string? idUsuario);
     }
@@ -23,8 +24,13 @@ namespace Services
             _context = context;
         }
 
- 
- 
+        public Task AgregarUsuarioALaPizarra(PizarraUsuario pizarraUsuario)
+        {
+            _context.PizarraUsuarios.AddAsync(pizarraUsuario);
+            _context.SaveChangesAsync();
+            return Task.CompletedTask;
+        }
+
         public Task CrearPizarra(Pizarra pizarra)
         {
                _context.Pizarras.Add(pizarra);
@@ -32,9 +38,10 @@ namespace Services
             return Task.CompletedTask;
         }
 
-        public Task<bool> ExisteUsuarioEnPizarra(IdentityUser? usuarioInvitado)
+
+        public async Task<bool> ExisteUsuarioEnPizarra(string id, Guid pizarraId)
         {
-            throw new NotImplementedException();
+            return await _context.PizarraUsuarios.AnyAsync(pu => pu.PizarraId == pizarraId && pu.UsuarioId == id);
         }
 
         public async Task<Pizarra> ObtenerPizarra(Guid id)
@@ -45,12 +52,13 @@ namespace Services
 
         public List<PizarraResumenDTO> ObtenerPizarrasDelUsuario(string? idUsuario)
         {
-            return _context.Pizarras.Where(p => p.CreadorId == idUsuario)
-                  .Select(p => new PizarraResumenDTO
+            return _context.PizarraUsuarios.Where(pu => pu.UsuarioId == idUsuario)
+                .Include(pu => pu.Pizarra)
+                  .Select(pu => new PizarraResumenDTO
                   {
-                      Id = p.Id,
-                      FechaCreacion = p.FechaCreacion,
-                      Nombre = p.NombrePizarra
+                      Id = pu.Pizarra.Id,
+                      FechaCreacion = pu.Pizarra.FechaCreacion,
+                      Nombre = pu.Pizarra.NombrePizarra
                   }).ToList();
         }
     }
