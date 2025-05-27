@@ -65,6 +65,12 @@ namespace PizarraColaborativa.Controllers
                 return Forbid("No tiene permiso para acceder a la pizarra.");
             }
 
+            var esAdmin = await _service.EsAdminDeLaPizarra(idUsuario, pizarra.Id);
+            if (esAdmin)
+            {
+                ViewData["EsAdmin"] = esAdmin;
+
+            }
 
             ViewData["PizarraId"] = id;
             return View(); 

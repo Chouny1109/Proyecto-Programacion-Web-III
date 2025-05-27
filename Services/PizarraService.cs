@@ -1,4 +1,5 @@
 ﻿using System.Collections.Concurrent;
+using DTO;
 using Entidades.EF;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
@@ -11,6 +12,7 @@ namespace Services
     {
        Task AgregarUsuarioALaPizarra(PizarraUsuario pizarraUsuario);
         Task CrearPizarra(Pizarra pizarra);
+        Task<bool> EsAdminDeLaPizarra(string idUsuario, Guid id);
         Task<bool> ExisteUsuarioEnPizarra(string id, Guid pizarraId);
         Task<Pizarra> ObtenerPizarra(Guid id);
         List<PizarraResumenDTO> ObtenerPizarrasDelUsuario(string? idUsuario);
@@ -38,6 +40,11 @@ namespace Services
             return Task.CompletedTask;
         }
 
+        public async Task<bool> EsAdminDeLaPizarra(string idUsuario, Guid id)
+        {
+           return await _context.PizarraUsuarios.AnyAsync(pu => pu.PizarraId== id && pu.UsuarioId== idUsuario 
+           && pu.Rol.Equals(RolEnPizarra.Admin));
+        }
 
         public async Task<bool> ExisteUsuarioEnPizarra(string id, Guid pizarraId)
         {

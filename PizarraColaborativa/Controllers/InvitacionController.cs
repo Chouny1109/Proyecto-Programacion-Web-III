@@ -1,4 +1,5 @@
-﻿using Entidades.EF;
+﻿using DTO;
+using Entidades.EF;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -22,9 +23,11 @@ namespace PizarraColaborativa.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> GenerarInvitacion(Guid pizarraId)
+        public async Task<IActionResult> GenerarInvitacion(Guid pizarraId,int rol)
         {
             var usuario = await _userManager.GetUserAsync(User);
+            var esAdmin = await _pizarraService.EsAdminDeLaPizarra(usuario.Id,pizarraId);
+            if (!esAdmin) return Forbid();
 
             var codigo= Guid.NewGuid().ToString("N");
 
@@ -34,17 +37,38 @@ namespace PizarraColaborativa.Controllers
                 UsuarioRemitenteId = usuario.Id,
                 CodigoInvitacion = codigo,
                 FechaInvitacion = DateTime.UtcNow,
+                Rol = (RolEnPizarra)rol,
                 FechaExpiracion = DateTime.UtcNow.AddDays(1)
+               
             };
 
             _invitacionService.AgregarInvitacion(invitacion);
 
-            var url = Url.Action("AceptarInvitacion", "Invitacion", 
+            var url = Url.Action("VerInvitacion", "Invitacion", 
                 new { codigo = codigo }, Request.Scheme);
 
-            return Json(new { link = url });
+         return Content(url);
         }
         [HttpGet]
+        [Authorize]
+        public async Task<IActionResult> VerInvitacion(string codigo)
+        {
+            var invitacion = await _invitacionService.ObtenerInvitacionPorCodigo(codigo);
+
+            if (invitacion == null || (invitacion.FechaExpiracion.HasValue && invitacion.FechaExpiracion < DateTime.UtcNow))
+            {
+                return View("InvitacionExpirada");
+            }
+
+            var pizarra = await _pizarraService.ObtenerPizarra(invitacion.PizarraId);
+
+            ViewBag.NombrePizarra = pizarra?.NombrePizarra ?? "Pizarra Sin Nombre";
+            ViewBag.Rol = invitacion.Rol;
+
+            return View("AceptarInvitacion", invitacion);
+        }
+
+        [HttpPost]
         [Authorize]
         public async Task<IActionResult> AceptarInvitacion(string codigo)
         {
