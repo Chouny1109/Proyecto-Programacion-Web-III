@@ -1,4 +1,5 @@
 ﻿using System.Diagnostics;
+using System.Drawing;
 using Entidades.EF;
 using Microsoft.AspNetCore.SignalR;
 using Services;
@@ -7,13 +8,16 @@ namespace PizarraColaborativa.Hubs
 {
     public class DibujoHub : Hub
     {
-        private readonly TrazoMemoryService _service;
-        private readonly IServiceProvider _serviceProvider;
+        private readonly TextoMemoryService _textoService;
+        private readonly TrazoMemoryService _trazoService;
+       private readonly IPizarraService _pizarraService;
 
-        public DibujoHub(TrazoMemoryService memoriaService, IServiceProvider serviceProvider)
+        public DibujoHub(TrazoMemoryService memoriaService
+            , TextoMemoryService textoService, IPizarraService pizarraService)
         {
-           _service = memoriaService;
-            _serviceProvider = serviceProvider;
+            _textoService = textoService;
+            _trazoService = memoriaService;
+            _pizarraService= pizarraService;
         }
         public override async Task OnConnectedAsync()
         {
@@ -22,21 +26,18 @@ namespace PizarraColaborativa.Hubs
             await Groups.AddToGroupAsync(Context.ConnectionId, pizarraId);
 
             //si no hay trazos en memoria,cargar base de datos.
-            if (!_service.Existe(pizarraId))
+            if (!_trazoService.Existe(pizarraId))
             {
-                using var scope = _serviceProvider.CreateScope();
-                var context = scope.ServiceProvider.GetRequiredService<ProyectoPizarraContext>();
-
-                var pizarraGuid = Guid.Parse(pizarraId); 
-                var trazos = context.Trazos.Where(t => t.PizarraId == pizarraGuid).ToList();
+                var pizarraGuid = Guid.Parse(pizarraId);
+                var trazos = _pizarraService.ObtenerTrazosDeUnaPizarra(pizarraGuid);
 
                 foreach (var trazo in trazos)
                 {
-                    _service.AgregarTrazo(pizarraId, trazo);
+                    _trazoService.AgregarTrazo(pizarraId, trazo);
                 }
             
             }
-            var trazosEnMemoria = _service.ObtenerTrazos(pizarraId);
+            var trazosEnMemoria = _trazoService.ObtenerTrazos(pizarraId);
             await Clients.Caller.SendAsync("CargarTrazos", trazosEnMemoria);
            
 
@@ -53,7 +54,7 @@ namespace PizarraColaborativa.Hubs
                 Yfin = yFinal,
                 Grosor = tamanioInicial
             };
-            _service.AgregarTrazo(pizarraId, trazo);
+            _trazoService.AgregarTrazo(pizarraId, trazo);
 
             await Clients.GroupExcept(pizarraId, Context.ConnectionId)
                 .SendAsync("ReceivePosition", color, xInicial, yInicial, xFinal, yFinal, tamanioInicial);
@@ -61,12 +62,29 @@ namespace PizarraColaborativa.Hubs
 
         public async Task SendLimpiar(string pizarraId)
         {
-            _service.LimpiarPizarra(pizarraId);
+            _trazoService.LimpiarPizarra(pizarraId);
             await Clients.Group(pizarraId).SendAsync("ReceiveLimpiar");
         }
 
         public async Task CrearOEditarTexto(string pizarraId, Texto texto)
         {
+
+            var textoEncontrado = await _pizarraService.ObtenerTextoPorId(texto.Id, pizarraId);
+               
+
+            if (textoEncontrado != null)
+            {
+                textoEncontrado.PosX = texto.X == 0 ? textoEncontrado.PosX : texto.X;
+                textoEncontrado.PosY = texto.Y == 0 ? textoEncontrado.PosY : texto.Y;
+                textoEncontrado.Tamano = texto.Tamano == 0 ? textoEncontrado.Tamano : texto.Tamano;
+                textoEncontrado.Color= texto.Color.Equals(null) ? textoEncontrado.Color : texto.Color;
+                texto.Contenido = texto.Contenido.Equals(null) ? textoEncontrado.Contenido : texto.Contenido;
+
+                _textoService.EditarTextoEnPizarra(textoEncontrado, pizarraId);
+            }
+           
+            _textoService.AgregarTextoALaPizarra(texto.Id,texto.X,texto.Y,texto.Tamano,texto.Contenido,texto.Color);
+
             await Clients.Group(pizarraId).SendAsync("TextoActualizado", texto);
         }
 

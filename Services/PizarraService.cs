@@ -10,12 +10,17 @@ namespace Services
 {
     public interface IPizarraService
     {
-       Task AgregarUsuarioALaPizarra(PizarraUsuario pizarraUsuario);
+        void AgregarTrazo(Trazo trazo);
+        Task AgregarUsuarioALaPizarra(PizarraUsuario pizarraUsuario);
+        void BorrarTrazosExistentesPizarra(List<Trazo> existentes);
         Task CrearPizarra(Pizarra pizarra);
         Task<bool> EsAdminDeLaPizarra(string idUsuario, Guid id);
         Task<bool> ExisteUsuarioEnPizarra(string id, Guid pizarraId);
         Task<Pizarra> ObtenerPizarra(Guid id);
         List<PizarraResumenDTO> ObtenerPizarrasDelUsuario(string? idUsuario);
+        Task<Texto> ObtenerTextoPorId(string idTexto, string pizarraId);
+        List<Trazo> ObtenerTrazosDeUnaPizarra(Guid pizarraGuid);
+        void PersistirTrazosBD(Dictionary<string, List<Trazo>> dictionary);
     }
     public class PizarraService : IPizarraService
     {
@@ -26,6 +31,12 @@ namespace Services
             _context = context;
         }
 
+        public void AgregarTrazo(Trazo trazo)
+        {
+
+
+        }
+
         public Task AgregarUsuarioALaPizarra(PizarraUsuario pizarraUsuario)
         {
             _context.PizarraUsuarios.AddAsync(pizarraUsuario);
@@ -33,17 +44,22 @@ namespace Services
             return Task.CompletedTask;
         }
 
+        public void BorrarTrazosExistentesPizarra(List<Trazo> existentes)
+        {
+            throw new NotImplementedException();
+        }
+
         public Task CrearPizarra(Pizarra pizarra)
         {
-               _context.Pizarras.Add(pizarra);
+            _context.Pizarras.Add(pizarra);
             _context.SaveChanges();
             return Task.CompletedTask;
         }
 
         public async Task<bool> EsAdminDeLaPizarra(string idUsuario, Guid id)
         {
-           return await _context.PizarraUsuarios.AnyAsync(pu => pu.PizarraId== id && pu.UsuarioId== idUsuario 
-           && pu.Rol.Equals(RolEnPizarra.Admin));
+            return await _context.PizarraUsuarios.AnyAsync(pu => pu.PizarraId == id && pu.UsuarioId == idUsuario
+            && pu.Rol.Equals(RolEnPizarra.Admin));
         }
 
         public async Task<bool> ExisteUsuarioEnPizarra(string id, Guid pizarraId)
@@ -68,8 +84,38 @@ namespace Services
                       Nombre = pu.Pizarra.NombrePizarra
                   }).ToList();
         }
-    }
 
+        public async Task<Texto> ObtenerTextoPorId(string idTexto, string pizarraId)
+        {
+           return  await _context.Textos.FirstOrDefaultAsync(t => t.Id.Equals(idTexto)
+            && t.PizarraId.Equals(pizarraId));
+
+        }
+
+        public void PersistirTrazosBD(Dictionary<string, List<Trazo>> dictionary)
+        {
+
+            foreach (var (pizarraId, trazos) in dictionary)
+            {
+                var pizarraguid = Guid.Parse(pizarraId);
+                var existentes = ObtenerTrazosDeUnaPizarra(pizarraguid);
+                BorrarTrazosExistentesPizarra(existentes);
+
+                foreach (var trazo in trazos)
+                {
+                    trazo.Id = 0;
+                    trazo.PizarraId = Guid.Parse(pizarraId);
+                    AgregarTrazo(trazo);
+                }
+                _context.SaveChanges();
+        }
+        }
+
+        List<Trazo> ObtenerTrazosDeUnaPizarra(Guid pizarraGuid)
+        {
+            return _context.Trazos.Where(t => t.PizarraId == pizarraGuid).ToList();
+        }
+    }
 
 
 }

@@ -12,14 +12,17 @@ namespace Services
 {
     public class PizarraPersistenceService : BackgroundService
     {
-        private readonly IServiceProvider _serviceProvider;
-        private readonly TrazoMemoryService _memoryService;
+      private readonly IPizarraService _pizarraService;
+        private readonly TrazoMemoryService _trazoMemoryService;
+        private readonly TextoMemoryService _textoMemoryService;
         private readonly ILogger<PizarraPersistenceService> _logger;    
 
-        public PizarraPersistenceService(IServiceProvider serviceProvider, TrazoMemoryService memoryService, ILogger<PizarraPersistenceService> logger)
+        public PizarraPersistenceService(IPizarraService pizarraService, TrazoMemoryService trazoService,
+            TextoMemoryService textoMemoryService, ILogger<PizarraPersistenceService> logger)
         {
-            _serviceProvider = serviceProvider;
-            _memoryService = memoryService;
+            _pizarraService = pizarraService;
+            _trazoMemoryService = trazoService;
+            _textoMemoryService = textoMemoryService;
             _logger = logger;
         }
 
@@ -29,22 +32,25 @@ namespace Services
             {
                 try
                 {
-                    using var scope = _serviceProvider.CreateScope();
-                    var context = scope.ServiceProvider.GetRequiredService<ProyectoPizarraContext>();
-                    
-                    foreach(var (pizarraId,trazos) in _memoryService.ObtenerTodas())
+                    foreach(var (pizarraId,trazos) in _trazoMemoryService.ObtenerTodas())
                     {
 
                         var pizarraguid = Guid.Parse(pizarraId);
-                        var existentes = context.Trazos.Where(t => t.PizarraId == pizarraguid);
-                        context.Trazos.RemoveRange(existentes);
+                        //Obtener trazos existentes de una pizarra
+                        //Borrar trazos existentes
+                        var existentes = _pizarraService.ObtenerTrazosDeUnaPizarra(pizarraguid);
+                        _pizarraService.BorrarTrazosExistentesPizarra(existentes);
 
-                        foreach(var trazo in trazos)
+                        foreach (var trazo in trazos)
                         {
                             trazo.Id = 0;
                             trazo.PizarraId = Guid.Parse(pizarraId);
-                            context.Trazos.Add(trazo);
+                            _pizarraService.AgregarTrazo(trazo);
                         }
+                    }
+                    foreach (var (pizaraId,textos) in _textoMemoryService)
+                    {
+                       
                     }
                     await context.SaveChangesAsync();
                     _logger.LogInformation("Trazos guardados en DB a las {Hora}", DateTime.Now);
