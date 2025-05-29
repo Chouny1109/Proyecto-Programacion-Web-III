@@ -20,6 +20,7 @@ namespace Services
         List<PizarraResumenDTO> ObtenerPizarrasDelUsuario(string? idUsuario);
         Task<Texto> ObtenerTextoPorId(string idTexto, string pizarraId);
         List<Trazo> ObtenerTrazosDeUnaPizarra(Guid pizarraGuid);
+        void PersistirTextosBD(Dictionary<string, List<Texto>> dictionary);
         void PersistirTrazosBD(Dictionary<string, List<Trazo>> dictionary);
     }
     public class PizarraService : IPizarraService
@@ -33,7 +34,8 @@ namespace Services
 
         public void AgregarTrazo(Trazo trazo)
         {
-
+            _context.Trazos.Add(trazo);
+            _context.SaveChanges();
 
         }
 
@@ -46,7 +48,8 @@ namespace Services
 
         public void BorrarTrazosExistentesPizarra(List<Trazo> existentes)
         {
-            throw new NotImplementedException();
+            _context.Trazos.RemoveRange(existentes);
+            _context.SaveChanges();
         }
 
         public Task CrearPizarra(Pizarra pizarra)
@@ -92,6 +95,41 @@ namespace Services
 
         }
 
+        public void PersistirTextosBD(Dictionary<string, List<Texto>> dictionary)
+        {
+            foreach(var (pizarraId,textos) in dictionary)
+            {
+                var pizarraguid = Guid.Parse(pizarraId);
+                var existentes = ObtenerTextosDeUnaPizarra(pizarraguid);
+                BorrarTextosExistentesPizarra(existentes);
+
+                foreach (var texto in textos)
+                {
+                    texto.Id = 0;
+                    texto.PizarraId = pizarraguid;
+                    AgregarTexto(texto);
+                }
+            }
+            _context.SaveChanges();
+        }
+
+        private void BorrarTextosExistentesPizarra(List<Texto> existentes)
+        {
+            _context.Textos.RemoveRange(existentes);
+            _context.SaveChanges();
+        }
+
+        private void AgregarTexto(Texto texto)
+        {
+            _context.Textos.Add(texto);
+            _context.SaveChanges();
+        }
+
+        private List<Texto> ObtenerTextosDeUnaPizarra(Guid pizarraguid)
+        {
+            return _context.Textos.Where(t => t.PizarraId.Equals(pizarraguid)).ToList();
+        }
+
         public void PersistirTrazosBD(Dictionary<string, List<Trazo>> dictionary)
         {
 
@@ -104,17 +142,20 @@ namespace Services
                 foreach (var trazo in trazos)
                 {
                     trazo.Id = 0;
-                    trazo.PizarraId = Guid.Parse(pizarraId);
+                    trazo.PizarraId = pizarraguid;
                     AgregarTrazo(trazo);
                 }
-                _context.SaveChanges();
+               
         }
+            _context.SaveChanges();
         }
 
-        List<Trazo> ObtenerTrazosDeUnaPizarra(Guid pizarraGuid)
+        public List<Trazo> ObtenerTrazosDeUnaPizarra(Guid pizarraGuid)
         {
             return _context.Trazos.Where(t => t.PizarraId == pizarraGuid).ToList();
         }
+
+       
     }
 
 
