@@ -57,11 +57,11 @@ namespace PizarraColaborativa.Hubs
                      pizarraId
                     );
                 }
-                var textosEnMemoria = _textoService.ObtenerTextos(pizarraId);
-                await Clients.Caller.SendAsync("CargarTextos", textosEnMemoria);
+               
 
             }
-
+            var textosEnMemoria = _textoService.ObtenerTextos(pizarraId);
+            await Clients.Caller.SendAsync("CargarTextos", textosEnMemoria);
 
             await base.OnConnectedAsync();
         }

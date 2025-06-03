@@ -1,0 +1,1 @@
+no hacer scaffold, solamente ejecutar scripts en sqlserver

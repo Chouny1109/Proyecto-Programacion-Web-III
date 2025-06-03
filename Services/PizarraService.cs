@@ -106,7 +106,7 @@ namespace Services
 
                 foreach (var texto in textos)
                 {
-                    texto.Id = 0;
+                    texto.Id = texto.Id;
                     texto.PizarraId = pizarraguid;
                     AgregarTexto(texto);
                 }

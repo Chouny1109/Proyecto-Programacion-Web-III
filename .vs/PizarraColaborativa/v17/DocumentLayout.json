@@ -7,6 +7,10 @@
       "RelativeMoniker": "D:0:0:{D1A7DB3B-21C5-43D7-9A3D-5655D01B2C95}|PizarraColaborativa\\PizarraColaborativa.csproj|solutionrelative:pizarracolaborativa\\wwwroot\\js\\site.js||{14D17961-FE51-464D-9111-C4AF11D7D99A}"
     },
     {
+      "AbsoluteMoniker": "D:0:0:{934F7392-DBB9-479E-9B45-87525B5B9AD1}|Services\\Services.csproj|c:\\users\\gonza\\onedrive\\escritorio\\proyecto web3\\proyecto-programacion-web-iii\\services\\trazomemoryservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{934F7392-DBB9-479E-9B45-87525B5B9AD1}|Services\\Services.csproj|solutionrelative:services\\trazomemoryservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
       "AbsoluteMoniker": "D:0:0:{D1A7DB3B-21C5-43D7-9A3D-5655D01B2C95}|PizarraColaborativa\\PizarraColaborativa.csproj|c:\\users\\gonza\\onedrive\\escritorio\\proyecto web3\\proyecto-programacion-web-iii\\pizarracolaborativa\\hubs\\dibujohub.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{D1A7DB3B-21C5-43D7-9A3D-5655D01B2C95}|PizarraColaborativa\\PizarraColaborativa.csproj|solutionrelative:pizarracolaborativa\\hubs\\dibujohub.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
@@ -15,36 +19,32 @@
       "RelativeMoniker": "D:0:0:{934F7392-DBB9-479E-9B45-87525B5B9AD1}|Services\\Services.csproj|solutionrelative:services\\textomemoryservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{934F7392-DBB9-479E-9B45-87525B5B9AD1}|Services\\Services.csproj|c:\\users\\gonza\\onedrive\\escritorio\\proyecto web3\\proyecto-programacion-web-iii\\services\\trazomemoryservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{934F7392-DBB9-479E-9B45-87525B5B9AD1}|Services\\Services.csproj|solutionrelative:services\\trazomemoryservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{934F7392-DBB9-479E-9B45-87525B5B9AD1}|Services\\Services.csproj|c:\\users\\gonza\\onedrive\\escritorio\\proyecto web3\\proyecto-programacion-web-iii\\services\\pizarraservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{934F7392-DBB9-479E-9B45-87525B5B9AD1}|Services\\Services.csproj|solutionrelative:services\\pizarraservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+      "AbsoluteMoniker": "D:0:0:{D1A7DB3B-21C5-43D7-9A3D-5655D01B2C95}|PizarraColaborativa\\PizarraColaborativa.csproj|c:\\users\\gonza\\onedrive\\escritorio\\proyecto web3\\proyecto-programacion-web-iii\\pizarracolaborativa\\views\\pizarra\\dibujar.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{D1A7DB3B-21C5-43D7-9A3D-5655D01B2C95}|PizarraColaborativa\\PizarraColaborativa.csproj|solutionrelative:pizarracolaborativa\\views\\pizarra\\dibujar.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
     },
     {
       "AbsoluteMoniker": "D:0:0:{934F7392-DBB9-479E-9B45-87525B5B9AD1}|Services\\Services.csproj|c:\\users\\gonza\\onedrive\\escritorio\\proyecto web3\\proyecto-programacion-web-iii\\services\\pizarrapersistenceservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{934F7392-DBB9-479E-9B45-87525B5B9AD1}|Services\\Services.csproj|solutionrelative:services\\pizarrapersistenceservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{934F7392-DBB9-479E-9B45-87525B5B9AD1}|Services\\Services.csproj|c:\\users\\gonza\\onedrive\\escritorio\\proyecto web3\\proyecto-programacion-web-iii\\services\\invitacionservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{934F7392-DBB9-479E-9B45-87525B5B9AD1}|Services\\Services.csproj|solutionrelative:services\\invitacionservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
       "AbsoluteMoniker": "D:0:0:{F311EFB1-6977-47A4-897C-FB00135EC1B7}|Entidades\\Entidades.csproj|c:\\users\\gonza\\onedrive\\escritorio\\proyecto web3\\proyecto-programacion-web-iii\\entidades\\ef\\proyectopizarracontext.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{F311EFB1-6977-47A4-897C-FB00135EC1B7}|Entidades\\Entidades.csproj|solutionrelative:entidades\\ef\\proyectopizarracontext.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{934F7392-DBB9-479E-9B45-87525B5B9AD1}|Services\\Services.csproj|c:\\users\\gonza\\onedrive\\escritorio\\proyecto web3\\proyecto-programacion-web-iii\\services\\pizarraservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{934F7392-DBB9-479E-9B45-87525B5B9AD1}|Services\\Services.csproj|solutionrelative:services\\pizarraservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
       "AbsoluteMoniker": "D:0:0:{D1A7DB3B-21C5-43D7-9A3D-5655D01B2C95}|PizarraColaborativa\\PizarraColaborativa.csproj|c:\\users\\gonza\\onedrive\\escritorio\\proyecto web3\\proyecto-programacion-web-iii\\pizarracolaborativa\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{D1A7DB3B-21C5-43D7-9A3D-5655D01B2C95}|PizarraColaborativa\\PizarraColaborativa.csproj|solutionrelative:pizarracolaborativa\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{D1A7DB3B-21C5-43D7-9A3D-5655D01B2C95}|PizarraColaborativa\\PizarraColaborativa.csproj|c:\\users\\gonza\\onedrive\\escritorio\\proyecto web3\\proyecto-programacion-web-iii\\pizarracolaborativa\\views\\pizarra\\dibujar.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
-      "RelativeMoniker": "D:0:0:{D1A7DB3B-21C5-43D7-9A3D-5655D01B2C95}|PizarraColaborativa\\PizarraColaborativa.csproj|solutionrelative:pizarracolaborativa\\views\\pizarra\\dibujar.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
-    },
-    {
       "AbsoluteMoniker": "D:0:0:{F311EFB1-6977-47A4-897C-FB00135EC1B7}|Entidades\\Entidades.csproj|c:\\users\\gonza\\onedrive\\escritorio\\proyecto web3\\proyecto-programacion-web-iii\\entidades\\ef\\texto.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{F311EFB1-6977-47A4-897C-FB00135EC1B7}|Entidades\\Entidades.csproj|solutionrelative:entidades\\ef\\texto.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{934F7392-DBB9-479E-9B45-87525B5B9AD1}|Services\\Services.csproj|c:\\users\\gonza\\onedrive\\escritorio\\proyecto web3\\proyecto-programacion-web-iii\\services\\invitacionservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{934F7392-DBB9-479E-9B45-87525B5B9AD1}|Services\\Services.csproj|solutionrelative:services\\invitacionservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
       "AbsoluteMoniker": "D:0:0:{F311EFB1-6977-47A4-897C-FB00135EC1B7}|Entidades\\Entidades.csproj|c:\\users\\gonza\\onedrive\\escritorio\\proyecto web3\\proyecto-programacion-web-iii\\entidades\\ef\\invitacionpizarra.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
@@ -97,9 +97,22 @@
       "VerticalTabListWidth": 256,
       "DocumentGroups": [
         {
-          "DockedWidth": 215,
-          "SelectedChildIndex": 3,
+          "DockedWidth": 199,
+          "SelectedChildIndex": 2,
           "Children": [
+            {
+              "$type": "Document",
+              "DocumentIndex": 2,
+              "Title": "DibujoHub.cs",
+              "DocumentMoniker": "C:\\Users\\Gonza\\OneDrive\\Escritorio\\proyecto web3\\Proyecto-Programacion-Web-III\\PizarraColaborativa\\Hubs\\DibujoHub.cs",
+              "RelativeDocumentMoniker": "PizarraColaborativa\\Hubs\\DibujoHub.cs",
+              "ToolTip": "C:\\Users\\Gonza\\OneDrive\\Escritorio\\proyecto web3\\Proyecto-Programacion-Web-III\\PizarraColaborativa\\Hubs\\DibujoHub.cs",
+              "RelativeToolTip": "PizarraColaborativa\\Hubs\\DibujoHub.cs",
+              "ViewState": "AgIAAEcAAAAAAAAAAAAwwDsAAAAPAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-05-22T00:35:06.228Z",
+              "EditorCaption": ""
+            },
             {
               "$type": "Document",
               "DocumentIndex": 5,
@@ -108,61 +121,48 @@
               "RelativeDocumentMoniker": "Services\\PizarraPersistenceService.cs",
               "ToolTip": "C:\\Users\\Gonza\\OneDrive\\Escritorio\\proyecto web3\\Proyecto-Programacion-Web-III\\Services\\PizarraPersistenceService.cs",
               "RelativeToolTip": "Services\\PizarraPersistenceService.cs",
-              "ViewState": "AgIAABoAAAAAAAAAAAAqwC4AAABAAAAAAAAAAA==",
+              "ViewState": "AgIAABIAAAAAAAAAAAAiwC4AAABAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
               "WhenOpened": "2025-05-28T22:18:30.677Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 6,
-              "Title": "InvitacionService.cs",
-              "DocumentMoniker": "C:\\Users\\Gonza\\OneDrive\\Escritorio\\proyecto web3\\Proyecto-Programacion-Web-III\\Services\\InvitacionService.cs",
-              "RelativeDocumentMoniker": "Services\\InvitacionService.cs",
-              "ToolTip": "C:\\Users\\Gonza\\OneDrive\\Escritorio\\proyecto web3\\Proyecto-Programacion-Web-III\\Services\\InvitacionService.cs",
-              "RelativeToolTip": "Services\\InvitacionService.cs",
-              "ViewState": "AgIAAAkAAAAAAAAAAAAAAB4AAAAuAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-05-27T14:16:41.694Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 7,
-              "Title": "ProyectoPizarraContext.cs",
-              "DocumentMoniker": "C:\\Users\\Gonza\\OneDrive\\Escritorio\\proyecto web3\\Proyecto-Programacion-Web-III\\Entidades\\EF\\ProyectoPizarraContext.cs",
-              "RelativeDocumentMoniker": "Entidades\\EF\\ProyectoPizarraContext.cs",
-              "ToolTip": "C:\\Users\\Gonza\\OneDrive\\Escritorio\\proyecto web3\\Proyecto-Programacion-Web-III\\Entidades\\EF\\ProyectoPizarraContext.cs",
-              "RelativeToolTip": "Entidades\\EF\\ProyectoPizarraContext.cs",
-              "ViewState": "AgIAABcAAAAAAAAAAAAIwGYAAABOAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-05-26T17:51:36.726Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
               "DocumentIndex": 1,
-              "Title": "DibujoHub.cs",
-              "DocumentMoniker": "C:\\Users\\Gonza\\OneDrive\\Escritorio\\proyecto web3\\Proyecto-Programacion-Web-III\\PizarraColaborativa\\Hubs\\DibujoHub.cs",
-              "RelativeDocumentMoniker": "PizarraColaborativa\\Hubs\\DibujoHub.cs",
-              "ToolTip": "C:\\Users\\Gonza\\OneDrive\\Escritorio\\proyecto web3\\Proyecto-Programacion-Web-III\\PizarraColaborativa\\Hubs\\DibujoHub.cs",
-              "RelativeToolTip": "PizarraColaborativa\\Hubs\\DibujoHub.cs",
-              "ViewState": "AgIAAFwAAAAAAAAAAAAIwHEAAABlAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-05-22T00:35:06.228Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 3,
               "Title": "TrazoMemoryService.cs",
               "DocumentMoniker": "C:\\Users\\Gonza\\OneDrive\\Escritorio\\proyecto web3\\Proyecto-Programacion-Web-III\\Services\\TrazoMemoryService.cs",
               "RelativeDocumentMoniker": "Services\\TrazoMemoryService.cs",
               "ToolTip": "C:\\Users\\Gonza\\OneDrive\\Escritorio\\proyecto web3\\Proyecto-Programacion-Web-III\\Services\\TrazoMemoryService.cs",
               "RelativeToolTip": "Services\\TrazoMemoryService.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAA8AAAAUAAAAAAAAAA==",
+              "ViewState": "AgIAABkAAAAAAAAAAAAcwCoAAAAUAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
               "WhenOpened": "2025-05-28T17:51:58.194Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 4,
+              "Title": "Dibujar.cshtml",
+              "DocumentMoniker": "C:\\Users\\Gonza\\OneDrive\\Escritorio\\proyecto web3\\Proyecto-Programacion-Web-III\\PizarraColaborativa\\Views\\Pizarra\\Dibujar.cshtml",
+              "RelativeDocumentMoniker": "PizarraColaborativa\\Views\\Pizarra\\Dibujar.cshtml",
+              "ToolTip": "C:\\Users\\Gonza\\OneDrive\\Escritorio\\proyecto web3\\Proyecto-Programacion-Web-III\\PizarraColaborativa\\Views\\Pizarra\\Dibujar.cshtml",
+              "RelativeToolTip": "PizarraColaborativa\\Views\\Pizarra\\Dibujar.cshtml",
+              "ViewState": "AgIAADMAAAAAAAAAAAAAAFYAAAApAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
+              "WhenOpened": "2025-05-26T18:09:08.986Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 6,
+              "Title": "ProyectoPizarraContext.cs",
+              "DocumentMoniker": "C:\\Users\\Gonza\\OneDrive\\Escritorio\\proyecto web3\\Proyecto-Programacion-Web-III\\Entidades\\EF\\ProyectoPizarraContext.cs",
+              "RelativeDocumentMoniker": "Entidades\\EF\\ProyectoPizarraContext.cs",
+              "ToolTip": "C:\\Users\\Gonza\\OneDrive\\Escritorio\\proyecto web3\\Proyecto-Programacion-Web-III\\Entidades\\EF\\ProyectoPizarraContext.cs",
+              "RelativeToolTip": "Entidades\\EF\\ProyectoPizarraContext.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAABIAAAAEAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-05-26T17:51:36.726Z",
               "EditorCaption": ""
             },
             {
@@ -173,7 +173,7 @@
               "RelativeDocumentMoniker": "PizarraColaborativa\\Program.cs",
               "ToolTip": "C:\\Users\\Gonza\\OneDrive\\Escritorio\\proyecto web3\\Proyecto-Programacion-Web-III\\PizarraColaborativa\\Program.cs",
               "RelativeToolTip": "PizarraColaborativa\\Program.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAABAAAAAAAAAAAAAAAA==",
+              "ViewState": "AgIAAAIAAAAAAAAAAAAUwBUAAAAEAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
               "WhenOpened": "2025-05-21T17:10:23.29Z",
               "EditorCaption": ""
@@ -181,26 +181,31 @@
             {
               "$type": "Document",
               "DocumentIndex": 9,
-              "Title": "Dibujar.cshtml",
-              "DocumentMoniker": "C:\\Users\\Gonza\\OneDrive\\Escritorio\\proyecto web3\\Proyecto-Programacion-Web-III\\PizarraColaborativa\\Views\\Pizarra\\Dibujar.cshtml",
-              "RelativeDocumentMoniker": "PizarraColaborativa\\Views\\Pizarra\\Dibujar.cshtml",
-              "ToolTip": "C:\\Users\\Gonza\\OneDrive\\Escritorio\\proyecto web3\\Proyecto-Programacion-Web-III\\PizarraColaborativa\\Views\\Pizarra\\Dibujar.cshtml",
-              "RelativeToolTip": "PizarraColaborativa\\Views\\Pizarra\\Dibujar.cshtml",
-              "ViewState": "AgIAADMAAAAAAAAAAAAAAFYAAAApAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
-              "WhenOpened": "2025-05-26T18:09:08.986Z"
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 10,
               "Title": "Texto.cs",
               "DocumentMoniker": "C:\\Users\\Gonza\\OneDrive\\Escritorio\\proyecto web3\\Proyecto-Programacion-Web-III\\Entidades\\EF\\Texto.cs",
               "RelativeDocumentMoniker": "Entidades\\EF\\Texto.cs",
               "ToolTip": "C:\\Users\\Gonza\\OneDrive\\Escritorio\\proyecto web3\\Proyecto-Programacion-Web-III\\Entidades\\EF\\Texto.cs",
               "RelativeToolTip": "Entidades\\EF\\Texto.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAqwAUAAAAAAAAAAAAAAA==",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAABUAAAAzAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-05-28T18:12:17.382Z"
+              "WhenOpened": "2025-05-28T18:12:17.382Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Bookmark",
+              "Name": "ST:0:0:{cce594b6-0c39-4442-ba28-10c64ac7e89f}"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 10,
+              "Title": "InvitacionService.cs",
+              "DocumentMoniker": "C:\\Users\\Gonza\\OneDrive\\Escritorio\\proyecto web3\\Proyecto-Programacion-Web-III\\Services\\InvitacionService.cs",
+              "RelativeDocumentMoniker": "Services\\InvitacionService.cs",
+              "ToolTip": "C:\\Users\\Gonza\\OneDrive\\Escritorio\\proyecto web3\\Proyecto-Programacion-Web-III\\Services\\InvitacionService.cs",
+              "RelativeToolTip": "Services\\InvitacionService.cs",
+              "ViewState": "AgIAAAkAAAAAAAAAAAAAAB4AAAAuAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-05-27T14:16:41.694Z"
             },
             {
               "$type": "Document",
@@ -333,26 +338,22 @@
               "ViewState": "AgIAAAAAAAAAAAAAAAAAAAUAAAAUAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001642|",
               "WhenOpened": "2025-05-22T01:17:27.656Z"
-            },
-            {
-              "$type": "Bookmark",
-              "Name": "ST:0:0:{cce594b6-0c39-4442-ba28-10c64ac7e89f}"
             }
           ]
         },
         {
-          "DockedWidth": 185,
+          "DockedWidth": 201,
           "SelectedChildIndex": 1,
           "Children": [
             {
               "$type": "Document",
-              "DocumentIndex": 4,
+              "DocumentIndex": 7,
               "Title": "PizarraService.cs",
               "DocumentMoniker": "C:\\Users\\Gonza\\OneDrive\\Escritorio\\proyecto web3\\Proyecto-Programacion-Web-III\\Services\\PizarraService.cs",
               "RelativeDocumentMoniker": "Services\\PizarraService.cs",
               "ToolTip": "C:\\Users\\Gonza\\OneDrive\\Escritorio\\proyecto web3\\Proyecto-Programacion-Web-III\\Services\\PizarraService.cs",
               "RelativeToolTip": "Services\\PizarraService.cs",
-              "ViewState": "AgIAAHsAAAAAAAAAAAAqwIoAAAAmAAAAAAAAAA==",
+              "ViewState": "AgIAAG4AAAAAAAAAAAAmwBUAAAAUAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
               "WhenOpened": "2025-05-25T17:34:34.612Z",
               "EditorCaption": ""
@@ -365,20 +366,20 @@
               "RelativeDocumentMoniker": "PizarraColaborativa\\wwwroot\\js\\site.js",
               "ToolTip": "C:\\Users\\Gonza\\OneDrive\\Escritorio\\proyecto web3\\Proyecto-Programacion-Web-III\\PizarraColaborativa\\wwwroot\\js\\site.js",
               "RelativeToolTip": "PizarraColaborativa\\wwwroot\\js\\site.js",
-              "ViewState": "AgIAAJsAAAAAAAAAAADwv6IAAAAbAAAAAAAAAA==",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAABgAAAAdAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001646|",
               "WhenOpened": "2025-05-21T18:51:53.1Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 2,
+              "DocumentIndex": 3,
               "Title": "TextoMemoryService.cs",
               "DocumentMoniker": "C:\\Users\\Gonza\\OneDrive\\Escritorio\\proyecto web3\\Proyecto-Programacion-Web-III\\Services\\TextoMemoryService.cs",
               "RelativeDocumentMoniker": "Services\\TextoMemoryService.cs",
               "ToolTip": "C:\\Users\\Gonza\\OneDrive\\Escritorio\\proyecto web3\\Proyecto-Programacion-Web-III\\Services\\TextoMemoryService.cs",
               "RelativeToolTip": "Services\\TextoMemoryService.cs",
-              "ViewState": "AgIAABMAAAAAAAAAAAAjwC4AAAA6AAAAAAAAAA==",
+              "ViewState": "AgIAAAYAAAAAAAAAAAAqwA8AAAAUAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
               "WhenOpened": "2025-05-28T17:54:57.886Z",
               "EditorCaption": ""

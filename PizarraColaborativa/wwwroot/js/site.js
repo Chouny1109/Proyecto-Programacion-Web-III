@@ -29,6 +29,7 @@ function dibujarTrazo(trazo) {
 }
 
 conexion.on("CargarTextos", function (textos) {
+    console.log("Textos recibidos:", textos); 
     for (const texto of textos) {
         crearTextoEditable(
             texto.contenido,
@@ -37,10 +38,11 @@ conexion.on("CargarTextos", function (textos) {
             texto.color,
             texto.tamano,
             texto.id,
-            false 
+            false
         );
     }
 });
+
 
 
 

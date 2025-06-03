@@ -17,7 +17,7 @@ namespace Services
         {
             var texto = new Texto()
             {
-                Id = int.Parse(id),
+                Id = id,
                 Color = color, 
                 PosX = x,
                 PosY = y,
