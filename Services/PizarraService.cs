@@ -19,6 +19,7 @@ namespace Services
         Task<Pizarra> ObtenerPizarra(Guid id);
         List<PizarraResumenDTO> ObtenerPizarrasDelUsuario(string? idUsuario);
         Task<Texto> ObtenerTextoPorId(string idTexto, string pizarraId);
+        List<Texto> ObtenerTextosDeUnaPizarra(Guid pizarraGuid);
         List<Trazo> ObtenerTrazosDeUnaPizarra(Guid pizarraGuid);
         void PersistirTextosBD(Dictionary<string, List<Texto>> dictionary);
         void PersistirTrazosBD(Dictionary<string, List<Trazo>> dictionary);
@@ -125,9 +126,9 @@ namespace Services
             _context.SaveChanges();
         }
 
-        private List<Texto> ObtenerTextosDeUnaPizarra(Guid pizarraguid)
+        public List<Texto> ObtenerTextosDeUnaPizarra(Guid pizarraguid)
         {
-            return _context.Textos.Where(t => t.PizarraId.Equals(pizarraguid)).ToList();
+            return _context.Textos.Where(t => t.PizarraId==pizarraguid).ToList();
         }
 
         public void PersistirTrazosBD(Dictionary<string, List<Trazo>> dictionary)

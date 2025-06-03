@@ -28,6 +28,20 @@ function dibujarTrazo(trazo) {
     papel.stroke();
 }
 
+conexion.on("CargarTextos", function (textos) {
+    for (const texto of textos) {
+        crearTextoEditable(
+            texto.contenido,
+            texto.posX,
+            texto.posY,
+            texto.color,
+            texto.tamano,
+            texto.id,
+            false 
+        );
+    }
+});
+
 
 
 function dibujar(color1, corX, corY, corXFinal, corYFinal, tamanioLinea, enviar = true) {

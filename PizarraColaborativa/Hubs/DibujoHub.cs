@@ -39,7 +39,29 @@ namespace PizarraColaborativa.Hubs
             }
             var trazosEnMemoria = _trazoService.ObtenerTrazos(pizarraId);
             await Clients.Caller.SendAsync("CargarTrazos", trazosEnMemoria);
-           
+
+            if(!_textoService.Existe(pizarraId))
+            {
+                var pizarraGuid = Guid.Parse(pizarraId);
+                var textos = _pizarraService.ObtenerTextosDeUnaPizarra(pizarraGuid);
+
+                foreach(var texto in textos)
+                {
+                    _textoService.AgregarTextoALaPizarra(
+                     texto.Id.ToString(),
+                     (int)texto.PosX.GetValueOrDefault(),
+                     (int)texto.PosY.GetValueOrDefault(),
+                     texto.Tamano.GetValueOrDefault(),
+                     texto.Contenido,
+                    texto.Color,
+                     pizarraId
+                    );
+                }
+                var textosEnMemoria = _textoService.ObtenerTextos(pizarraId);
+                await Clients.Caller.SendAsync("CargarTextos", textosEnMemoria);
+
+            }
+
 
             await base.OnConnectedAsync();
         }
@@ -63,6 +85,7 @@ namespace PizarraColaborativa.Hubs
         public async Task SendLimpiar(string pizarraId)
         {
             _trazoService.LimpiarPizarra(pizarraId);
+            _textoService.LimpiarPizarra(pizarraId);
             await Clients.Group(pizarraId).SendAsync("ReceiveLimpiar");
         }
 
@@ -74,18 +97,22 @@ namespace PizarraColaborativa.Hubs
 
             if (textoEncontrado != null)
             {
-                textoEncontrado.PosX = texto.X == 0 ? textoEncontrado.PosX : texto.X;
-                textoEncontrado.PosY = texto.Y == 0 ? textoEncontrado.PosY : texto.Y;
-                textoEncontrado.Tamano = texto.Tamano == 0 ? textoEncontrado.Tamano : texto.Tamano;
-                textoEncontrado.Color= texto.Color.Equals(null) ? textoEncontrado.Color : texto.Color;
-                texto.Contenido = texto.Contenido.Equals(null) ? textoEncontrado.Contenido : texto.Contenido;
+                textoEncontrado.PosX = texto.X;
+                textoEncontrado.PosY = texto.Y ;
+                textoEncontrado.Tamano = texto.Tamano;
+                textoEncontrado.Color= texto.Color;
+                texto.Contenido = texto.Contenido;
 
                 _textoService.EditarTextoEnPizarra(textoEncontrado, pizarraId);
             }
-           
-            _textoService.AgregarTextoALaPizarra(texto.Id,texto.X,texto.Y,texto.Tamano,texto.Contenido,texto.Color);
+            else
+            {
+                _textoService.AgregarTextoALaPizarra(texto.Id, texto.X, texto.Y, texto.Tamano, texto.Contenido, texto.Color, pizarraId);
 
-            await Clients.Group(pizarraId).SendAsync("TextoActualizado", texto);
+              
+            }
+            await Clients.GroupExcept(pizarraId, Context.ConnectionId).SendAsync("TextoActualizado", texto);
+
         }
 
 
