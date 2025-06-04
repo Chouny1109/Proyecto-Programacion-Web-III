@@ -1,51 +1,75 @@
 ﻿@using Microsoft.AspNetCore.Identity
 @using System.Security.Claims
 <!DOCTYPE html>
-<html lang="en">
+<html lang="es">
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>@ViewData["Title"] - PizarraColaborativa</title>
+    <title>@ViewData["Title"] - Pizarra Colaborativa</title>
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/PizarraColaborativa.styles.css" asp-append-version="true" />
+    <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;600&family=Raleway:wght@500;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" rel="stylesheet" />
 </head>
 <body>
-    <header>
-        @{
-            var nombreUsuario = User.Identity.IsAuthenticated ? User.Identity.Name : null;
-        }
-        <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index">PizarraColaborativa</a>
+@{
+    var nombreUsuario = User.Identity.IsAuthenticated ? User.Identity.Name : null;
+}
 
-        <nav class ="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
-            @if (User.Identity.IsAuthenticated)
-            {
-                <span class="me-3">Hola, @nombreUsuario!</span>
-                <form asp-controller="Cuenta" asp-action="Logout" method="post" class="d-inline">
-                    <button type="submit" class="btn btn-outline-danger btn-sm">Cerrar sesión</button>
-                </form>
-            }
-            else
-            {
-                <a class="btn btn-outline-primary btn-sm" asp-controller="Cuenta" asp-action="Login">Iniciar sesión</a>
-            }
-        </nav>
-    </header>
-    <div class="container">
-        <main role="main" class="">
-            @RenderBody()
-        </main>
+<div class="layout-wrapper d-flex">
+
+    <div class="fixed-left-bar d-flex flex-column align-items-center">
+        <button id="toggleSidebar" class="icon-btn mt-3" title="Menú">
+            <span class="material-symbols-outlined">menu</span>
+        </button>
+        <button class="icon-btn mt-4" title="Perfil">
+            <span class="material-symbols-outlined">person</span>
+        </button>
+        <button class="icon-btn mt-4" title="Notificaciones">
+            <span class="material-symbols-outlined">notifications</span>
+        </button>
+        <form asp-controller="Cuenta" asp-action="Logout" method="post" class="mt-auto mb-3">
+            <button type="submit" class="icon-btn" title="Cerrar sesión">
+                <span class="material-symbols-outlined">logout</span>
+            </button>
+        </form>
     </div>
 
-    <footer class="border-top footer text-muted">
-        <div class="container">
-            &copy; 2025 - PizarraColaborativa - <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
+    <div id="sidebar" class="sidebar">
+        <div class="p-3">
+            <h3>@nombreUsuario</h3>
+            <ul class="nav flex-column">
+                <li class="nav-item"><a class="nav-link text-decoration-none" asp-controller="Home" asp-action="Index">Mis Pizarras</a></li>
+                <li class="nav-item"><a class="nav-link text-decoration-none" asp-controller="Pizarra" asp-action="CrearPizarra">Crear Pizarra</a></li>
+            </ul>
         </div>
-    </footer>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/microsoft-signalr/6.0.1/signalr.js"></script>
-    <script src="~/lib/jquery/dist/jquery.min.js"></script>
-    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="~/js/site.js" asp-append-version="true"></script>
-    @await RenderSectionAsync("Scripts", required: false)
+    </div>
+
+    <div id="main-content" class="main-content">
+        <div class="container py-4">
+            @RenderBody()
+        </div>
+    </div>
+</div>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        const toggleBtn = document.getElementById('toggleSidebar');
+        const sidebar = document.getElementById('sidebar');
+        const mainContent = document.getElementById('main-content');
+
+        toggleBtn.addEventListener('click', () => {
+            sidebar.classList.toggle('active');
+            mainContent.classList.toggle('shifted');
+        });
+    });
+</script>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/microsoft-signalr/6.0.1/signalr.js"></script>
+<script src="~/lib/jquery/dist/jquery.min.js"></script>
+<script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+<script src="~/js/site.js" asp-append-version="true"></script>
+@await RenderSectionAsync("Scripts", required: false)
 </body>
 </html>

@@ -1,48 +1,79 @@
-﻿/* Please see documentation at https://learn.microsoft.com/aspnet/core/client-side/bundling-and-minification
-for details on configuring this project to bundle and minify static web assets. */
-
-a.navbar-brand {
-  white-space: normal;
-  text-align: center;
-  word-break: break-all;
+﻿:root {
+    --color-principal: #6902df;
+    --color-secundario: #9574f0;
 }
 
-a {
-  color: #0077cc;
+.fixed-left-bar {
+    width: 50px;
+    height: 100vh;
+    background-color: #1e1633;
+    position: fixed;
+    top: 0;
+    left: 0;
+    z-index: 1030;
+    padding-top: 10px;
 }
 
-.btn-primary {
-  color: #fff;
-  background-color: #1b6ec2;
-  border-color: #1861ac;
+.icon-btn {
+    background: none;
+    border: none;
+    color: white;
+    font-size: 24px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 
-.nav-pills .nav-link.active, .nav-pills .show > .nav-link {
-  color: #fff;
-  background-color: #1b6ec2;
-  border-color: #1861ac;
+.icon-btn:hover {
+    color: var(--color-secundario);
 }
 
-.border-top {
-  border-top: 1px solid #e5e5e5;
-}
-.border-bottom {
-  border-bottom: 1px solid #e5e5e5;
-}
-
-.box-shadow {
-  box-shadow: 0 .25rem .75rem rgba(0, 0, 0, .05);
-}
-
-button.accept-policy {
-  font-size: 1rem;
-  line-height: inherit;
+.sidebar {
+    width: 220px;
+    background-color: #493c6b;
+    color: white;
+    position: fixed;
+    top: 0;
+    left: 50px;
+    height: 100vh;
+    transform: translateX(-220px);
+    transition: transform 0.3s ease;
+    z-index: 1020;
 }
 
-.footer {
-  position: absolute;
-  bottom: 0;
-  width: 100%;
-  white-space: nowrap;
-  line-height: 60px;
+.sidebar.active {
+    transform: translateX(0);
+}
+
+.sidebar h3 {
+    color: white;
+    font-weight: 600;
+    padding-left: 10px;
+    margin-top: 1rem;
+    margin-bottom: 0.5rem;
+}
+
+.sidebar .nav-link {
+    color: white;
+    padding: 8px 16px;
+    transition: background-color 0.2s, color 0.2s;
+}
+
+.sidebar .nav-link:hover,
+.sidebar .nav-link:focus,
+.sidebar .nav-link.active {
+    color: #e0e0e0;
+    background-color: rgba(255, 255, 255, 0.1);
+    border-radius: 4px;
+}
+
+.main-content {
+    margin-left: 50px;
+    width: calc(100% - 50px);
+    transition: margin-left 0.3s ease;
+}
+
+.main-content.shifted {
+    margin-left: 270px;
 }

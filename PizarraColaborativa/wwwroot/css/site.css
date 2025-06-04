@@ -17,10 +17,6 @@ html {
   min-height: 100%;
 }
 
-footer{
-    background-color: black;
-}
-
 body {
   font-family: 'Open Sans', sans-serif;
   font-weight: 400;
@@ -65,7 +61,6 @@ a {
 a:hover,
 a:focus {
     color: #9574f0;
-    text-decoration: underline;
 }
 
 .form-label, input, select, textarea {
