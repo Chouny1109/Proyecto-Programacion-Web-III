@@ -22,14 +22,59 @@ footer{
 }
 
 body {
-    background-image: url('../imagenes/photo-pizarra.jpg');
-    margin-bottom: 60px;
+  font-family: 'Open Sans', sans-serif;
+  font-weight: 400;
+  color: #444;
+  background-image: url('../imagenes/bg-repeat.png');
+  background-repeat: repeat;
+  background-size: auto;
+}
+
+h1, h2, h3, h4, h5, h6 {
+    font-family: 'Raleway', sans-serif;
+    font-weight: 700;
+    color: #222;
+    letter-spacing: 0.5px;
+}
+
+.btn-primary {
+    background-color: #6902df;
+    border-color: #6902df;
+    font-family: 'Raleway', sans-serif;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.8px;
+    transition: background-color 0.3s ease, border-color 0.3s ease;
+}
+
+.btn-primary:hover,
+.btn-primary:focus {
+    background-color: #9574f0;
+    border-color: #9574f0;
+    color: #fff;
+}
+
+a {
+    color: #6902df;
+    font-family: 'Raleway', sans-serif;
+    font-weight: 600;
+    text-decoration: none;
+    transition: color 0.3s ease;
+}
+
+a:hover,
+a:focus {
+    color: #9574f0;
+    text-decoration: underline;
+}
+
+.form-label, input, select, textarea {
+    font-family: 'Open Sans', sans-serif;
+    font-size: 1rem;
 }
 
 .canvas {
-
     border-radius: 5px;
-   
 }
 
 canvas{

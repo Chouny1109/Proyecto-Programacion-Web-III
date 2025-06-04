@@ -4,21 +4,14 @@ using PizarraColaborativa.Models;
 
 namespace PizarraColaborativa.Controllers
 {
-    public class CuentaController : Controller
+    public class CuentaController(
+        UserManager<IdentityUser> userManager,
+        RoleManager<IdentityRole> roleManager,
+        SignInManager<IdentityUser> signInManager) : Controller
     {
-        private readonly UserManager<IdentityUser> _userManager;
-        private readonly RoleManager<IdentityRole> _roleManager;
-        private readonly SignInManager<IdentityUser> _signInManager;
-
-        public CuentaController(
-            UserManager<IdentityUser> userManager,
-            RoleManager<IdentityRole> roleManager,
-            SignInManager<IdentityUser> signInManager)
-        {
-            _userManager = userManager;
-            _roleManager = roleManager;
-            _signInManager = signInManager;
-        }
+        private readonly UserManager<IdentityUser> _userManager = userManager;
+        private readonly RoleManager<IdentityRole> _roleManager = roleManager;
+        private readonly SignInManager<IdentityUser> _signInManager = signInManager;
 
         [HttpGet]
         public IActionResult Registrar()
@@ -31,13 +24,11 @@ namespace PizarraColaborativa.Controllers
         {
             if (!ModelState.IsValid) return View(model);
 
-            // Crear rol si no existe
-            if (!await _roleManager.RoleExistsAsync(model.Rol))
-                await _roleManager.CreateAsync(new IdentityRole(model.Rol));
+            if (!await _roleManager.RoleExistsAsync(model.Rol)) await _roleManager.CreateAsync(new IdentityRole(model.Rol));
 
             var usuario = new IdentityUser
             {
-                UserName = model.Email,
+                UserName = model.UserName,
                 Email = model.Email,
                 EmailConfirmed = true
             };
@@ -47,11 +38,10 @@ namespace PizarraColaborativa.Controllers
             {
                 await _userManager.AddToRoleAsync(usuario, model.Rol);
                 await _signInManager.SignInAsync(usuario, isPersistent: false);
-                return RedirectToAction("Login");
+                return RedirectToAction("Index", "Home");
             }
 
-            foreach (var error in resultado.Errors)
-                ModelState.AddModelError("", error.Description);
+            foreach (var error in resultado.Errors) ModelState.AddModelError("", error.Description);
 
             return View(model);
         }
@@ -63,15 +53,12 @@ namespace PizarraColaborativa.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> Login(string email, string password)
+        public async Task<IActionResult> Login(string userName, string password)
         {
-            var result = await _signInManager.PasswordSignInAsync(email, password, false, false);
-            if (result.Succeeded)
-            {
-                return RedirectToAction("Index", "Home");
-            }
+            var result = await _signInManager.PasswordSignInAsync(userName, password, false, false);
+            if (result.Succeeded) return RedirectToAction("Index", "Home");
 
-            ModelState.AddModelError("", "Login inválido.");
+            ModelState.AddModelError("", "Login inválido. Verifica tus credenciales.");
             return View();
         }
 

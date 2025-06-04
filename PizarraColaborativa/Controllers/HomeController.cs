@@ -25,9 +25,14 @@ namespace PizarraColaborativa.Controllers
 
         public IActionResult Index()
         {
-            var idUsuario = _userManager.GetUserId(User);
-            List<PizarraResumenDTO> pizarrasID = _service.ObtenerPizarrasDelUsuario(idUsuario);
-            return View(pizarrasID);
+            if (User.Identity != null && User.Identity.IsAuthenticated)
+            {
+                var idUsuario = _userManager.GetUserId(User);
+                List<PizarraResumenDTO> pizarrasID = _service.ObtenerPizarrasDelUsuario(idUsuario);
+                return View(pizarrasID);            
+            }
+
+            return RedirectToAction("Login", "Cuenta"); 
         }
 
       

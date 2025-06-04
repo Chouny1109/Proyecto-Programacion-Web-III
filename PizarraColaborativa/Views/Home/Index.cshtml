@@ -3,6 +3,12 @@
 
 <h2 class="text-white bg-dark">Mis pizarras :)</h2>
 
+@if (TempData["Error"] != null)
+{
+    <div class="alert alert-danger">@TempData["Error"]</div>
+}
+
+
 @foreach(var p in Model){
 	<div>
 

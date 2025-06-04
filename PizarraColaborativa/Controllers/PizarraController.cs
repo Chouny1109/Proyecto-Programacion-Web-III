@@ -55,24 +55,20 @@ namespace PizarraColaborativa.Controllers
             {
                 return NotFound("La pizarra no existe");
             }
-            //logica para no acceder si no pertenece a la pizarra
-            var idUsuario = _userManager.GetUserId(User);
 
-           var existe = await _service.ExisteUsuarioEnPizarra(idUsuario,pizarra.Id);
+            var idUsuario = _userManager.GetUserId(User);
+            var existe = await _service.ExisteUsuarioEnPizarra(idUsuario, pizarra.Id);
 
             if (!existe)
             {
-                return Forbid("No tiene permiso para acceder a la pizarra.");
+                TempData["Error"] = "No tiene permiso para acceder a esta pizarra.";
+                return RedirectToAction("Index");
             }
 
             var esAdmin = await _service.EsAdminDeLaPizarra(idUsuario, pizarra.Id);
-            if (esAdmin)
-            {
-                ViewData["EsAdmin"] = esAdmin;
-
-            }
-
+            ViewData["EsAdmin"] = esAdmin;
             ViewData["PizarraId"] = id;
+
             return View(); 
         }
 

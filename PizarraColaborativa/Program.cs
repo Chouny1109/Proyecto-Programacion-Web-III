@@ -63,9 +63,6 @@ app.MapHub<DibujoHub>("/dibujohub");
 
 app.MapControllerRoute(
     name: "default",
-    pattern: "{controller=Cuenta}/{action=Login}/{id?}");
-
-
-
+    pattern: "{controller=Home}/{action=Index}/{id?}");
 
 app.Run();
