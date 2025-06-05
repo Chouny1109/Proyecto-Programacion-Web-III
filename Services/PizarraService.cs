@@ -82,14 +82,13 @@ namespace Services
         {
             return _context.PizarraUsuarios.Where(pu => pu.UsuarioId == idUsuario)
                 .Include(pu => pu.Pizarra)
-                  .Select(pu => new PizarraResumenDTO
-                  {
-                      Id = pu.Pizarra.Id,
-                      FechaCreacion = pu.Pizarra.FechaCreacion,
-                      Nombre = pu.Pizarra.NombrePizarra,
-                      Rol = pu.Rol
-
-                  }).ToList();
+                .Select(pu => new PizarraResumenDTO
+                {
+                    Id = pu.Pizarra.Id,
+                    FechaCreacion = pu.Pizarra.FechaCreacion,
+                    Nombre = pu.Pizarra.NombrePizarra,
+                    Rol = Enum.Parse<RolEnPizarra>(pu.Rol.ToString()) 
+                }).ToList();
         }
 
         public async Task<Texto> ObtenerTextoPorId(string idTexto, string pizarraId)
