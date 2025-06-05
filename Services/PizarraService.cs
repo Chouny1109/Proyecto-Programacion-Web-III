@@ -86,7 +86,9 @@ namespace Services
                   {
                       Id = pu.Pizarra.Id,
                       FechaCreacion = pu.Pizarra.FechaCreacion,
-                      Nombre = pu.Pizarra.NombrePizarra
+                      Nombre = pu.Pizarra.NombrePizarra,
+                      Rol = pu.Rol
+
                   }).ToList();
         }
 

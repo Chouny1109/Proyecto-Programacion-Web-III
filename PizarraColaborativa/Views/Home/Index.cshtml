@@ -17,6 +17,16 @@
 }else{
 	<a asp-action="CrearPizarra" asp-controller="Pizarra"> Crear Pizarra</a>
 
+	<form method="get" class="mb-3">
+		<select name="idFiltrarPorRol" class="form-select w-auto d-inline-block">
+			<option disabled selected>Seleccionar pizarras</option>
+			<option value="3">Pizarras propias</option>
+			<option value="1">Pizarras compartidas</option>
+		</select>
+		<button type="submit" class="btn btn-primary">Filtrar</button>
+	</form>
+
+
 	@foreach (var p in Model)
 	{
 		<div>

@@ -1,4 +1,5 @@
 using System.Diagnostics;
+using DTO;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -23,23 +24,39 @@ namespace PizarraColaborativa.Controllers
             _userManager = userManager; 
         }
 
-        public IActionResult Index()
+        public IActionResult Index(int? idFiltrarPorRol)
         {
             if (User.Identity != null && User.Identity.IsAuthenticated)
             {
                 var idUsuario = _userManager.GetUserId(User);
-                List<PizarraResumenDTO> pizarrasID = _service.ObtenerPizarrasDelUsuario(idUsuario);
-                //si no hay pizarras,mostrar un mensaje en la view 
-                if(pizarrasID.Count == 0)
+                var pizarras = _service.ObtenerPizarrasDelUsuario(idUsuario);
+
+               
+                if (!pizarras.Any())
                 {
                     ViewBag.PizarraMensaje = "No se han encontrado pizarras";
                 }
-                return View(pizarrasID);            
+
+                if (idFiltrarPorRol.HasValue)
+                {
+                    var rolFiltrado = (RolEnPizarra)idFiltrarPorRol;
+                    if(rolFiltrado == RolEnPizarra.Admin)
+                    {
+                        pizarras = pizarras.Where(p => p.Rol == RolEnPizarra.Admin).ToList();
+                    }
+                    else
+                    {
+                        pizarras = pizarras.Where(p => p.Rol != RolEnPizarra.Admin).ToList();
+                    }
+                  
+                }
+
+                return View(pizarras);
             }
 
-            return RedirectToAction("Login", "Cuenta"); 
-        }
+            return RedirectToAction("Login", "Cuenta");
 
+        }
       
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
         public IActionResult Error()
