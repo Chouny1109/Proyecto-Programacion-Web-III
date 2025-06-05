@@ -28,14 +28,16 @@ namespace PizarraColaborativa.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> Crear()
+        public async Task<IActionResult> Crear(string nombre)
         {
             var creadorId = _userManager.GetUserId(User);
             var idPizarra = Guid.NewGuid();
             var pizarra = new Pizarra
             {
                 Id = idPizarra,
-                CreadorId = creadorId
+                CreadorId = creadorId,
+                NombrePizarra = nombre,
+
             };
             var usuarioPizarra = new PizarraUsuario()
             {

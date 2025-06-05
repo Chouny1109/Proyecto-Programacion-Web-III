@@ -8,10 +8,24 @@ let conexion = new signalR.HubConnectionBuilder()
 let canvas = document.getElementById("area");
 let papel = canvas.getContext('2d');
 
+
+//actualizar nombre pizarra 
+function cambiarNombre() {
+    const nuevoNombre = document.getElementById("nombrePizarraInput").value;
+    conexion.invoke("CambiarNombrePizarra", pizarraId, nuevoNombre);
+}
+
+conexion.on("NombrePizarraCambiado", function (nuevoNombre) {
+    document.getElementById("tituloPizarra").innerText = nuevoNombre;
+});
+
+
+//Cargar trazos guardados
 conexion.on("CargarTrazos", function (trazos) {
     trazos.forEach(t => dibujarTrazo(t));
 });
 
+// Dibuja los trazos traidos.
 function dibujarTrazo(trazo) {
     const xInicio = trazo.xinicio ?? 0;
     const yInicio = trazo.yinicio ?? 0;
@@ -27,7 +41,7 @@ function dibujarTrazo(trazo) {
     papel.lineTo(xFin, yFin);
     papel.stroke();
 }
-
+//Cargar textos guardados.
 conexion.on("CargarTextos", function (textos) {
     console.log("Textos recibidos:", textos); 
     for (const texto of textos) {

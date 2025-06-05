@@ -10,6 +10,7 @@ namespace Services
 {
     public interface IPizarraService
     {
+        void ActualizarPizarra(Pizarra pizarra);
         void AgregarTrazo(Trazo trazo);
         Task AgregarUsuarioALaPizarra(PizarraUsuario pizarraUsuario);
         void BorrarTrazosExistentesPizarra(List<Trazo> existentes);
@@ -156,7 +157,13 @@ namespace Services
             return _context.Trazos.Where(t => t.PizarraId == pizarraGuid).ToList();
         }
 
-       
+        public void ActualizarPizarra(Pizarra pizarra)
+        {
+           _context.Pizarras.Update(pizarra);
+            _context.SaveChangesAsync();
+        }
+
+      
     }
 
 

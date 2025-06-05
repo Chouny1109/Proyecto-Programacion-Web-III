@@ -29,6 +29,11 @@ namespace PizarraColaborativa.Controllers
             {
                 var idUsuario = _userManager.GetUserId(User);
                 List<PizarraResumenDTO> pizarrasID = _service.ObtenerPizarrasDelUsuario(idUsuario);
+                //si no hay pizarras,mostrar un mensaje en la view 
+                if(pizarrasID.Count == 0)
+                {
+                    ViewBag.PizarraMensaje = "No se han encontrado pizarras";
+                }
                 return View(pizarrasID);            
             }
 

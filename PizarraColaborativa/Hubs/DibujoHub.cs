@@ -25,6 +25,11 @@ namespace PizarraColaborativa.Hubs
             var pizarraId = httpContext.Request.Query["pizarraId"];
             await Groups.AddToGroupAsync(Context.ConnectionId, pizarraId);
 
+            //Cargar nombre pizarra al conectarse
+
+            var pizarra= await _pizarraService.ObtenerPizarra(Guid.Parse(pizarraId));
+            await Clients.Caller.SendAsync("NombrePizarraCambiado",pizarra.NombrePizarra);
+
             //si no hay trazos en memoria,cargar base de datos.
             if (!_trazoService.Existe(pizarraId))
             {
@@ -63,8 +68,31 @@ namespace PizarraColaborativa.Hubs
             var textosEnMemoria = _textoService.ObtenerTextos(pizarraId);
             await Clients.Caller.SendAsync("CargarTextos", textosEnMemoria);
 
+
+
             await base.OnConnectedAsync();
         }
+
+        public async Task CambiarNombrePizarra(string pizarraId, string nuevoNombre)
+        {
+
+            var pizarraIdGUID = Guid.Parse(pizarraId);
+
+            var pizarra = await _pizarraService.ObtenerPizarra(pizarraIdGUID);
+
+            if (pizarra != null)
+            {
+                pizarra.NombrePizarra = nuevoNombre;
+
+               _pizarraService.ActualizarPizarra(pizarra);
+                await Clients.Group(pizarraId).SendAsync("NombrePizarraCambiado", nuevoNombre);
+            }
+
+
+        }
+        
+
+        
         public async Task SendDibujo(string pizarraId, string color, int xInicial, int yInicial, int xFinal, int yFinal, int tamanioInicial)
         {
             var trazo = new Trazo
