@@ -34,7 +34,14 @@ namespace Services
 
         public void EditarTextoEnPizarra(Texto textoEncontrado, string pizarraId)
         {
-            throw new NotImplementedException();
+            if (_textosPorPizarra.TryGetValue(pizarraId, out var listaTextos))
+            {
+                var index = listaTextos.FindIndex(t => t.Id == textoEncontrado.Id);
+                if (index != -1)
+                {
+                    listaTextos[index] = textoEncontrado; 
+                }
+            }
         }
 
         public bool Existe(string pizarraId)

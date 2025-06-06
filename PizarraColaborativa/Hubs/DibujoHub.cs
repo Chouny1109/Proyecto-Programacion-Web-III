@@ -10,14 +10,14 @@ namespace PizarraColaborativa.Hubs
     {
         private readonly TextoMemoryService _textoService;
         private readonly TrazoMemoryService _trazoService;
-       private readonly IPizarraService _pizarraService;
+        private readonly IPizarraService _pizarraService;
 
         public DibujoHub(TrazoMemoryService memoriaService
             , TextoMemoryService textoService, IPizarraService pizarraService)
         {
             _textoService = textoService;
             _trazoService = memoriaService;
-            _pizarraService= pizarraService;
+            _pizarraService = pizarraService;
         }
         public override async Task OnConnectedAsync()
         {
@@ -27,8 +27,8 @@ namespace PizarraColaborativa.Hubs
 
             //Cargar nombre pizarra al conectarse
 
-            var pizarra= await _pizarraService.ObtenerPizarra(Guid.Parse(pizarraId));
-            await Clients.Caller.SendAsync("NombrePizarraCambiado",pizarra.NombrePizarra);
+            var pizarra = await _pizarraService.ObtenerPizarra(Guid.Parse(pizarraId));
+            await Clients.Caller.SendAsync("NombrePizarraCambiado", pizarra.NombrePizarra);
 
             //si no hay trazos en memoria,cargar base de datos.
             if (!_trazoService.Existe(pizarraId))
@@ -38,19 +38,20 @@ namespace PizarraColaborativa.Hubs
 
                 foreach (var trazo in trazos)
                 {
+                    trazo.Pizarra = null; // Evitar circular reference
                     _trazoService.AgregarTrazo(pizarraId, trazo);
                 }
-            
+
             }
             var trazosEnMemoria = _trazoService.ObtenerTrazos(pizarraId);
             await Clients.Caller.SendAsync("CargarTrazos", trazosEnMemoria);
 
-            if(!_textoService.Existe(pizarraId))
+            if (!_textoService.Existe(pizarraId))
             {
                 var pizarraGuid = Guid.Parse(pizarraId);
                 var textos = await _pizarraService.ObtenerTextosDeUnaPizarra(pizarraGuid);
 
-                foreach(var texto in textos)
+                foreach (var texto in textos)
                 {
                     _textoService.AgregarTextoALaPizarra(
                      texto.Id.ToString(),
@@ -62,7 +63,7 @@ namespace PizarraColaborativa.Hubs
                      pizarraId
                     );
                 }
-               
+
 
             }
             var textosEnMemoria = _textoService.ObtenerTextos(pizarraId);
@@ -77,13 +78,13 @@ namespace PizarraColaborativa.Hubs
         {
 
             var pizarraIdGUID = Guid.Parse(pizarraId);
-            await _pizarraService.ActualizarPizarra(pizarraIdGUID,nuevoNombre);
-                await Clients.Group(pizarraId).SendAsync("NombrePizarraCambiado", nuevoNombre);
-            
-        }
-        
+            await _pizarraService.ActualizarPizarra(pizarraIdGUID, nuevoNombre);
+            await Clients.Group(pizarraId).SendAsync("NombrePizarraCambiado", nuevoNombre);
 
-        
+        }
+
+
+
         public async Task SendDibujo(string pizarraId, string color, int xInicial, int yInicial, int xFinal, int yFinal, int tamanioInicial)
         {
             var trazo = new Trazo
@@ -108,7 +109,7 @@ namespace PizarraColaborativa.Hubs
 
             var pizarraGUID = Guid.Parse(pizarraId);
             var textosExistentesEnBD = await _pizarraService.ObtenerTextosDeUnaPizarra(pizarraGUID);
-            var trazosExistentesEnBD= await _pizarraService.ObtenerTrazosDeUnaPizarra(pizarraGUID);
+            var trazosExistentesEnBD = await _pizarraService.ObtenerTrazosDeUnaPizarra(pizarraGUID);
 
             await _pizarraService.BorrarTrazosExistentesPizarra(trazosExistentesEnBD);
             await _pizarraService.BorrarTextosExistentesPizarra(textosExistentesEnBD);
@@ -119,15 +120,15 @@ namespace PizarraColaborativa.Hubs
         {
 
             var textoEncontrado = await _pizarraService.ObtenerTextoPorId(texto.Id, pizarraId);
-               
+
 
             if (textoEncontrado != null)
             {
                 textoEncontrado.PosX = texto.X;
-                textoEncontrado.PosY = texto.Y ;
+                textoEncontrado.PosY = texto.Y;
                 textoEncontrado.Tamano = texto.Tamano;
-                textoEncontrado.Color= texto.Color;
-                texto.Contenido = texto.Contenido;
+                textoEncontrado.Color = texto.Color;
+                textoEncontrado.Contenido = texto.Contenido;
 
                 _textoService.EditarTextoEnPizarra(textoEncontrado, pizarraId);
             }
@@ -135,7 +136,7 @@ namespace PizarraColaborativa.Hubs
             {
                 _textoService.AgregarTextoALaPizarra(texto.Id, texto.X, texto.Y, texto.Tamano, texto.Contenido, texto.Color, pizarraId);
 
-              
+
             }
             await Clients.GroupExcept(pizarraId, Context.ConnectionId).SendAsync("TextoActualizado", texto);
 
@@ -144,9 +145,20 @@ namespace PizarraColaborativa.Hubs
 
         public async Task MoverTexto(string pizarraId, string id, int x, int y)
         {
-            await Clients.Group(pizarraId).SendAsync("TextoMovido", id, x, y);
-        }
+            var textoEncontrado = await _pizarraService.ObtenerTextoPorId(id, pizarraId);
+            if (textoEncontrado != null)
+            {
+                // 2. Actualizar la posición
+                textoEncontrado.PosX = x;
+                textoEncontrado.PosY = y;
 
+                // 3. Guardar los cambios
+                _textoService.EditarTextoEnPizarra(textoEncontrado, pizarraId);
+
+                await Clients.Group(pizarraId).SendAsync("TextoMovido", id, x, y);
+            }
+
+        }
     }
 
 
