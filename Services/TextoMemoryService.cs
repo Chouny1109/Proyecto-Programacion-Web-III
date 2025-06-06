@@ -36,10 +36,14 @@ namespace Services
         {
             if (_textosPorPizarra.TryGetValue(pizarraId, out var listaTextos))
             {
-                var index = listaTextos.FindIndex(t => t.Id == textoEncontrado.Id);
-                if (index != -1)
+                var textoMemoria = listaTextos.FirstOrDefault(t => t.Id == textoEncontrado.Id);
+                if (textoMemoria != null)
                 {
-                    listaTextos[index] = textoEncontrado; 
+                    textoMemoria.PosX = textoEncontrado.PosX;
+                    textoMemoria.PosY = textoEncontrado.PosY;
+                    textoMemoria.Color = textoEncontrado.Color;
+                    textoMemoria.Tamano = textoEncontrado.Tamano;
+                    textoMemoria.Contenido = textoEncontrado.Contenido;
                 }
             }
         }
@@ -64,6 +68,14 @@ namespace Services
         {
             return _textosPorPizarra.ToDictionary(kvp => kvp.Key, 
                 kvp => new List<Texto>(kvp.Value));
+        }
+        public Texto? ObtenerTextoPorIdEnMemoria(string pizarraId, string textoId)
+        {
+            if (_textosPorPizarra.TryGetValue(pizarraId, out var listaTextos))
+            {
+                return listaTextos.FirstOrDefault(t => t.Id == textoId);
+            }
+            return null;
         }
     }
 }

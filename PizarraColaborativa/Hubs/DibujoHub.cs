@@ -145,15 +145,15 @@ namespace PizarraColaborativa.Hubs
 
         public async Task MoverTexto(string pizarraId, string id, int x, int y)
         {
-            var textoEncontrado = await _pizarraService.ObtenerTextoPorId(id, pizarraId);
-            if (textoEncontrado != null)
-            {
-                // 2. Actualizar la posición
-                textoEncontrado.PosX = x;
-                textoEncontrado.PosY = y;
 
-                // 3. Guardar los cambios
-                _textoService.EditarTextoEnPizarra(textoEncontrado, pizarraId);
+            var textoMemoria = _textoService.ObtenerTextoPorIdEnMemoria(pizarraId, id);
+            if (textoMemoria != null)
+            {
+                textoMemoria.PosX = x;
+                textoMemoria.PosY = y;
+
+            
+               
 
                 await Clients.Group(pizarraId).SendAsync("TextoMovido", id, x, y);
             }

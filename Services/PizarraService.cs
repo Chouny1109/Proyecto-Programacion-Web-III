@@ -106,16 +106,26 @@ namespace Services
             {
                 var pizarraguid = Guid.Parse(pizarraId);
                 var existentes = await ObtenerTextosDeUnaPizarra(pizarraguid);
-                await BorrarTextosExistentesPizarra(existentes); 
 
                 foreach (var texto in textos)
                 {
-                    texto.Id = texto.Id;
                     texto.PizarraId = pizarraguid;
-                    AgregarTexto(texto);
+                    var textoExistente = existentes.FirstOrDefault(t => t.Id == texto.Id);
+                    if (textoExistente != null)
+                    {
+                        textoExistente.Contenido = texto.Contenido;
+                        textoExistente.PosX = texto.PosX;
+                        textoExistente.PosY = texto.PosY;
+                        textoExistente.Color = texto.Color;
+                        textoExistente.Tamano = texto.Tamano;
+                    }
+                    else
+                    {
+                        _context.Textos.Add(texto);
+                    }
                 }
             }
-           await  _context.SaveChangesAsync();
+            await _context.SaveChangesAsync();
         }
 
         public async Task BorrarTextosExistentesPizarra(List<Texto> existentes)

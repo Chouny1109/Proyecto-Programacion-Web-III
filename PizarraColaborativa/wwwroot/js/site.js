@@ -179,6 +179,19 @@ let textos = {}; // guardamos textos por id
 function crearTextoEditable(texto, x, y, color = 'black', tamano = 20, id = null, enviar = true) {
     if (!id) id = crypto.randomUUID();
 
+
+    // Si ya existe el div, solo actualiza sus propiedades
+    if (textos[id] && textos[id].div) {
+        let div = textos[id].div;
+        div.textContent = texto;
+        div.style.left = x + "px";
+        div.style.top = y + "px";
+        div.style.color = color;
+        div.style.fontSize = tamano + "px";
+        textos[id] = { div, x, y, texto, color, tamano };
+        return;
+    }
+
     // Crear un div para el texto editable
     let div = document.createElement("div");
     div.contentEditable = true;
@@ -245,7 +258,7 @@ function crearTextoEditable(texto, x, y, color = 'black', tamano = 20, id = null
 
             // Enviar posición nueva al servidor
             if (conexion.state === signalR.HubConnectionState.Connected) {
-                conexion.invoke("MoverTexto", id, textos[id].x, textos[id].y)
+                conexion.invoke("MoverTexto", pizarraId, id, textos[id].x, textos[id].y)
                     .catch(e => console.error(e));
             }
         }
@@ -256,7 +269,7 @@ function crearTextoEditable(texto, x, y, color = 'black', tamano = 20, id = null
         textos[id].texto = div.textContent;
 
         if (conexion.state === signalR.HubConnectionState.Connected) {
-            conexion.invoke("CrearOEditarTexto", {
+            conexion.invoke("CrearOEditarTexto",pizarraId ,{
                 id: id,
                 contenido: textos[id].texto,
                 x: textos[id].x,
