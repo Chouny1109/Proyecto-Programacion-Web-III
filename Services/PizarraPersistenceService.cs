@@ -37,13 +37,13 @@ namespace Services
                     {
                         var pizarraService = scope.ServiceProvider.GetRequiredService<IPizarraService>();
 
-                        pizarraService.PersistirTrazosBD(_trazoMemoryService.ObtenerTodas());
+                      await  pizarraService.PersistirTrazosBD(_trazoMemoryService.ObtenerTodas());
                         _logger.LogInformation("Trazos guardados en DB a las {Hora}", DateTime.Now);
 
 
                         //persistir texto a base de datos
 
-                        pizarraService.PersistirTextosBD(_textoMemoryService.ObtenerTodas());
+                      await  pizarraService.PersistirTextosBD(_textoMemoryService.ObtenerTodas());
                         _logger.LogInformation("Textos guardados en DB a las {Hora}", DateTime.Now);
 
 
