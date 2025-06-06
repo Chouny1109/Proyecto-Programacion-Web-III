@@ -34,7 +34,7 @@ namespace PizarraColaborativa.Hubs
             if (!_trazoService.Existe(pizarraId))
             {
                 var pizarraGuid = Guid.Parse(pizarraId);
-                var trazos = _pizarraService.ObtenerTrazosDeUnaPizarra(pizarraGuid);
+                var trazos = await _pizarraService.ObtenerTrazosDeUnaPizarra(pizarraGuid);
 
                 foreach (var trazo in trazos)
                 {
@@ -48,7 +48,7 @@ namespace PizarraColaborativa.Hubs
             if(!_textoService.Existe(pizarraId))
             {
                 var pizarraGuid = Guid.Parse(pizarraId);
-                var textos = _pizarraService.ObtenerTextosDeUnaPizarra(pizarraGuid);
+                var textos = await _pizarraService.ObtenerTextosDeUnaPizarra(pizarraGuid);
 
                 foreach(var texto in textos)
                 {
@@ -77,18 +77,9 @@ namespace PizarraColaborativa.Hubs
         {
 
             var pizarraIdGUID = Guid.Parse(pizarraId);
-
-            var pizarra = await _pizarraService.ObtenerPizarra(pizarraIdGUID);
-
-            if (pizarra != null)
-            {
-                pizarra.NombrePizarra = nuevoNombre;
-
-               _pizarraService.ActualizarPizarra(pizarra);
+            await _pizarraService.ActualizarPizarra(pizarraIdGUID,nuevoNombre);
                 await Clients.Group(pizarraId).SendAsync("NombrePizarraCambiado", nuevoNombre);
-            }
-
-
+            
         }
         
 
@@ -114,6 +105,13 @@ namespace PizarraColaborativa.Hubs
         {
             _trazoService.LimpiarPizarra(pizarraId);
             _textoService.LimpiarPizarra(pizarraId);
+
+            var pizarraGUID = Guid.Parse(pizarraId);
+            var textosExistentesEnBD = await _pizarraService.ObtenerTextosDeUnaPizarra(pizarraGUID);
+            var trazosExistentesEnBD= await _pizarraService.ObtenerTrazosDeUnaPizarra(pizarraGUID);
+
+            await _pizarraService.BorrarTrazosExistentesPizarra(trazosExistentesEnBD);
+            await _pizarraService.BorrarTextosExistentesPizarra(textosExistentesEnBD);
             await Clients.Group(pizarraId).SendAsync("ReceiveLimpiar");
         }
 

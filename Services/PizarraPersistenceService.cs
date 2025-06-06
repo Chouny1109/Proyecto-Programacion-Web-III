@@ -53,7 +53,7 @@ namespace Services
                 {
                     _logger.LogError(ex, "Error al guardar trazos");
                 }
-                await Task.Delay(TimeSpan.FromSeconds(60), stoppingToken);
+                await Task.Delay(TimeSpan.FromSeconds(30), stoppingToken);
 
             }
         }

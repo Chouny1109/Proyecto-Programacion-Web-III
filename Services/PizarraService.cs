@@ -1,4 +1,5 @@
 ﻿using System.Collections.Concurrent;
+using System.Security.Cryptography;
 using DTO;
 using Entidades.EF;
 using Microsoft.AspNetCore.Identity;
@@ -10,20 +11,21 @@ namespace Services
 {
     public interface IPizarraService
     {
-        void ActualizarPizarra(Pizarra pizarra);
+        Task ActualizarPizarra(Guid pizarraIdGUID, string nuevoNombre);
         void AgregarTrazo(Trazo trazo);
         Task AgregarUsuarioALaPizarra(PizarraUsuario pizarraUsuario);
-        void BorrarTrazosExistentesPizarra(List<Trazo> existentes);
+        Task BorrarTrazosExistentesPizarra(List<Trazo> existentes);
+        Task BorrarTextosExistentesPizarra(List<Texto> existentes);
         Task CrearPizarra(Pizarra pizarra);
         Task<bool> EsAdminDeLaPizarra(string idUsuario, Guid id);
         Task<bool> ExisteUsuarioEnPizarra(string id, Guid pizarraId);
         Task<Pizarra> ObtenerPizarra(Guid id);
         List<PizarraResumenDTO> ObtenerPizarrasDelUsuario(string? idUsuario);
         Task<Texto> ObtenerTextoPorId(string idTexto, string pizarraId);
-        List<Texto> ObtenerTextosDeUnaPizarra(Guid pizarraGuid);
-        List<Trazo> ObtenerTrazosDeUnaPizarra(Guid pizarraGuid);
-        void PersistirTextosBD(Dictionary<string, List<Texto>> dictionary);
-        void PersistirTrazosBD(Dictionary<string, List<Trazo>> dictionary);
+        Task <List<Texto>> ObtenerTextosDeUnaPizarra(Guid pizarraGuid);
+        Task <List<Trazo>> ObtenerTrazosDeUnaPizarra(Guid pizarraGuid);
+        Task PersistirTextosBD(Dictionary<string, List<Texto>> dictionary);
+        Task PersistirTrazosBD(Dictionary<string, List<Trazo>> dictionary);
     }
     public class PizarraService : IPizarraService
     {
@@ -44,14 +46,14 @@ namespace Services
         public Task AgregarUsuarioALaPizarra(PizarraUsuario pizarraUsuario)
         {
             _context.PizarraUsuarios.AddAsync(pizarraUsuario);
-            _context.SaveChangesAsync();
-            return Task.CompletedTask;
+            return _context.SaveChangesAsync();
+   
         }
 
-        public void BorrarTrazosExistentesPizarra(List<Trazo> existentes)
+        public async Task BorrarTrazosExistentesPizarra(List<Trazo> existentes)
         {
             _context.Trazos.RemoveRange(existentes);
-            _context.SaveChanges();
+            await _context.SaveChangesAsync();
         }
 
         public Task CrearPizarra(Pizarra pizarra)
@@ -98,13 +100,13 @@ namespace Services
 
         }
 
-        public void PersistirTextosBD(Dictionary<string, List<Texto>> dictionary)
+        public async Task PersistirTextosBD(Dictionary<string, List<Texto>> dictionary)
         {
-            foreach(var (pizarraId,textos) in dictionary)
+            foreach (var (pizarraId, textos) in dictionary)
             {
                 var pizarraguid = Guid.Parse(pizarraId);
-                var existentes = ObtenerTextosDeUnaPizarra(pizarraguid);
-                BorrarTextosExistentesPizarra(existentes);
+                var existentes = await ObtenerTextosDeUnaPizarra(pizarraguid);
+                await BorrarTextosExistentesPizarra(existentes); 
 
                 foreach (var texto in textos)
                 {
@@ -113,13 +115,13 @@ namespace Services
                     AgregarTexto(texto);
                 }
             }
-            _context.SaveChanges();
+           await  _context.SaveChangesAsync();
         }
 
-        private void BorrarTextosExistentesPizarra(List<Texto> existentes)
+        public async Task BorrarTextosExistentesPizarra(List<Texto> existentes)
         {
             _context.Textos.RemoveRange(existentes);
-            _context.SaveChanges();
+            await _context.SaveChangesAsync();
         }
 
         private void AgregarTexto(Texto texto)
@@ -128,19 +130,18 @@ namespace Services
             _context.SaveChanges();
         }
 
-        public List<Texto> ObtenerTextosDeUnaPizarra(Guid pizarraguid)
+        public async Task< List<Texto>> ObtenerTextosDeUnaPizarra(Guid pizarraguid)
         {
-            return _context.Textos.Where(t => t.PizarraId==pizarraguid).ToList();
+            return await _context.Textos.Where(t => t.PizarraId == pizarraguid).ToListAsync();
         }
 
-        public void PersistirTrazosBD(Dictionary<string, List<Trazo>> dictionary)
+        public async Task PersistirTrazosBD(Dictionary<string, List<Trazo>> dictionary)
         {
-
             foreach (var (pizarraId, trazos) in dictionary)
             {
                 var pizarraguid = Guid.Parse(pizarraId);
-                var existentes = ObtenerTrazosDeUnaPizarra(pizarraguid);
-                BorrarTrazosExistentesPizarra(existentes);
+                var existentes = await ObtenerTrazosDeUnaPizarra(pizarraguid);  
+                await BorrarTrazosExistentesPizarra(existentes); 
 
                 foreach (var trazo in trazos)
                 {
@@ -148,20 +149,25 @@ namespace Services
                     trazo.PizarraId = pizarraguid;
                     AgregarTrazo(trazo);
                 }
-               
-        }
-            _context.SaveChanges();
-        }
-
-        public List<Trazo> ObtenerTrazosDeUnaPizarra(Guid pizarraGuid)
-        {
-            return _context.Trazos.Where(t => t.PizarraId == pizarraGuid).ToList();
+            }
+            await _context.SaveChangesAsync();
         }
 
-        public void ActualizarPizarra(Pizarra pizarra)
+        public async Task<List<Trazo>> ObtenerTrazosDeUnaPizarra(Guid pizarraGuid)
         {
-           _context.Pizarras.Update(pizarra);
-            _context.SaveChangesAsync();
+            return await _context.Trazos.Where(t => t.PizarraId == pizarraGuid).ToListAsync();
+        }
+
+        public async Task ActualizarPizarra(Guid  id,string nuevoNombre)
+        {
+            var pizarra = ObtenerPizarra(id).Result;
+
+            if(pizarra != null)
+            {
+                pizarra.NombrePizarra = nuevoNombre;
+              await   _context.SaveChangesAsync();
+            }
+           
         }
 
       
