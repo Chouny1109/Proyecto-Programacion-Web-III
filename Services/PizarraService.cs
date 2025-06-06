@@ -121,7 +121,10 @@ namespace Services
                     }
                     else
                     {
-                        _context.Textos.Add(texto);
+                        if (!_context.Textos.Local.Any(t => t.Id == texto.Id))
+                        {
+                            _context.Textos.Add(texto);
+                        }
                     }
                 }
             }
