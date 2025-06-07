@@ -22,10 +22,12 @@ namespace Services
         Task<Pizarra> ObtenerPizarra(Guid id);
         List<PizarraResumenDTO> ObtenerPizarrasDelUsuario(string? idUsuario);
         Task<Texto> ObtenerTextoPorId(string idTexto, string pizarraId);
-        Task <List<Texto>> ObtenerTextosDeUnaPizarra(Guid pizarraGuid);
-        Task <List<Trazo>> ObtenerTrazosDeUnaPizarra(Guid pizarraGuid);
+        Task<List<Texto>> ObtenerTextosDeUnaPizarra(Guid pizarraGuid);
+        Task<List<Trazo>> ObtenerTrazosDeUnaPizarra(Guid pizarraGuid);
         Task PersistirTextosBD(Dictionary<string, List<Texto>> dictionary);
         Task PersistirTrazosBD(Dictionary<string, List<Trazo>> dictionary);
+        List<PizarraResumenDTO> ObtenerPizarrasFiltradas(string idUsuario, int? idFiltrarPorRol, string busqueda);
+        
     }
     public class PizarraService : IPizarraService
     {
@@ -47,7 +49,7 @@ namespace Services
         {
             _context.PizarraUsuarios.AddAsync(pizarraUsuario);
             return _context.SaveChangesAsync();
-   
+
         }
 
         public async Task BorrarTrazosExistentesPizarra(List<Trazo> existentes)
@@ -89,14 +91,14 @@ namespace Services
                     Id = pu.Pizarra.Id,
                     FechaCreacion = pu.Pizarra.FechaCreacion,
                     Nombre = pu.Pizarra.NombrePizarra,
-                    Rol = Enum.Parse<RolEnPizarra>(pu.Rol.ToString()) 
+                    Rol = Enum.Parse<RolEnPizarra>(pu.Rol.ToString())
                 }).ToList();
         }
 
         public async Task<Texto> ObtenerTextoPorId(string idTexto, string pizarraId)
         {
-           return  await _context.Textos.FirstOrDefaultAsync(t => t.Id.Equals(idTexto)
-            && t.PizarraId.Equals(pizarraId));
+            return await _context.Textos.FirstOrDefaultAsync(t => t.Id.Equals(idTexto)
+             && t.PizarraId.Equals(pizarraId));
 
         }
 
@@ -143,7 +145,7 @@ namespace Services
             _context.SaveChanges();
         }
 
-        public async Task< List<Texto>> ObtenerTextosDeUnaPizarra(Guid pizarraguid)
+        public async Task<List<Texto>> ObtenerTextosDeUnaPizarra(Guid pizarraguid)
         {
             return await _context.Textos.Where(t => t.PizarraId == pizarraguid).ToListAsync();
         }
@@ -153,8 +155,8 @@ namespace Services
             foreach (var (pizarraId, trazos) in dictionary)
             {
                 var pizarraguid = Guid.Parse(pizarraId);
-                var existentes = await ObtenerTrazosDeUnaPizarra(pizarraguid);  
-                await BorrarTrazosExistentesPizarra(existentes); 
+                var existentes = await ObtenerTrazosDeUnaPizarra(pizarraguid);
+                await BorrarTrazosExistentesPizarra(existentes);
 
                 foreach (var trazo in trazos)
                 {
@@ -171,20 +173,36 @@ namespace Services
             return await _context.Trazos.Where(t => t.PizarraId == pizarraGuid).ToListAsync();
         }
 
-        public async Task ActualizarPizarra(Guid  id,string nuevoNombre)
+        public async Task ActualizarPizarra(Guid id, string nuevoNombre)
         {
             var pizarra = ObtenerPizarra(id).Result;
 
-            if(pizarra != null)
+            if (pizarra != null)
             {
                 pizarra.NombrePizarra = nuevoNombre;
-              await   _context.SaveChangesAsync();
+                await _context.SaveChangesAsync();
             }
-           
+
         }
 
-      
+        public List<PizarraResumenDTO> ObtenerPizarrasFiltradas(string idUsuario, int? idFiltrarPorRol, string busqueda)
+        {
+            var pizarras = ObtenerPizarrasDelUsuario(idUsuario);
+
+            if (!string.IsNullOrWhiteSpace(busqueda))
+            {
+                pizarras = [.. pizarras.Where(p => p.Nombre != null && p.Nombre.Contains(busqueda, StringComparison.OrdinalIgnoreCase))];
+            }
+
+            if (idFiltrarPorRol.HasValue)
+            {
+                var rolFiltrado = (RolEnPizarra)idFiltrarPorRol;
+                pizarras = rolFiltrado == RolEnPizarra.Admin
+                    ? [.. pizarras.Where(p => p.Rol == RolEnPizarra.Admin)]
+                    : [.. pizarras.Where(p => p.Rol == RolEnPizarra.Escritura)];
+            }
+
+            return pizarras;
+        }
     }
-
-
 }

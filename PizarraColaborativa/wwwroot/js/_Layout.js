@@ -4,14 +4,19 @@ document.addEventListener("DOMContentLoaded", function () {
     const mainContent = document.getElementById('main-content');
     const menuIcon = document.getElementById('menuIcon');
 
+    const sidebarState = localStorage.getItem('sidebarState');
+    if (sidebarState === 'open') {
+        sidebar.classList.add('active');
+        mainContent.classList.add('shifted');
+        menuIcon.textContent = 'menu_open';
+    }
+
     toggleBtn.addEventListener('click', () => {
-        sidebar.classList.toggle('active');
+        const isActive = sidebar.classList.toggle('active');
         mainContent.classList.toggle('shifted');
 
-        if (sidebar.classList.contains('active')) {
-            menuIcon.textContent = 'menu_open';
-        } else {
-            menuIcon.textContent = 'menu';
-        }
+        localStorage.setItem('sidebarState', isActive ? 'open' : 'closed');
+
+        menuIcon.textContent = isActive ? 'menu_open' : 'menu';
     });
 });

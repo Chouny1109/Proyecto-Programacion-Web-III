@@ -154,6 +154,22 @@ a:focus {
     margin-left: 270px;
 }
 
+.bg-jumbotron {
+    background-color: var(--color-principal)
+}   
+
+.bg-items, .bg-modal {
+    background-color: var(--color-secundario);
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.bg-items:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.25);
+    background-color: var(--color-principal); 
+    cursor: pointer;
+}
+
 /* --- Formularios y tipografía secundaria --- */
 .form-label,
 input,
@@ -161,6 +177,18 @@ select,
 textarea {
     font-family: 'Open Sans', sans-serif;
     font-size: 1rem;
+}
+
+.input-group:focus-within {
+    box-shadow: 0 0 0 0.25rem rgba(105, 2, 223, 0.4);
+    border-color: #6902df; 
+    transition: box-shadow 0.2s ease, border-color 0.2s ease;
+}
+
+.input-group input:focus {
+    outline: none;        
+    box-shadow: none;     
+    border-color: transparent; 
 }
 
 /* --- Canvas personalizado --- */
