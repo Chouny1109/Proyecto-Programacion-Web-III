@@ -1,0 +1,83 @@
+﻿@model List<PizarraColaborativa.DTO.PizarraResumenDTO>
+@{
+    ViewData["Title"] = "Mis Proyectos";
+    var busqueda = ViewBag.Busqueda as string ?? "";
+    int? filtroRol = ViewBag.FiltroRol as int?;
+}
+
+<div class="container mt-4">
+    <div class="p-4 mb-4 bg-jumbotron rounded shadow border border-dark border-2">
+        <h2 class="text-center text-white">Mis Proyectos</h2>
+        <div class="row align-items-center mb-3">
+            <div class="col-md-3">
+                <form method="get" class="d-flex gap-2">
+                    @if (!string.IsNullOrWhiteSpace(busqueda))
+                    {
+                        <input type="hidden" name="busqueda" value="@busqueda" />
+                    }
+
+                    <button type="submit" name="idFiltrarPorRol" value="" class="btn btn-outline-dark @(filtroRol == null ? "active" : "")" title="Todas">
+                        <span class="material-symbols-outlined">view_module</span>
+                    </button>
+
+                    <button type="submit" name="idFiltrarPorRol" value="3" class="btn btn-outline-dark @(filtroRol == 3 ? "active" : "")" title="Propias">
+                        <span class="material-symbols-outlined">person</span>
+                    </button>
+
+                    <button type="submit" name="idFiltrarPorRol" value="1" class="btn btn-outline-dark @(filtroRol == 1 ? "active" : "")" title="Compartidas">
+                        <span class="material-symbols-outlined">groups</span>
+                    </button>
+                </form>
+            </div>
+
+            <div class="col-md-9">
+                <form method="get">
+                    @if (filtroRol != null)
+                    {
+                        <input type="hidden" name="idFiltrarPorRol" value="@filtroRol" />
+                    }
+
+                    <div class="input-group border border-2 border-dark rounded">
+                        <input type="text" class="form-control border-0 rounded-start" name="busqueda" placeholder="Buscar por nombre..." value="@busqueda" style="box-shadow: none;" />
+                        <button type="submit" class="input-group-text border-0 bg-white rounded-end" style="box-shadow: none;">
+                            <span class="material-symbols-outlined text-dark">search</span>
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>  
+
+    @if (Model.Any())
+    {
+        <div class="row">
+            @foreach (var pizarra in Model)
+            {
+                <div class="col-md-4 mb-4">
+                    <a href="@Url.Action("Dibujar", "Pizarra", new { id = pizarra.Id })" class="text-decoration-none">
+                        <div class="bg-items text-white p-3 rounded border border-dark border-2 shadow">
+                            <h5 class="text-white">@pizarra.Nombre</h5>
+                            <p class="mb-0"><small>@pizarra.FechaCreacion.ToShortDateString()</small></p>
+                        </div>
+                    </a>
+                </div>
+            }
+        </div>
+    }
+    else if (!string.IsNullOrWhiteSpace(ViewBag.MensajeBusqueda))
+    {
+        <div class="text-center mt-5">
+            <div class="bg-modal text-white p-4 rounded border border-dark border-2 shadow d-inline-block">
+                <p class="mb-0">@ViewBag.MensajeBusqueda</p>
+            </div>
+        </div>
+    }
+    else if (!string.IsNullOrWhiteSpace(ViewBag.PizarraMensaje))
+    {
+        <div class="text-center mt-5">
+            <div class="bg-modal text-white p-4 rounded border border-dark border-2 shadow d-inline-block">
+                <p class="mb-0">@ViewBag.PizarraMensaje</p>
+            </div>
+        </div>
+    }
+</div>

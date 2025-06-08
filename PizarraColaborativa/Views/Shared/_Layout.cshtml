@@ -1,0 +1,79 @@
+﻿@using Microsoft.AspNetCore.Identity
+@using System.Security.Claims
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - Pizarra Colaborativa</title>
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/css/_Layout.css" asp-append-version="true" />
+    <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;600&family=Raleway:wght@500;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" rel="stylesheet" />
+</head>
+<body>
+@{
+    var userName = User.Identity.IsAuthenticated ? User.Identity.Name : null;
+}
+
+<div class="layout-wrapper d-flex">
+
+    <div class="fixed-left-bar d-flex flex-column align-items-center">
+        <button id="toggleSidebar" class="icon-btn mt-3" title="Menú">
+            <span id="menuIcon" class="material-symbols-outlined">menu</span>
+        </button>
+        <button class="icon-btn mt-4" title="Perfil">
+            <span class="material-symbols-outlined">person</span>
+        </button>
+        <button class="icon-btn mt-4" title="Notificaciones">
+            <span class="material-symbols-outlined">notifications</span>
+        </button>
+        <form asp-controller="Cuenta" asp-action="Logout" method="post" class="mt-auto mb-3">
+            <button type="submit" class="icon-btn" title="Cerrar sesión">
+                <span class="material-symbols-outlined">logout</span>
+            </button>
+        </form>
+    </div>
+
+    <div id="sidebar" class="sidebar">
+        <div class="p-3">
+            <h3>@userName</h3>
+            <ul class="nav flex-column">
+                <li class="nav-item mb-2">
+                    <a class="nav-link d-flex align-items-center text-decoration-none" asp-controller="Home" asp-action="Index">
+                        <span class="material-symbols-outlined me-2">home</span>
+                        Mis Pizarras
+                    </a>
+                </li>
+                <li class="nav-item mb-2">
+                    <a class="nav-link d-flex align-items-center text-decoration-none" asp-controller="Pizarra" asp-action="CrearPizarra">
+                        <span class="material-symbols-outlined me-2">add</span>
+                        Crear Pizarra
+                    </a>
+                </li>
+                <!--<li class="nav-item mb-2">
+                    <a class="nav-link d-flex align-items-center text-decoration-none" asp-controller="Pizarra" asp-action="Papelera">
+                        <span class="material-symbols-outlined me-2">delete</span>
+                        Papelera
+                    </a>
+                </li>-->
+            </ul>
+        </div>
+    </div>
+
+    <div id="main-content" class="main-content">
+        <div class="container py-4">
+            @RenderBody()
+        </div>
+    </div>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/microsoft-signalr/6.0.1/signalr.js"></script>
+<script src="~/lib/jquery/dist/jquery.min.js"></script>
+<script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+<script src="~/js/site.js" asp-append-version="true"></script>
+<script src="~/js/_Layout.js" asp-append-version="true"></script>
+@await RenderSectionAsync("Scripts", required: false)
+</body>
+</html>

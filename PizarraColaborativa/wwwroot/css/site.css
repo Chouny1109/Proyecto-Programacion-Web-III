@@ -1,0 +1,203 @@
+:root {
+    --color-principal: #6902df;
+    --color-secundario: #9574f0;
+}
+
+/* --- Layout general --- */
+html {
+    position: relative;
+    min-height: 100%;
+    font-size: 14px;
+}
+
+@media (min-width: 768px) {
+    html {
+        font-size: 16px;
+    }
+}
+
+body {
+    font-family: 'Open Sans', sans-serif;
+    font-weight: 400;
+    color: #444;
+}
+
+h1, h2, h3, h4, h5, h6 {
+    font-family: 'Raleway', sans-serif;
+    font-weight: 700;
+    color: #222;
+    letter-spacing: 0.5px;
+}
+
+a {
+    color: var(--color-principal);
+    font-family: 'Raleway', sans-serif;
+    font-weight: 600;
+    text-decoration: none;
+    transition: color 0.3s ease;
+}
+
+a:hover,
+a:focus {
+    color: var(--color-secundario);
+}
+
+/* --- Botones --- */
+.btn-primary {
+    background-color: var(--color-principal);
+    border-color: var(--color-principal);
+    font-family: 'Raleway', sans-serif;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.8px;
+    transition: background-color 0.3s ease, border-color 0.3s ease;
+}
+
+.btn-primary:hover,
+.btn-primary:focus {
+    background-color: var(--color-secundario);
+    border-color: var(--color-secundario);
+    color: #fff;
+}
+
+/* --- Sidebar izquierdo fino --- */
+.fixed-left-bar {
+    width: 50px;
+    height: 100vh;
+    background-color: #1e1633;
+    position: fixed;
+    top: 0;
+    left: 0;
+    z-index: 1030;
+    padding-top: 10px;
+}
+
+/* Botón de icono en barra fina */
+.icon-btn {
+    background: none;
+    border: none;
+    color: white;
+    font-size: 24px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.icon-btn:hover {
+    color: var(--color-secundario);
+}
+
+/* --- Sidebar principal --- */
+.sidebar {
+    width: 220px;
+    background-color: #493c6b;
+    color: white;
+    position: fixed;
+    top: 0;
+    left: 50px;
+    height: 100vh;
+    transform: translateX(-220px);
+    transition: transform 0.3s ease;
+    z-index: 1020;
+}
+
+.sidebar.active {
+    transform: translateX(0);
+}
+
+.sidebar h3 {
+    color: white;
+    font-weight: 600;
+    padding-left: 10px;
+    margin-top: 1rem;
+    margin-bottom: 1.5rem;
+}
+
+/* Enlaces del sidebar */
+.sidebar .nav-link {
+    color: white;
+    padding: 8px 16px;
+    border-radius: 4px;
+    transition: background-color 0.2s, color 0.2s;
+}
+
+.sidebar .nav-link:hover,
+.sidebar .nav-link:focus,
+.sidebar .nav-link.active {
+    color: #e0e0e0;
+    background-color: rgba(255, 255, 255, 0.1);
+}
+
+/* Enlaces generales */
+.nav-link {
+    padding: 0.5rem;
+    border-radius: 0.5rem;
+    transition: background-color 0.2s ease;
+    color: #fff;
+}
+
+.nav-link:hover {
+    background-color: var(--color-secundario);
+    color: white;
+    text-decoration: none;
+}
+
+/* --- Contenido principal --- */
+.main-content {
+    margin-left: 50px;
+    width: calc(100% - 50px);
+    transition: margin-left 0.3s ease;
+}
+
+.main-content.shifted {
+    margin-left: 270px;
+}
+
+.bg-jumbotron {
+    background-color: var(--color-principal)
+}   
+
+.bg-items, .bg-modal {
+    background-color: var(--color-secundario);
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.bg-items:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.25);
+    background-color: var(--color-principal); 
+    cursor: pointer;
+}
+
+/* --- Formularios y tipografía secundaria --- */
+.form-label,
+input,
+select,
+textarea {
+    font-family: 'Open Sans', sans-serif;
+    font-size: 1rem;
+}
+
+.input-group:focus-within {
+    box-shadow: 0 0 0 0.25rem rgba(105, 2, 223, 0.4);
+    border-color: #6902df; 
+    transition: box-shadow 0.2s ease, border-color 0.2s ease;
+}
+
+.input-group input:focus {
+    outline: none;        
+    box-shadow: none;     
+    border-color: transparent; 
+}
+
+/* --- Canvas personalizado --- */
+.canvas {
+    border-radius: 5px;
+}
+
+canvas {
+    margin-top: 5px;
+    background-color: white;
+    border-radius: 10px;
+}

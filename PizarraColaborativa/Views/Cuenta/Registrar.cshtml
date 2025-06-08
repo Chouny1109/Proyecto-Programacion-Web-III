@@ -1,0 +1,56 @@
+﻿@model RegistroUsuarioViewModel
+
+@{
+    ViewData["Title"] = "Registrar Usuario";
+    Layout = "~/Views/Shared/_FormLayout.cshtml";
+}
+
+<div class="d-flex justify-content-center align-items-center vh-100">
+    <div class="card p-4 shadow" style="width: 100%; max-width: 500px;">
+        <h4 class="text-center mb-4">Registrar Usuario</h4>
+
+        <form asp-action="Registrar" method="post">
+            <div class="form-floating mb-3">
+                <input asp-for="UserName" class="form-control" placeholder="Nombre de usuario" />
+                <label asp-for="UserName"></label>
+                <span asp-validation-for="UserName" class="text-danger"></span>
+            </div>
+
+            <div class="form-floating mb-3">
+                <input asp-for="Email" class="form-control" placeholder="Email" />
+                <label asp-for="Email"></label>
+                <span asp-validation-for="Email" class="text-danger"></span>
+            </div>
+
+            <div class="form-floating mb-3">
+                <input asp-for="Password" type="password" class="form-control" placeholder="Contraseña" />
+                <label asp-for="Password"></label>
+                <span asp-validation-for="Password" class="text-danger"></span>
+            </div>
+
+            <div class="form-floating mb-3">
+                <select asp-for="Rol" class="form-select" aria-label="Rol">
+                    <option value="" disabled selected>Seleccionar un rol</option>
+                    <option value="Usuario">Usuario</option>
+                    <option value="Admin">Admin</option>
+                </select>
+                <label asp-for="Rol">Rol</label>
+                <span asp-validation-for="Rol" class="text-danger"></span>
+            </div>
+
+            <button type="submit" class="btn btn-primary w-100">Registrar</button>
+        </form>
+
+        <div class="text-danger mt-3">
+            @Html.ValidationSummary(false, "", new { @class = "text-danger" })
+        </div>
+
+        <div class="mt-3 text-center">
+            <a asp-action="Login" class="text-decoration-none">¿Ya tenés cuenta? Iniciá sesión</a>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    @await Html.PartialAsync("_ValidationScriptsPartial")
+}

@@ -1,0 +1,116 @@
+﻿@{
+    ViewData["Title"] = "Pizarra";
+}
+@if (ViewData["EsAdmin"] != null && (bool)ViewData["EsAdmin"])
+{
+    <button class="btn btn-success mb-3" data-bs-toggle="modal" data-bs-target="#modalInvitacion">
+        Generar Invitacion
+    </button>
+}
+<div id="info-pizarra" data-pizarraid="@ViewData["PizarraId"]"></div>
+
+<h2 id="tituloPizarra">Nombre Pizarra</h2>
+
+<input type="text" id="nombrePizarraInput" placeholder="Nombre de la pizarra" />
+<button onclick="cambiarNombre()">Cambiar Nombre Pizarra</button>
+
+<div class="d-flex align-items-center gap-2 ">
+    <div class="tool" id="undo">
+        <button>Atras</button>
+    </div>
+    <div class="tool" id="redo">
+        <button>Volver</button>
+    </div>
+    <button id="btnGoma">Goma</button>
+    <label class="text-light" for="color_lapiz">Color</label>
+    <input type="color" for="color_lapiz" id="color_lapiz" />
+    <label class="text-light" for="color_fondo">Fondo</label>
+    <input type="color" for="color_fondo" id="color_fondo" value="#ffffff" />
+
+    <label class="text-light" for="tamanio">Tamaño</label>
+    <select id="tamanio_lapiz" for="tamanio">
+        <option value="1">1px</option>
+        <option value="2">2px</option>
+        <option value="3">3px</option>
+        <option value="4">4px</option>
+        <option value="5">5px</option>
+        <option value="6">6px</option>
+        <option value="7">7px</option>
+        <option value="8">8px</option>
+    </select>
+    <input type="text" id="textoContenido" placeholder="Escribí algo">
+    <input type="color" id="colorTexto" value="#000000">
+    <input type="number" id="tamanioTexto" value="20" min="10">
+    <button id="btnInsertarTexto">Insertar texto</button>
+    <input type="submit" id="limpiar" value="Limpiar" />
+
+
+</div>
+
+
+
+<!--<div class="d-flex justify-content-center align-items-center canvas">
+    <canvas id="area" width="950" height="500">F</canvas>
+    <div id="contenedorTextos" style="position: absolute; top: 0; left: 0; width: 950px; height: 500px;"></div>
+
+</div>-->
+<div class="d-flex justify-content-center align-items-center canvas" style="position: relative;">
+    <canvas id="area" width="950" height="500"></canvas>
+    <div id="contenedorTextos" style="position: absolute; top: 0; left: 0; pointer-events: none;"></div>
+
+</div>
+
+<!-- Modal -->
+<div class="modal fade" id="modalInvitacion" tabindex="-1" aria-labelledby="modalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <form id="formInvitacion" method="post">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="modalLabel">Generar invitación</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+                </div>
+                <div class="modal-body">
+                    <input type="hidden" name="pizarraId" value="@ViewData["PizarraId"]" />
+                    <label for="rol">Rol a otorgar:</label>
+                    <select name="rol" class="form-select mb-3">
+                        <option value="1">Escritura</option>
+                        <option value="2">Lectura</option>
+                    </select>
+
+                    <div id="linkGenerado" class="d-none alert alert-success"></div>
+                </div>
+                <div class="modal-footer">
+                    <button type="submit" class="btn btn-primary">Generar invitación</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+
+@section Scripts {
+
+    <script>
+
+        document.getElementById('formInvitacion').addEventListener('submit',async function (e){
+            e.preventDefault();
+
+            const form = e.target;
+            const data= new FormData(form);
+            const response=await fetch('/Invitacion/GenerarInvitacion',
+            {
+                method: 'POST',
+                body: data
+            });
+
+            if(response.ok){
+                const url= await response.text();
+                const div= document.getElementById("linkGenerado");
+                div.classList.remove("d-none");
+                div.innerHTML=`<strong>Compartí este link:</strong><br><a href="${url}">${url}</a>`;
+            }
+
+        });
+
+    </script>
+}

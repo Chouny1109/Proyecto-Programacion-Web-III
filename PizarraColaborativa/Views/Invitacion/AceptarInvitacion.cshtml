@@ -1,0 +1,12 @@
+﻿@model Entidades.EF.InvitacionPizarra
+@{
+    ViewData["Title"] = "Aceptar Invitación";
+}
+
+<h2>Te han invitado a la pizarra: <strong>@ViewBag.NombrePizarra</strong></h2>
+<p>Rol otorgado: <strong>@ViewBag.Rol</strong></p>
+
+<form asp-action="AceptarInvitacion" method="post" asp-controller="Invitacion">
+    <input type="hidden" name="codigo" value="@Model.CodigoInvitacion" />
+    <button type="submit" class="btn btn-primary">Aceptar invitación</button>
+</form>
