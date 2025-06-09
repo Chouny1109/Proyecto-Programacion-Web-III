@@ -16,3 +16,21 @@ C:\Users\Gonza\OneDrive\Escritorio\proyecto web3\Proyecto-Programacion-Web-III\E
 C:\Users\Gonza\OneDrive\Escritorio\proyecto web3\Proyecto-Programacion-Web-III\Entidades\bin\Debug\net8.0\DTO.dll
 C:\Users\Gonza\OneDrive\Escritorio\proyecto web3\Proyecto-Programacion-Web-III\Entidades\bin\Debug\net8.0\DTO.pdb
 C:\Users\Gonza\OneDrive\Escritorio\proyecto web3\Proyecto-Programacion-Web-III\Entidades\obj\Debug\net8.0\Entidades.csproj.Up2Date
+C:\Users\PC\source\repos\Proyecto-Programacion-Web-III\Entidades\bin\Debug\net8.0\Entidades.deps.json
+C:\Users\PC\source\repos\Proyecto-Programacion-Web-III\Entidades\bin\Debug\net8.0\Entidades.runtimeconfig.json
+C:\Users\PC\source\repos\Proyecto-Programacion-Web-III\Entidades\bin\Debug\net8.0\Entidades.dll
+C:\Users\PC\source\repos\Proyecto-Programacion-Web-III\Entidades\bin\Debug\net8.0\Entidades.pdb
+C:\Users\PC\source\repos\Proyecto-Programacion-Web-III\Entidades\bin\Debug\net8.0\DTO.dll
+C:\Users\PC\source\repos\Proyecto-Programacion-Web-III\Entidades\bin\Debug\net8.0\DTO.pdb
+C:\Users\PC\source\repos\Proyecto-Programacion-Web-III\Entidades\obj\Debug\net8.0\Entidades.csproj.AssemblyReference.cache
+C:\Users\PC\source\repos\Proyecto-Programacion-Web-III\Entidades\obj\Debug\net8.0\Entidades.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\PC\source\repos\Proyecto-Programacion-Web-III\Entidades\obj\Debug\net8.0\Entidades.AssemblyInfoInputs.cache
+C:\Users\PC\source\repos\Proyecto-Programacion-Web-III\Entidades\obj\Debug\net8.0\Entidades.AssemblyInfo.cs
+C:\Users\PC\source\repos\Proyecto-Programacion-Web-III\Entidades\obj\Debug\net8.0\Entidades.csproj.CoreCompileInputs.cache
+C:\Users\PC\source\repos\Proyecto-Programacion-Web-III\Entidades\obj\Debug\net8.0\Entidades.sourcelink.json
+C:\Users\PC\source\repos\Proyecto-Programacion-Web-III\Entidades\obj\Debug\net8.0\Entidades.csproj.Up2Date
+C:\Users\PC\source\repos\Proyecto-Programacion-Web-III\Entidades\obj\Debug\net8.0\Entidades.dll
+C:\Users\PC\source\repos\Proyecto-Programacion-Web-III\Entidades\obj\Debug\net8.0\refint\Entidades.dll
+C:\Users\PC\source\repos\Proyecto-Programacion-Web-III\Entidades\obj\Debug\net8.0\Entidades.pdb
+C:\Users\PC\source\repos\Proyecto-Programacion-Web-III\Entidades\obj\Debug\net8.0\Entidades.genruntimeconfig.cache
+C:\Users\PC\source\repos\Proyecto-Programacion-Web-III\Entidades\obj\Debug\net8.0\ref\Entidades.dll

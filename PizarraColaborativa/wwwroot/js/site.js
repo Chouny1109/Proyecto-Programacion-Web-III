@@ -1,5 +1,12 @@
 ﻿let pizarraId = document.getElementById("info-pizarra").dataset.pizarraid;
+<<<<<<< HEAD
 
+=======
+let linesDB = [];
+let redoLinesDB = [];
+let isPenDown = false;
+let line = [];
+>>>>>>> ccf910e5840dfb536f2a62339a3619d4dfad8ec8
 let conexion = new signalR.HubConnectionBuilder()
     .withUrl("/dibujohub?pizarraid=" + encodeURIComponent(pizarraId))
     .build();
@@ -32,7 +39,11 @@ function dibujarTrazo(trazo) {
     const xFin = trazo.xfin ?? 0;
     const yFin = trazo.yfin ?? 0;
     const color = trazo.color ?? '#000000';
+<<<<<<< HEAD
     const grosor = trazo.grosor ?? 2;
+=======
+    const grosor = trazo.grosor ?? 1;
+>>>>>>> ccf910e5840dfb536f2a62339a3619d4dfad8ec8
 
     papel.beginPath();
     papel.strokeStyle = color;
@@ -69,6 +80,15 @@ function dibujar(color1, corX, corY, corXFinal, corYFinal, tamanioLinea, enviar 
         papel.stroke();
         papel.closePath();
 
+<<<<<<< HEAD
+=======
+    let pointObject = {
+        x: corXFinal,
+        y: corYFinal,
+        type: "mm",
+    };
+    line.push(pointObject);
+>>>>>>> ccf910e5840dfb536f2a62339a3619d4dfad8ec8
 
         if (enviar && conexion.state === signalR.HubConnectionState.Connected) {
             conexion.invoke("SendDibujo", pizarraId, color, corX, corY, corXFinal, corYFinal, tamanioInicial)
@@ -84,6 +104,7 @@ function dibujar(color1, corX, corY, corXFinal, corYFinal, tamanioLinea, enviar 
 
 
     canvas.addEventListener("mousemove", dibujarConMouse)
+<<<<<<< HEAD
     function dibujarConMouse(event) {
 
         if (presionMouse) {
@@ -94,14 +115,52 @@ function dibujar(color1, corX, corY, corXFinal, corYFinal, tamanioLinea, enviar 
         y = event.offsetY;
     }
 
+=======
+function dibujarConMouse(event) {
+    const nuevoX = event.offsetX;
+    const nuevoY = event.offsetY;
+
+    if (!presionMouse || (nuevoX === x && nuevoY === y)) return;
+
+    if (modoGoma) {
+        dibujar('white', x, y, nuevoX, nuevoY, 10, false);
+    } else {
+        dibujar(color, x, y, nuevoX, nuevoY, tamanioInicial);
+    }
+
+    x = nuevoX;
+    y = nuevoY;
+}
+>>>>>>> ccf910e5840dfb536f2a62339a3619d4dfad8ec8
 
     let presionMouse = false;
 
     canvas.addEventListener("mousedown", presionaMouse)
+<<<<<<< HEAD
     function presionaMouse(event) {
         presionMouse = true;
         x = event.offsetX;
         y = event.offsetY;
+=======
+function presionaMouse(event) {
+    if (redoLinesDB.length) {
+        redoLinesDB = [];
+    }
+        presionMouse = true;
+        x = event.offsetX;
+        y = event.offsetY;
+
+    let pointObject = {
+        x: x,
+        y: y,
+        type: "md",
+        lineWidth: tamanioInicial,
+        strokeStyle: color,
+    };
+    line.push(pointObject);
+
+
+>>>>>>> ccf910e5840dfb536f2a62339a3619d4dfad8ec8
     }
 
     canvas.addEventListener("mouseup", soltoMouse)
@@ -110,10 +169,21 @@ function dibujar(color1, corX, corY, corXFinal, corYFinal, tamanioLinea, enviar 
 
         x = event.offsetX;
         y = event.offsetY;
+<<<<<<< HEAD
     }
 
     let tamanioLapiz = document.getElementById("tamanio_lapiz")
     let tamanioInicial = 1;
+=======
+
+        linesDB.push(line);
+        line = [];
+    }
+
+    let tamanioLapiz = document.getElementById("tamanio_lapiz")
+    let tamanioInicial = 2
+
+>>>>>>> ccf910e5840dfb536f2a62339a3619d4dfad8ec8
 
 
     document.addEventListener("change", tamanioLapizz);
@@ -134,12 +204,22 @@ function colorLinea() {
 
 document.addEventListener("change",fondoArea)
 
+<<<<<<< HEAD
 
 function fondoArea() {
 
     let colorFondo = document.getElementById("color_fondo").value
 
     canvas.style.backgroundColor = colorFondo;
+=======
+let colorFondo = 'white'
+function fondoArea() {
+
+    colorFondo = document.getElementById("color_fondo").value
+
+    canvas.style.backgroundColor = colorFondo;
+
+>>>>>>> ccf910e5840dfb536f2a62339a3619d4dfad8ec8
 }
 
 let limpiarLineas = document.getElementById("limpiar");
@@ -326,6 +406,19 @@ conexion.start().then(() => {
     return console.error("Error al iniciar:", err.toString());
 });
 
+<<<<<<< HEAD
+=======
+let modoGoma = false;
+
+document.getElementById("btnGoma").addEventListener("click", () => {
+    modoGoma = !modoGoma;
+    if (modoGoma) {
+        canvas.style.cursor = "cell"; // apariencia tipo goma
+    } else {
+        canvas.style.cursor = "crosshair";
+    }
+});
+>>>>>>> ccf910e5840dfb536f2a62339a3619d4dfad8ec8
 
 
 

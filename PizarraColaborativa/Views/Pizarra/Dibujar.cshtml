@@ -1,11 +1,20 @@
 ﻿@{
     ViewData["Title"] = "Pizarra";
 }
+<<<<<<< HEAD
  @if (ViewData["EsAdmin"] !=null && (bool)ViewData["EsAdmin"]){
     <button class="btn btn-success mb-3" data-bs-toggle="modal" data-bs-target="#modalInvitacion">
         Generar Invitacion
     </button>
  }
+=======
+@if (ViewData["EsAdmin"] != null && (bool)ViewData["EsAdmin"])
+{
+    <button class="btn btn-success mb-3" data-bs-toggle="modal" data-bs-target="#modalInvitacion">
+        Generar Invitacion
+    </button>
+}
+>>>>>>> ccf910e5840dfb536f2a62339a3619d4dfad8ec8
 <div id="info-pizarra" data-pizarraid="@ViewData["PizarraId"]"></div>
 
 <h2 id="tituloPizarra">Nombre Pizarra</h2>
@@ -14,7 +23,17 @@
 <button onclick="cambiarNombre()">Cambiar Nombre Pizarra</button>
 
 <div class="d-flex align-items-center gap-2 ">
+<<<<<<< HEAD
 
+=======
+    <div class="tool" id="undo">
+        <button>Atras</button>
+    </div>
+    <div class="tool" id="redo">
+        <button>Volver</button>
+    </div>
+    <button id="btnGoma">Goma</button>
+>>>>>>> ccf910e5840dfb536f2a62339a3619d4dfad8ec8
     <label class="text-light" for="color_lapiz">Color</label>
     <input type="color" for="color_lapiz" id="color_lapiz" />
     <label class="text-light" for="color_fondo">Fondo</label>
@@ -81,7 +100,11 @@
 </div>
 
 
+<<<<<<< HEAD
 @section Scripts{
+=======
+@section Scripts {
+>>>>>>> ccf910e5840dfb536f2a62339a3619d4dfad8ec8
 
     <script>
 
@@ -95,7 +118,11 @@
                 method: 'POST',
                 body: data
             });
+<<<<<<< HEAD
             
+=======
+
+>>>>>>> ccf910e5840dfb536f2a62339a3619d4dfad8ec8
             if(response.ok){
                 const url= await response.text();
                 const div= document.getElementById("linkGenerado");

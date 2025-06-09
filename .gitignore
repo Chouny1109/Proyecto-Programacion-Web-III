@@ -6,8 +6,13 @@ PizarraColaborativa/obj/
 
 
 # Ignore build output folders
+<<<<<<< HEAD
 bin/
 obj/
+=======
+**/bin/
+**/obj/
+>>>>>>> ccf910e5840dfb536f2a62339a3619d4dfad8ec8
 
 # User-specific files
 *.user
@@ -28,5 +33,9 @@ packages/
 # Otros archivos generados temporales o caches
 *.cache
 *.log
+<<<<<<< HEAD
 *.vspscc
 
+=======
+*.vspscc
+>>>>>>> ccf910e5840dfb536f2a62339a3619d4dfad8ec8

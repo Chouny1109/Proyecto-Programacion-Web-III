@@ -154,6 +154,7 @@ a:focus {
     margin-left: 270px;
 }
 
+<<<<<<< HEAD
 .bg-jumbotron {
     background-color: var(--color-principal)
 }   
@@ -161,6 +162,18 @@ a:focus {
 .bg-items, .bg-modal {
     background-color: var(--color-secundario);
     transition: transform 0.2s ease, box-shadow 0.2s ease;
+=======
+ .bg-jumbotron {
+    background-image: url('../imagenes/img-banner.webp'); 
+    background-size: cover;          /* O "contain" si querés que no se recorte */
+    background-repeat: no-repeat;
+    background-position: center center;
+}
+
+.bg-items {
+    background-color: var(--color-secundario); 
+    transition: transform 0.2s ease, box-shadow 0.2s ease, background-color 0.2s ease;
+>>>>>>> ccf910e5840dfb536f2a62339a3619d4dfad8ec8
 }
 
 .bg-items:hover {
@@ -170,6 +183,15 @@ a:focus {
     cursor: pointer;
 }
 
+<<<<<<< HEAD
+=======
+.custom-alert {
+    width: 50%;
+    min-width: 280px;
+    max-width: 600px;
+}
+
+>>>>>>> ccf910e5840dfb536f2a62339a3619d4dfad8ec8
 /* --- Formularios y tipografía secundaria --- */
 .form-label,
 input,
