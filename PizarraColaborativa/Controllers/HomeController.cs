@@ -26,19 +26,27 @@ namespace PizarraColaborativa.Controllers
                 ViewBag.FiltroRol = idFiltrarPorRol;
 
                 if (pizarras.Count == 0)
-                {
-                    if (!string.IsNullOrWhiteSpace(busqueda))
-                        ViewBag.MensajeBusqueda = "No se hallaron resultados con esa búsqueda.";
-                    else if (idFiltrarPorRol.HasValue)
-                        ViewBag.PizarraMensaje = "No se encontraron pizarras con el filtro seleccionado.";
-                    else
-                        ViewBag.PizarraMensaje = "No se han encontrado pizarras disponibles.";
+                {   
+                    ViewBag.Mensaje = "No se han encontrado pizarras disponibles.";
                 }
 
                 return View(pizarras);
             }
 
             return RedirectToAction("Login", "Cuenta");
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> EliminarPizarra(Guid id)
+        {
+            var idUsuario = _userManager.GetUserId(User);
+
+            var esAdmin = await _service.EsAdminDeLaPizarra(idUsuario, id);
+            if (!esAdmin) return Forbid();
+
+            await _service.EliminarPizarra(id);
+
+            return RedirectToAction(nameof(Index));
         }
 
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]

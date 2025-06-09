@@ -27,7 +27,7 @@ namespace Services
         Task PersistirTextosBD(Dictionary<string, List<Texto>> dictionary);
         Task PersistirTrazosBD(Dictionary<string, List<Trazo>> dictionary);
         List<PizarraResumenDTO> ObtenerPizarrasFiltradas(string idUsuario, int? idFiltrarPorRol, string busqueda);
-        
+        Task<bool> EliminarPizarra(Guid pizarraId);
     }
     public class PizarraService : IPizarraService
     {
@@ -203,6 +203,24 @@ namespace Services
             }
 
             return pizarras;
+        }
+
+        public async Task<bool> EliminarPizarra(Guid pizarraId)
+        {
+            var pizarra = await _context.Pizarras.FindAsync(pizarraId);
+            if (pizarra == null) return false;
+
+            var invitaciones = await _context.InvitacionPizarras
+                .Where(i => i.PizarraId == pizarraId)
+                .ToListAsync();
+
+            if (invitaciones.Count != 0)
+                _context.InvitacionPizarras.RemoveRange(invitaciones);
+
+            _context.Pizarras.Remove(pizarra);
+            await _context.SaveChangesAsync();
+
+            return true;
         }
     }
 }
