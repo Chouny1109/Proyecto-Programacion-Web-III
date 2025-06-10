@@ -24,7 +24,8 @@ namespace PizarraColaborativa.Controllers
         {
             if (!ModelState.IsValid) return View(model);
 
-            if (!await _roleManager.RoleExistsAsync(model.Rol)) await _roleManager.CreateAsync(new IdentityRole(model.Rol));
+            if (!await _roleManager.RoleExistsAsync(model.Rol)) 
+                await _roleManager.CreateAsync(new IdentityRole(model.Rol));
 
             var usuario = new IdentityUser
             {
@@ -70,7 +71,7 @@ namespace PizarraColaborativa.Controllers
 
         public IActionResult AccesoDenegado()
         {
-            return View("AccesoDenegado");
+            return View();
         }
     }
 }

@@ -11,38 +11,38 @@
 <div class="p-4 mb-4 bg-jumbotron rounded shadow">
     <h2 class="text-white">Mis Proyectos</h2>
     <div class="row align-items-center mb-3">
-        <div class="col-md-2">
+        <div class="col-md-4">
             <form method="get" class="d-flex gap-2">
                 @if (!string.IsNullOrWhiteSpace(busqueda))
                 {
                     <input type="hidden" name="busqueda" value="@busqueda" />
                 }
 
-                <button type="submit" name="idFiltrarPorRol" value="" class="btn btn-outline-dark @(filtroRol == null ? "active" : "")" title="Todas">
+                <button type="submit" name="filtroRol" value="" class="btn btn-outline-dark @(filtroRol == null ? "active" : "")" title="Todas">
                     <span class="material-symbols-outlined">view_module</span>
                 </button>
 
-                <button type="submit" name="idFiltrarPorRol" value="3" class="btn btn-outline-dark @(filtroRol == 3 ? "active" : "")" title="Propias">
+                <button type="submit" name="filtroRol" value="3" class="btn btn-outline-dark @(filtroRol == 3 ? "active" : "")" title="Propias">
                     <span class="material-symbols-outlined">person</span>
                 </button>
 
-                <button type="submit" name="idFiltrarPorRol" value="1" class="btn btn-outline-dark @(filtroRol == 1 ? "active" : "")" title="Compartidas">
+                <button type="submit" name="filtroRol" value="1" class="btn btn-outline-dark @(filtroRol == 1 ? "active" : "")" title="Compartidas">
                     <span class="material-symbols-outlined">groups</span>
                 </button>
             </form>
         </div>
 
-        <div class="col-md-10">
+        <div class="col-md-8">
             <form method="get">
                 @if (filtroRol != null)
                 {
-                    <input type="hidden" name="idFiltrarPorRol" value="@filtroRol" />
+                    <input type="hidden" name="filtroRol" value="@filtroRol" />
                 }
 
                 <div class="input-group rounded">
                     <input type="text" class="form-control border-0 rounded-start" name="busqueda" placeholder="Buscar por nombre..." value="@busqueda" style="box-shadow: none;" />
-                    <button type="submit" class="input-group-text border-0 bg-white rounded-end" style="box-shadow: none;">
-                        <span class="material-symbols-outlined text-dark">search</span>
+                    <button type="submit" class="input-group-text border-0 bg-white rounded-end" style="cursor: pointer; box-shadow: none;">
+                        <span class="material-symbols-outlined">search</span>
                     </button>
                 </div>
             </form>
@@ -53,7 +53,7 @@
 @if (ViewBag.Mensaje != null)
 {
     <div class="text-center mt-5">
-        <div class="p-4 rounded bg-danger text-white shadow-sm mx-auto custom-alert">
+        <div class="p-4 rounded bg-warning text-white shadow-sm mx-auto custom-alert">
             <p class="mb-3">@ViewBag.Mensaje</p>
             <a asp-controller="Pizarra" asp-action="CrearPizarra" class="btn btn-primary">
                 Crear una nueva pizarra
@@ -110,5 +110,4 @@
         </div>
     }
 </div>
-
 </div>

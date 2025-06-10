@@ -17,16 +17,17 @@ namespace Services
         Task BorrarTrazosExistentesPizarra(List<Trazo> existentes);
         Task BorrarTextosExistentesPizarra(List<Texto> existentes);
         Task CrearPizarra(Pizarra pizarra);
-        Task<bool> EsAdminDeLaPizarra(string idUsuario, Guid id);
+        Task<bool> EsAdminDeLaPizarra(string userId, Guid id);
         Task<bool> ExisteUsuarioEnPizarra(string id, Guid pizarraId);
         Task<Pizarra> ObtenerPizarra(Guid id);
-        List<PizarraResumenDTO> ObtenerPizarrasDelUsuario(string? idUsuario);
+        List<PizarraResumenDTO> ObtenerPizarrasDelUsuario(string? userId);
         Task<Texto> ObtenerTextoPorId(string idTexto, string pizarraId);
         Task<List<Texto>> ObtenerTextosDeUnaPizarra(Guid pizarraGuid);
         Task<List<Trazo>> ObtenerTrazosDeUnaPizarra(Guid pizarraGuid);
         Task PersistirTextosBD(Dictionary<string, List<Texto>> dictionary);
         Task PersistirTrazosBD(Dictionary<string, List<Trazo>> dictionary);
-        List<PizarraResumenDTO> ObtenerPizarrasFiltradas(string idUsuario, int? idFiltrarPorRol, string busqueda);
+        List<PizarraResumenDTO> ObtenerPizarrasFiltradas(string userId, int? filtroRol, string busqueda);
+        List<PizarraResumenDTO> ObtenerPizarrasChat(string? userId);
         Task<bool> EliminarPizarra(Guid pizarraId);
     }
     public class PizarraService : IPizarraService
@@ -65,9 +66,9 @@ namespace Services
             return Task.CompletedTask;
         }
 
-        public async Task<bool> EsAdminDeLaPizarra(string idUsuario, Guid id)
+        public async Task<bool> EsAdminDeLaPizarra(string userId, Guid id)
         {
-            return await _context.PizarraUsuarios.AnyAsync(pu => pu.PizarraId == id && pu.UsuarioId == idUsuario
+            return await _context.PizarraUsuarios.AnyAsync(pu => pu.PizarraId == id && pu.UsuarioId == userId
             && pu.Rol.Equals(RolEnPizarra.Admin));
         }
 
@@ -82,9 +83,9 @@ namespace Services
             return pizarra;
         }
 
-        public List<PizarraResumenDTO> ObtenerPizarrasDelUsuario(string? idUsuario)
+        public List<PizarraResumenDTO> ObtenerPizarrasDelUsuario(string? userId)
         {
-            return _context.PizarraUsuarios.Where(pu => pu.UsuarioId == idUsuario)
+            return [.. _context.PizarraUsuarios.Where(pu => pu.UsuarioId == userId)
                 .Include(pu => pu.Pizarra)
                 .Select(pu => new PizarraResumenDTO
                 {
@@ -92,7 +93,7 @@ namespace Services
                     FechaCreacion = pu.Pizarra.FechaCreacion,
                     Nombre = pu.Pizarra.NombrePizarra,
                     Rol = Enum.Parse<RolEnPizarra>(pu.Rol.ToString())
-                }).ToList();
+                })];
         }
 
         public async Task<Texto> ObtenerTextoPorId(string idTexto, string pizarraId)
@@ -185,24 +186,43 @@ namespace Services
 
         }
 
-        public List<PizarraResumenDTO> ObtenerPizarrasFiltradas(string idUsuario, int? idFiltrarPorRol, string busqueda)
+        public List<PizarraResumenDTO> ObtenerPizarrasFiltradas(string userId, int? filtroRol, string busqueda)
         {
-            var pizarras = ObtenerPizarrasDelUsuario(idUsuario);
+            var pizarras = ObtenerPizarrasDelUsuario(userId);
 
             if (!string.IsNullOrWhiteSpace(busqueda))
             {
                 pizarras = [.. pizarras.Where(p => p.Nombre != null && p.Nombre.Contains(busqueda, StringComparison.OrdinalIgnoreCase))];
             }
 
-            if (idFiltrarPorRol.HasValue)
+            if (filtroRol.HasValue)
             {
-                var rolFiltrado = (RolEnPizarra)idFiltrarPorRol;
+                var rolFiltrado = (RolEnPizarra)filtroRol;
                 pizarras = rolFiltrado == RolEnPizarra.Admin
                     ? [.. pizarras.Where(p => p.Rol == RolEnPizarra.Admin)]
                     : [.. pizarras.Where(p => p.Rol == RolEnPizarra.Escritura)];
             }
 
             return pizarras;
+        }
+
+        public List<PizarraResumenDTO> ObtenerPizarrasChat(string? userId)
+        {
+            var pizarrasConVariosUsuarios = _context.PizarraUsuarios
+                .GroupBy(pu => pu.PizarraId)
+                .Where(k => k.Count() > 1)
+                .Select(k => k.Key);
+
+            return [.. _context.PizarraUsuarios
+                .Where(pu => pu.UsuarioId == userId && pizarrasConVariosUsuarios.Contains(pu.PizarraId))
+                .Include(pu => pu.Pizarra)
+                .Select(pu => new PizarraResumenDTO
+                {
+                    Id = pu.Pizarra.Id,
+                    FechaCreacion = pu.Pizarra.FechaCreacion,
+                    Nombre = pu.Pizarra.NombrePizarra,
+                    Rol = Enum.Parse<RolEnPizarra>(pu.Rol.ToString())
+                })];
         }
 
         public async Task<bool> EliminarPizarra(Guid pizarraId)

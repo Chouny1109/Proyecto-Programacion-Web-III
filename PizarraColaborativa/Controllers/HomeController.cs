@@ -14,37 +14,40 @@ namespace PizarraColaborativa.Controllers
         private readonly IPizarraService _service = service;
         private readonly UserManager<IdentityUser> _userManager = userManager;
 
-        public IActionResult Index(int? idFiltrarPorRol, string busqueda)
+        public IActionResult Index(int? filtroRol, string busqueda)
         {
             if (User.Identity != null && User.Identity.IsAuthenticated)
             {
-                var idUsuario = _userManager.GetUserId(User);
+                var userId = _userManager.GetUserId(User);
 
-                var pizarras = _service.ObtenerPizarrasFiltradas(idUsuario, idFiltrarPorRol, busqueda);
+                ViewBag.UserId = userId;
+                ViewBag.UserName = _userManager.GetUserName(User);
+                ViewBag.Pizarras = _service.ObtenerPizarrasChat(userId);
+
+                var pizarrasFiltradas = _service.ObtenerPizarrasFiltradas(userId, filtroRol, busqueda);
 
                 ViewBag.Busqueda = busqueda;
-                ViewBag.FiltroRol = idFiltrarPorRol;
+                ViewBag.FiltroRol = filtroRol;
 
-                if (pizarras.Count == 0)
-                {   
+                if (pizarrasFiltradas.Count == 0) {
                     ViewBag.Mensaje = "No se han encontrado pizarras disponibles.";
                 }
 
-                return View(pizarras);
+                return View(pizarrasFiltradas);
             }
 
             return RedirectToAction("Login", "Cuenta");
         }
 
         [HttpPost]
-        public async Task<IActionResult> EliminarPizarra(Guid id)
+        public async Task<IActionResult> EliminarPizarra(Guid pizarraId)
         {
-            var idUsuario = _userManager.GetUserId(User);
+            var userID = _userManager.GetUserId(User);
 
-            var esAdmin = await _service.EsAdminDeLaPizarra(idUsuario, id);
+            var esAdmin = await _service.EsAdminDeLaPizarra(userID, pizarraId);
             if (!esAdmin) return Forbid();
 
-            await _service.EliminarPizarra(id);
+            await _service.EliminarPizarra(pizarraId);
 
             return RedirectToAction(nameof(Index));
         }

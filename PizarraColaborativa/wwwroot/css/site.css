@@ -1,9 +1,11 @@
 :root {
     --color-principal: #6902df;
     --color-secundario: #9574f0;
+    --color-terciario: #1e1633;
+    --color-cuarto: #493c6b;
 }
 
-/* --- Layout general --- */
+/* --- Tipografía base y layout --- */
 html {
     position: relative;
     min-height: 100%;
@@ -60,11 +62,11 @@ a:focus {
     color: #fff;
 }
 
-/* --- Sidebar izquierdo fino --- */
+/* --- Sidebars --- */
 .fixed-left-bar {
     width: 50px;
     height: 100vh;
-    background-color: #1e1633;
+    background-color: var(--color-terciario);
     position: fixed;
     top: 0;
     left: 0;
@@ -72,7 +74,6 @@ a:focus {
     padding-top: 10px;
 }
 
-/* Botón de icono en barra fina */
 .icon-btn {
     background: none;
     border: none;
@@ -88,10 +89,9 @@ a:focus {
     color: var(--color-secundario);
 }
 
-/* --- Sidebar principal --- */
 .sidebar {
     width: 220px;
-    background-color: #493c6b;
+    background-color: var(--color-cuarto);
     color: white;
     position: fixed;
     top: 0;
@@ -114,7 +114,6 @@ a:focus {
     margin-bottom: 1.5rem;
 }
 
-/* Enlaces del sidebar */
 .sidebar .nav-link {
     color: white;
     padding: 8px 16px;
@@ -129,7 +128,7 @@ a:focus {
     background-color: rgba(255, 255, 255, 0.1);
 }
 
-/* Enlaces generales */
+/* --- Navegación general --- */
 .nav-link {
     padding: 0.5rem;
     border-radius: 0.5rem;
@@ -147,39 +146,46 @@ a:focus {
 .main-content {
     margin-left: 50px;
     width: calc(100% - 50px);
-    transition: margin-left 0.3s ease;
+    transition: margin-left 0.3s ease, margin-right 0.3s ease;
 }
 
 .main-content.shifted {
     margin-left: 270px;
 }
 
- .bg-jumbotron {
-    background-image: url('../imagenes/img-banner.webp'); 
-    background-size: cover;          /* O "contain" si querés que no se recorte */
+.main-content.shifted-chat {
+    margin-right: 300px;
+}
+
+/* --- Jumbotron --- */
+.bg-jumbotron {
+    background-image: url('../imagenes/img-banner.webp');
+    background-size: cover;
     background-repeat: no-repeat;
     background-position: center center;
 }
 
+/* --- Items hover --- */
 .bg-items {
-    background-color: var(--color-secundario); 
+    background-color: var(--color-cuarto);
     transition: transform 0.2s ease, box-shadow 0.2s ease, background-color 0.2s ease;
 }
 
 .bg-items:hover {
     transform: translateY(-5px);
     box-shadow: 0 8px 16px rgba(0, 0, 0, 0.25);
-    background-color: var(--color-principal); 
+    background-color: var(--color-terciario);
     cursor: pointer;
 }
 
+/* --- Alertas --- */
 .custom-alert {
     width: 50%;
     min-width: 280px;
     max-width: 600px;
 }
 
-/* --- Formularios y tipografía secundaria --- */
+/* --- Formularios --- */
 .form-label,
 input,
 select,
@@ -190,17 +196,149 @@ textarea {
 
 .input-group:focus-within {
     box-shadow: 0 0 0 0.25rem rgba(105, 2, 223, 0.4);
-    border-color: #6902df; 
+    border-color: var(--color-principal);
     transition: box-shadow 0.2s ease, border-color 0.2s ease;
 }
 
 .input-group input:focus {
-    outline: none;        
-    box-shadow: none;     
-    border-color: transparent; 
+    outline: none;
+    box-shadow: none;
+    border-color: transparent;
 }
 
-/* --- Canvas personalizado --- */
+/* --- Botón flotante chat --- */
+.chat-toggle-btn {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    background-color: var(--color-cuarto);
+    color: white;
+    border: none;
+    border-radius: 50%;
+    width: 56px;
+    height: 56px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+    z-index: 999;
+    cursor: pointer;
+    transition: background-color 0.25s ease, box-shadow 0.25s ease;
+}
+
+.chat-toggle-btn:hover {
+    background-color: var(--color-terciario);
+    box-shadow: 0 6px 14px rgba(0, 0, 0, 0.35);
+}
+
+.chat-toggle-btn .material-symbols-outlined {
+    font-size: 28px;
+}
+
+/* --- Panel flotante de chat --- */
+.floating-chat-panel {
+    position: fixed;
+    bottom: 85px;
+    right: 20px;
+    width: 320px;
+    background-color: white;
+    border: 1px solid #ddd;
+    border-radius: 12px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    z-index: 998;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    opacity: 0;
+    transform: scale(0.95);
+    pointer-events: none;
+    transition: all 0.3s ease-in-out;
+}
+
+.floating-chat-panel.show {
+    opacity: 1;
+    transform: scale(1);
+    pointer-events: auto;
+}
+
+/* Secciones del panel de chat */
+.chat-header,
+.chat-body,
+.chat-footer {
+    background-color: white;
+    padding: 12px;
+}
+
+.chat-header {
+    font-weight: bold;
+    border-bottom: 1px solid #e0e0e0;
+}
+
+.chat-body {
+    border-bottom: 1px solid #e0e0e0;
+}
+
+.chat-messages {
+    height: 180px;
+    overflow-y: auto;
+    background-color: #f8f8f8;
+    color: black;
+    padding: 5px;
+    border-radius: 10px;
+    border: none !important;
+}
+
+.chat-writing {
+    font-style: italic; 
+    font-size: 0.85em; 
+    color: #666; 
+    padding-top: 4px; 
+    height: 18px;
+}
+
+/* Input + botón enviar */
+.chat-footer .input-group {
+    width: 100%;
+}
+
+.chat-footer .form-control {
+    border-radius: 10px 0 0 10px;
+    border: 1px solid #ccc;
+}
+
+.chat-footer .input-group-text {
+    background-color: #e0e0e0;
+    border-radius: 0 10px 10px 0;
+    border: 1px solid #ccc;
+    border-left: none;
+    padding: 6px 10px;
+    color: black;
+    cursor: pointer;
+}
+
+.chat-footer .input-group-text:hover {
+    background-color: #d5d5d5;
+}
+
+.chat-footer .material-symbols-outlined {
+    font-size: 20px;
+    margin: 0;
+}
+
+/* Select en el header del chat */
+.chat-header select {
+    border: none;
+    background-color: transparent;
+    box-shadow: none;
+    appearance: none;
+    padding-left: 0;
+    padding-right: 0;
+    cursor: pointer;
+}
+
+.chat-header select:focus {
+    outline: none;
+    box-shadow: none;
+}
+
+/* --- Canvas --- */
 .canvas {
     border-radius: 5px;
 }
