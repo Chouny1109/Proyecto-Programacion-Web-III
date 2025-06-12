@@ -80,7 +80,7 @@ function dibujar(color1, corX, corY, corXFinal, corYFinal, tamanioLinea, enviar 
     line.push(pointObject);
 
         if (enviar && conexion.state === signalR.HubConnectionState.Connected) {
-            conexion.invoke("SendDibujo", pizarraId, color, corX, corY, corXFinal, corYFinal, tamanioInicial)
+            conexion.invoke("SendDibujo", pizarraId, color1, corX, corY, corXFinal, corYFinal, tamanioInicial)
                 .catch(function (err) {
                     return console.error("Error al enviar dibujo:", err.toString());
                 });
@@ -100,7 +100,7 @@ function dibujarConMouse(event) {
     if (!presionMouse || (nuevoX === x && nuevoY === y)) return;
 
     if (modoGoma) {
-        dibujar('white', x, y, nuevoX, nuevoY, 10, false);
+        dibujar(colorFondo, x, y, nuevoX, nuevoY, 12, true);
     } else {
         dibujar(color, x, y, nuevoX, nuevoY, tamanioInicial);
     }
@@ -167,13 +167,26 @@ function colorLinea() {
 document.addEventListener("change",fondoArea)
 
 let colorFondo = 'white'
+
 function fondoArea() {
 
     colorFondo = document.getElementById("color_fondo").value
 
     canvas.style.backgroundColor = colorFondo;
 
+
+    if (conexion.state === signalR.HubConnectionState.Connected) {
+        conexion.invoke("CambiarColorFondo", pizarraId, colorFondo)
+            .catch(err => console.error(err.toString()));
+
+    }
 }
+
+conexion.on("ColorFondoCambiado", function (colorFondo) {
+    canvas.style.backgroundColor = colorFondo;
+    document.getElementById("color_fondo").value = colorFondo;
+});
+
 
 let limpiarLineas = document.getElementById("limpiar");
 

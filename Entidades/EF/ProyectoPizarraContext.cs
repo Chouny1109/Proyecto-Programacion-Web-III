@@ -44,6 +44,7 @@ public partial class ProyectoPizarraContext : IdentityDbContext<IdentityUser>
 
             entity.Property(e => e.Id).HasDefaultValueSql("(newid())");
             entity.Property(e => e.CreadorId).HasMaxLength(100);
+            entity.Property(e => e.ColorFondo);
             entity.Property(e => e.FechaCreacion)
                 .HasDefaultValueSql("(getdate())")
                 .HasColumnType("datetime");

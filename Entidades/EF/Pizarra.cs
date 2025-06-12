@@ -11,6 +11,8 @@ public partial class Pizarra
 
     public string? NombrePizarra { get; set; }
 
+    public string? ColorFondo { get; set; }
+
     public DateTime FechaCreacion { get; set; }
 
     public virtual ICollection<InvitacionPizarra> InvitacionPizarras { get; set; } = new List<InvitacionPizarra>();

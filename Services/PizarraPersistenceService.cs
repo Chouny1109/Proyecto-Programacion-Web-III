@@ -15,10 +15,12 @@ namespace Services
         private readonly IServiceScopeFactory _scopeFactory;
         private readonly TrazoMemoryService _trazoMemoryService;
         private readonly TextoMemoryService _textoMemoryService;
+   
         private readonly ILogger<PizarraPersistenceService> _logger;    
 
         public PizarraPersistenceService(IServiceScopeFactory scopeFactory, TrazoMemoryService trazoService,
-            TextoMemoryService textoMemoryService, ILogger<PizarraPersistenceService> logger)
+            TextoMemoryService textoMemoryService,
+            ILogger<PizarraPersistenceService> logger)
         {
            _scopeFactory = scopeFactory;
             _trazoMemoryService = trazoService;
@@ -46,7 +48,7 @@ namespace Services
                       await  pizarraService.PersistirTextosBD(_textoMemoryService.ObtenerTodas());
                         _logger.LogInformation("Textos guardados en DB a las {Hora}", DateTime.Now);
 
-
+                        
                     }
                 }
                 catch (Exception ex)

@@ -11,14 +11,17 @@ namespace PizarraColaborativa.Hubs
         private readonly TextoMemoryService _textoService;
         private readonly TrazoMemoryService _trazoService;
         private readonly IPizarraService _pizarraService;
+       
 
         public DibujoHub(TrazoMemoryService memoriaService
-            , TextoMemoryService textoService, IPizarraService pizarraService)
+            , TextoMemoryService textoService, IPizarraService pizarraService
+            )
         {
             _textoService = textoService;
             _trazoService = memoriaService;
             _pizarraService = pizarraService;
         }
+
         public override async Task OnConnectedAsync()
         {
             var httpContext = Context.GetHttpContext();
@@ -29,6 +32,10 @@ namespace PizarraColaborativa.Hubs
 
             var pizarra = await _pizarraService.ObtenerPizarra(Guid.Parse(pizarraId));
             await Clients.Caller.SendAsync("NombrePizarraCambiado", pizarra.NombrePizarra);
+
+            //Cargar Color de fondo pizarra al conectarse
+            var colorFondo = await _pizarraService.ObtenerColorFondoDeUnaPizarra(Guid.Parse(pizarraId)) ?? "#ffffff";
+            await Clients.Caller.SendAsync("ColorFondoCambiado", colorFondo);
 
             //si no hay trazos en memoria,cargar base de datos.
             if (!_trazoService.Existe(pizarraId))
@@ -74,6 +81,11 @@ namespace PizarraColaborativa.Hubs
             await base.OnConnectedAsync();
         }
 
+        public async Task CambiarColorFondo(string pizarraId, string colorFondo)
+        {
+            await _pizarraService.CambiarColorFondoPizarra(pizarraId, colorFondo);
+            await Clients.Group(pizarraId).SendAsync("ColorFondoCambiado", colorFondo);
+        }
         public async Task CambiarNombrePizarra(string pizarraId, string nuevoNombre)
         {
 

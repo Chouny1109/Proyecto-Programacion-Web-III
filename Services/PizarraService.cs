@@ -1,4 +1,5 @@
-﻿using System.Collections.Concurrent;
+﻿using System;
+using System.Collections.Concurrent;
 using System.Security.Cryptography;
 using DTO;
 using Entidades.EF;
@@ -29,6 +30,8 @@ namespace Services
         List<PizarraResumenDTO> ObtenerPizarrasFiltradas(string userId, int? filtroRol, string busqueda);
         List<PizarraResumenDTO> ObtenerPizarrasChat(string? userId);
         Task<bool> EliminarPizarra(Guid pizarraId);
+        Task<string?> ObtenerColorFondoDeUnaPizarra(Guid guid);
+        Task CambiarColorFondoPizarra(string pizarraId, string colorFondo);
     }
     public class PizarraService : IPizarraService
     {
@@ -168,7 +171,7 @@ namespace Services
             }
             await _context.SaveChangesAsync();
         }
-
+       
         public async Task<List<Trazo>> ObtenerTrazosDeUnaPizarra(Guid pizarraGuid)
         {
             return await _context.Trazos.Where(t => t.PizarraId == pizarraGuid).ToListAsync();
@@ -241,6 +244,24 @@ namespace Services
             await _context.SaveChangesAsync();
 
             return true;
+        }
+
+        public async Task<string?> ObtenerColorFondoDeUnaPizarra(Guid guid)
+        {
+            var pizarra = await ObtenerPizarra(guid);
+
+            return pizarra.ColorFondo;
+        }
+
+        public async Task CambiarColorFondoPizarra(string pizarraId, string colorFondo)
+        {
+            var pizarra = await ObtenerPizarra(Guid.Parse(pizarraId));
+            if (pizarra != null)
+            {
+                pizarra.ColorFondo = colorFondo;
+                await _context.SaveChangesAsync();
+            }
+           
         }
     }
 }
