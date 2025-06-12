@@ -5,7 +5,9 @@ PizarraColaborativa/bin/
 PizarraColaborativa/obj/
 
 
-# Ignore build output folders
+# Ignore all bin and obj folders in the repository
+bin/
+obj/
 **/bin/
 **/obj/
 
