@@ -100,23 +100,20 @@ namespace PizarraColaborativa.Hubs
 
 
 
-        public async Task SendDibujo(string pizarraId, string color, int xInicial, int yInicial, int xFinal, int yFinal, int tamanioInicial)
+        public async Task EnviarTrazoCompleto(string pizarraId, List<Trazo> segmentos, Guid grupoTrazoId)
         {
-            var trazo = new Trazo
+            foreach (var trazo in segmentos)
             {
-                Color = color,
-                Xinicio = xInicial,
-                Yinicio = yInicial,
-                Xfin = xFinal,
-                Yfin = yFinal,
-                Grosor = tamanioInicial
-            };
-            _trazoService.AgregarTrazo(pizarraId, trazo);
-            _actionsMemoryService.RegistrarAccion(pizarraId, new AccionTrazo(trazo));
+                trazo.GrupoTrazoId = grupoTrazoId;
+                _trazoService.AgregarTrazo(pizarraId, trazo);
+            }
+
+            _actionsMemoryService.RegistrarAccion(pizarraId, new AccionTrazo(segmentos));
 
             await Clients.GroupExcept(pizarraId, Context.ConnectionId)
-                .SendAsync("ReceivePosition", color, xInicial, yInicial, xFinal, yFinal, tamanioInicial);
+                .SendAsync("DibujarTrazoCompleto", segmentos);
         }
+
 
         public async Task SendLimpiar(string pizarraId)
         {

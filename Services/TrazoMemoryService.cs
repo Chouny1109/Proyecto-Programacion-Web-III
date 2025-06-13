@@ -45,21 +45,16 @@ namespace Services
             _trazosPorPizarra.TryRemove(pizarraId, out _);
         }
 
-        public void EliminarTrazo(string pizarraId, int id)
+        public void EliminarTrazo(string pizarraId, Guid grupoTrazoId)
         {
-            if (_trazosPorPizarra.TryGetValue(pizarraId, out var listaTrazos))
+            if (_trazosPorPizarra.TryGetValue(pizarraId, out var lista))
             {
-                lock (listaTrazos)
+                lock (lista)
                 {
-                    var trazo = listaTrazos.FirstOrDefault(t => t.Id == id);
-                    if (trazo != null)
-                    {
-                        listaTrazos.Remove(trazo);
-                    }
+                    lista.RemoveAll(t => t.GrupoTrazoId == grupoTrazoId);
                 }
-
             }
         }
     }
 
-}
+        }

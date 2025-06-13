@@ -7,23 +7,29 @@ namespace Services.Acciones
 {
     public class AccionTrazo : IAccionPizarra
     {
-        public Trazo Trazo { get;}
+        public Guid GrupoTrazoId { get; }
+        public List<Trazo> Segmentos { get; }
 
-        public AccionTrazo(Trazo trazo)
+        public AccionTrazo(List<Trazo> segmentos)
         {
-            Trazo = trazo;   
+            Segmentos = segmentos;
+            GrupoTrazoId = segmentos.First().GrupoTrazoId ?? Guid.NewGuid();
         }
 
         public Task Deshacer(string pizarraId, IHubCallerClients clients, TrazoMemoryService trazoService, TextoMemoryService textoService)
         {
-            trazoService.EliminarTrazo(pizarraId, Trazo.Id); 
-            return clients.Group(pizarraId).SendAsync("TrazoEliminado", Trazo);
+
+            trazoService.EliminarTrazo(pizarraId, GrupoTrazoId);
+            var trazosActuales = trazoService.ObtenerTrazos(pizarraId);
+            return clients.Group(pizarraId).SendAsync("CargarTrazos", trazosActuales);
         }
 
         public Task Rehacer(string pizarraId, IHubCallerClients clients, TrazoMemoryService trazoService, TextoMemoryService textoService)
         {
-            trazoService.AgregarTrazo(pizarraId, Trazo);
-            return clients.Group(pizarraId).SendAsync("TrazoRehecho", Trazo);
+            foreach (var trazo in Segmentos)
+                trazoService.AgregarTrazo(pizarraId, trazo);
+
+            return clients.Group(pizarraId).SendAsync("DibujarTrazoCompleto", Segmentos);
         }
     }
 }
