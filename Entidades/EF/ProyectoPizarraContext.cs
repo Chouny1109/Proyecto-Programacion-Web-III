@@ -18,6 +18,12 @@ public partial class ProyectoPizarraContext : IdentityDbContext<IdentityUser>
     {
     }
 
+    public virtual DbSet<InvitacionPizarra> InvitacionPizarras { get; set; }
+
+    public virtual DbSet<Mensaje> Mensajes { get; set; }
+
+    public virtual DbSet<MensajeVisto> MensajeVistos { get; set; }
+
     public virtual DbSet<Pizarra> Pizarras { get; set; }
 
     public virtual DbSet<PizarraUsuario> PizarraUsuarios { get; set; }
@@ -26,15 +32,68 @@ public partial class ProyectoPizarraContext : IdentityDbContext<IdentityUser>
 
     public virtual DbSet<Trazo> Trazos { get; set; }
 
-    public virtual DbSet<InvitacionPizarra> InvitacionPizarras { get; set; }
-
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
 #warning To protect potentially sensitive information in your connection string, you should move it out of source code. You can avoid scaffolding the connection string by using the Name= syntax to read it from configuration - see https://go.microsoft.com/fwlink/?linkid=2131148. For more guidance on storing connection strings, see https://go.microsoft.com/fwlink/?LinkId=723263.
-        => optionsBuilder.UseSqlServer("Server=.\\SQLEXPRESS;Database=ProyectoPizarra;Trusted_Connection=True;;TrustServerCertificate=True;");
+        => optionsBuilder.UseSqlServer("Server=.\\SQLEXPRESS;Database=ProyectoPizarra;Trusted_Connection=True;TrustServerCertificate=True");
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         base.OnModelCreating(modelBuilder);
+
+        modelBuilder.Entity<InvitacionPizarra>(entity =>
+        {
+            entity.HasKey(e => e.Id).HasName("PK__Invitaci__3214EC0732C0BD28");
+
+            entity.ToTable("InvitacionPizarra");
+
+            entity.HasIndex(e => e.CodigoInvitacion, "UQ__Invitaci__14EDD62D6DA2A155").IsUnique();
+
+            entity.Property(e => e.CodigoInvitacion).HasMaxLength(100);
+            entity.Property(e => e.FechaExpiracion).HasColumnType("datetime");
+            entity.Property(e => e.FechaInvitacion)
+                .HasDefaultValueSql("(getdate())")
+                .HasColumnType("datetime");
+            entity.Property(e => e.Rol).HasDefaultValue(RolEnPizarra.Escritura);
+            entity.Property(e => e.UsuarioRemitenteId).HasMaxLength(450);
+
+            entity.HasOne(d => d.Pizarra).WithMany(p => p.InvitacionPizarras)
+                .HasForeignKey(d => d.PizarraId)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK__Invitacio__Pizar__6B24EA82");
+        });
+
+        modelBuilder.Entity<Mensaje>(entity =>
+        {
+            entity.HasKey(e => e.Id).HasName("PK__Mensaje__3214EC072898E48B");
+
+            entity.ToTable("Mensaje");
+
+            entity.HasIndex(e => new { e.PizarraId, e.UsuarioId, e.FechaPublicacion }, "IX_Mensaje_Pizarra_Usuario_Fecha");
+
+            entity.Property(e => e.FechaPublicacion)
+                .HasDefaultValueSql("(getdate())")
+                .HasColumnType("datetime");
+            entity.Property(e => e.NombreUsuario).HasMaxLength(100);
+
+            entity.HasOne(d => d.Pizarra).WithMany(p => p.Mensajes)
+                .HasForeignKey(d => d.PizarraId)
+                .HasConstraintName("FK_Mensaje_Pizarra");
+        });
+
+        modelBuilder.Entity<MensajeVisto>(entity =>
+        {
+            entity.HasKey(e => new { e.MensajeId, e.UsuarioId }).IsClustered(false);
+
+            entity.ToTable("MensajeVisto");
+
+            entity.Property(e => e.FechaVisto)
+                .HasDefaultValueSql("(getdate())")
+                .HasColumnType("datetime");
+
+            entity.HasOne(d => d.Mensaje).WithMany(p => p.MensajeVistos)
+                .HasForeignKey(d => d.MensajeId)
+                .HasConstraintName("FK_MensajeVisto_Mensaje");
+        });
 
         modelBuilder.Entity<Pizarra>(entity =>
         {
@@ -43,8 +102,8 @@ public partial class ProyectoPizarraContext : IdentityDbContext<IdentityUser>
             entity.ToTable("Pizarra");
 
             entity.Property(e => e.Id).HasDefaultValueSql("(newid())");
+            entity.Property(e => e.ColorFondo).HasMaxLength(100);
             entity.Property(e => e.CreadorId).HasMaxLength(100);
-            entity.Property(e => e.ColorFondo);
             entity.Property(e => e.FechaCreacion)
                 .HasDefaultValueSql("(getdate())")
                 .HasColumnType("datetime");
@@ -53,19 +112,20 @@ public partial class ProyectoPizarraContext : IdentityDbContext<IdentityUser>
 
         modelBuilder.Entity<PizarraUsuario>(entity =>
         {
-            entity.HasKey(e => new { e.PizarraId, e.UsuarioId }).HasName("PK__PizarraU__5195DC57C5B7103F");
+            entity.HasKey(e => new { e.PizarraId, e.UsuarioId }).HasName("PK__PizarraU__5195DC57DE0D30AF");
 
             entity.Property(e => e.Rol).HasMaxLength(50);
 
             entity.HasOne(d => d.Pizarra).WithMany(p => p.PizarraUsuarios)
                 .HasForeignKey(d => d.PizarraId)
-                .HasConstraintName("FK__PizarraUs__Pizar__534D60F1");
+                .HasConstraintName("FK__PizarraUs__Pizar__6D0D32F4");
         });
 
         modelBuilder.Entity<Texto>(entity =>
         {
             entity.HasKey(e => e.Id).HasName("PK__Textos__3214EC07CF16E22C");
 
+            entity.Property(e => e.Id).HasMaxLength(50);
             entity.Property(e => e.Color).HasMaxLength(50);
 
             entity.HasOne(d => d.Pizarra).WithMany(p => p.Textos)
@@ -86,29 +146,6 @@ public partial class ProyectoPizarraContext : IdentityDbContext<IdentityUser>
             entity.HasOne(d => d.Pizarra).WithMany(p => p.Trazos)
                 .HasForeignKey(d => d.PizarraId)
                 .HasConstraintName("FK__Trazos__PizarraI__4D94879B");
-        });
-
-        modelBuilder.Entity<InvitacionPizarra>(entity =>
-        {
-            entity.HasKey(e => e.Id).HasName("PK__Invitaci__3214EC07859B1592");
-
-            entity.ToTable("InvitacionPizarra");
-
-            entity.HasIndex(e => e.CodigoInvitacion, "UQ__Invitaci__14EDD62D089BCCE6").IsUnique();
-
-            entity.Property(e => e.CodigoInvitacion).HasMaxLength(100);
-            entity.Property(e => e.FechaExpiracion).HasColumnType("datetime");
-            entity.Property(e => e.FechaInvitacion)
-                .HasDefaultValueSql("(getdate())")
-                .HasColumnType("datetime");
-            entity.Property(e => e.Rol).HasDefaultValue(RolEnPizarra.Escritura);
-            entity.Property(e => e.UsuarioRemitenteId).HasMaxLength(450);
-
-            entity.HasOne(d => d.Pizarra).WithMany(p => p.InvitacionPizarras)
-                .HasForeignKey(d => d.PizarraId)
-                .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK__Invitacio__Pizar__0D7A0286");
-
         });
 
         OnModelCreatingPartial(modelBuilder);

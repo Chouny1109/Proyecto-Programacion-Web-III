@@ -14,12 +14,11 @@
 </head>
 <body>
 @{
-    var userId = ViewBag.UserId as string;
-    var userName = ViewBag.UserName as string;
-    var pizarras = ViewBag.Pizarras as List<PizarraColaborativa.DTO.PizarraResumenDTO>;
+    var userName = ViewData["UserName"];
 }
 
 <div class="layout-wrapper d-flex">
+    <!-- FIXED NAVBAR -->
     <div class="fixed-left-bar d-flex flex-column align-items-center">
         <button id="toggleSidebar" class="icon-btn mt-3" title="Menú">
             <span id="menuIcon" class="material-symbols-outlined">menu</span>
@@ -37,21 +36,23 @@
         </form>
     </div>
 
+    <!-- SIDEBAR -->
     <div id="sidebar" class="sidebar">
         <div class="p-3">
             <h3>@userName</h3>
             <ul class="nav flex-column">
                 <li class="nav-item mb-2">
-                    <a class="nav-link d-flex align-items-center text-decoration-none" asp-controller="Home" asp-action="Index">
+                    <a asp-controller="Home" asp-action="Index" class="nav-link btn btn-link d-flex align-items-center text-decoration-none text-start">
                         <span class="material-symbols-outlined me-2">home</span>
                         Mis Pizarras
                     </a>
                 </li>
                 <li class="nav-item mb-2">
-                    <a class="nav-link d-flex align-items-center text-decoration-none" asp-controller="Pizarra" asp-action="CrearPizarra">
+                    <button type="button" class="nav-link btn btn-link d-flex align-items-center text-decoration-none text-start"
+                        data-bs-toggle="modal" data-bs-target="#modalCrearPizarra">
                         <span class="material-symbols-outlined me-2">add</span>
                         Crear Pizarra
-                    </a>
+                    </button>
                 </li>
                 <!--<li class="nav-item mb-2">
                     <a class="nav-link d-flex align-items-center text-decoration-none" asp-controller="Pizarra" asp-action="Papelera">
@@ -63,56 +64,37 @@
         </div>
     </div>
 
+    <!-- MODAL CREAR PIZARRA -->
+    <div class="modal fade" id="modalCrearPizarra" tabindex="-1" aria-labelledby="labelCrearPizarra" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content border-success">
+                <div class="modal-header bg-success text-white">
+                    <h5 class="modal-title" id="labelCrearPizarra">Crear nueva pizarra</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+                </div>
+                <form asp-controller="Pizarra" asp-action="Crear" method="post">
+                    <div class="modal-body">
+                        <div class="mb-3">
+                            <label for="nombrePizarra" class="form-label">Nombre de la pizarra</label>
+                            <input type="text" class="form-control" id="nombrePizarra" name="nombre" required />
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                        <button type="submit" class="btn btn-success">Crear</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
     <div id="main-content" class="main-content">
         <div class="container py-4">
             @RenderBody()
         </div>
     </div>
-
-@if (pizarras != null && pizarras.Any())
-{
-    <button id="chatToggleBtn" class="chat-toggle-btn">
-        <span id="chatToggleIcon" class="material-symbols-outlined">chat</span>
-    </button>
-
-    <div id="floatingChatPanel" class="floating-chat-panel">
-        <div class="chat-header p-2">
-            <select id="chatSelector" class="form-select fw-bold">
-                @foreach (var p in pizarras)
-                {
-                    <option value="@p.Nombre" class="fw-bold">@p.Nombre</option>
-                }
-            </select>
-        </div>
-
-        <div class="chat-body p-2">
-            @foreach (var p in pizarras)
-            {
-                <div class="chat-messages d-none" id="chat-@p.Nombre"></div>
-            }
-            <div id="writing-msg" class="chat-writing"></div>
-        </div>
-
-        <div class="chat-footer p-2">
-            <div class="input-group rounded">
-                <input type="text" id="chatInput" class="form-control form-control-sm border-0 rounded-start" placeholder="Escribe tu mensaje..." style="box-shadow: none;">
-                <span class="input-group-text border-0 bg-white rounded-end" id="sendMsg" style="cursor: pointer; box-shadow: none;">
-                    <span class="material-symbols-outlined">send</span>
-                </span>
-            </div>
-        </div>
-    </div>
-}
 </div>
-
 <script src="https://cdnjs.cloudflare.com/ajax/libs/microsoft-signalr/6.0.1/signalr.js"></script>
-<script>
-    window.chatData = {
-        userId: "@userId",
-        userName: "@userName",
-        pizarras: @Html.Raw(System.Text.Json.JsonSerializer.Serialize(pizarras))
-    };
-</script>
 <script src="~/lib/jquery/dist/jquery.min.js"></script>
 <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
 <script src="~/js/site.js" asp-append-version="true"></script>

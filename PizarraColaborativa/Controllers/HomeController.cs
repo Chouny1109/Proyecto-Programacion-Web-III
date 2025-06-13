@@ -8,30 +8,29 @@ using Services;
 namespace PizarraColaborativa.Controllers
 {
     [Authorize(Roles = "Usuario")]
-    public class HomeController(ILogger<HomeController> logger, IPizarraService service, UserManager<IdentityUser> userManager) : Controller
+    public class HomeController(
+        ILogger<HomeController> logger,
+        IPizarraService service,
+        UserManager<IdentityUser> userManager) : Controller
     {
         private readonly ILogger<HomeController> _logger = logger;
         private readonly IPizarraService _service = service;
         private readonly UserManager<IdentityUser> _userManager = userManager;
 
-        public IActionResult Index(int? filtroRol, string busqueda)
+        public async Task<IActionResult> Index(int? filtroRol, string busqueda)
         {
             if (User.Identity != null && User.Identity.IsAuthenticated)
             {
                 var userId = _userManager.GetUserId(User);
 
-                ViewBag.UserId = userId;
-                ViewBag.UserName = _userManager.GetUserName(User);
-                ViewBag.Pizarras = _service.ObtenerPizarrasChat(userId);
+                var pizarrasFiltradas = await _service.ObtenerPizarrasFiltradasAsync(userId, filtroRol, busqueda);
 
-                var pizarrasFiltradas = _service.ObtenerPizarrasFiltradas(userId, filtroRol, busqueda);
+                ViewData["UserName"] = _userManager.GetUserName(User);
+                ViewData["Busqueda"] = busqueda;
+                ViewData["FiltroRol"] = filtroRol;
 
-                ViewBag.Busqueda = busqueda;
-                ViewBag.FiltroRol = filtroRol;
-
-                if (pizarrasFiltradas.Count == 0) {
-                    ViewBag.Mensaje = "No se han encontrado pizarras disponibles.";
-                }
+                if (pizarrasFiltradas.Count == 0)
+                    TempData["Mensaje"] = "No se han encontrado pizarras disponibles.";
 
                 return View(pizarrasFiltradas);
             }
@@ -42,12 +41,11 @@ namespace PizarraColaborativa.Controllers
         [HttpPost]
         public async Task<IActionResult> EliminarPizarra(Guid pizarraId)
         {
-            var userID = _userManager.GetUserId(User);
+            var userId = _userManager.GetUserId(User);
 
-            var esAdmin = await _service.EsAdminDeLaPizarra(userID, pizarraId);
-            if (!esAdmin) return Forbid();
+            if (!await _service.EsAdminDeLaPizarraAsync(userId, pizarraId)) return Forbid();
 
-            await _service.EliminarPizarra(pizarraId);
+            await _service.EliminarPizarraAsync(pizarraId);
 
             return RedirectToAction(nameof(Index));
         }

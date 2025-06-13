@@ -1,3 +1,5 @@
+using System.Security.Claims;
+using DTO;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.SignalR;
 using Services;
@@ -8,55 +10,77 @@ public class ChatHub(IPizarraService service, UserManager<IdentityUser> userMana
 {
     private readonly IPizarraService _service = service;
     private readonly UserManager<IdentityUser> _userManager = userManager;
-    private async Task<string?> ObtenerUserNameAsync(string userId)
-    {
-        var user = await _userManager.FindByIdAsync(userId);
-        return user?.UserName;
-    }
 
     public override async Task OnConnectedAsync()
     {
-        var userId = Context.GetHttpContext().Request.Query["userId"].ToString();
-        var pizarras = _service.ObtenerPizarrasChat(userId);
-        var userName = await ObtenerUserNameAsync(userId);
+        var userId = Context.User?.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+        var pizarraId = Context.GetHttpContext()?.Request.Query["pizarraId"].ToString();
 
-        foreach (var pizarra in pizarras)
-        {
-            await Groups.AddToGroupAsync(Context.ConnectionId, pizarra.Nombre);
-            await Clients.Group(pizarra.Nombre).SendAsync("UsuarioConectado", userId, userName);
-        }
+        if (string.IsNullOrWhiteSpace(userId) || string.IsNullOrWhiteSpace(pizarraId)) return;
+
+        var user = await _userManager.FindByIdAsync(userId);
+        await Groups.AddToGroupAsync(Context.ConnectionId, pizarraId);
+        await Clients.Group(pizarraId).SendAsync("UsuarioConectado", userId, user?.UserName);
+
+        var mensajes = await _service.ObtenerMensajesAsync(Guid.Parse(pizarraId), userId);
+        await Clients.Caller.SendAsync("HistorialMensajes", pizarraId, mensajes);
 
         await base.OnConnectedAsync();
     }
 
-    public override async Task OnDisconnectedAsync(Exception exception)
+    public override async Task OnDisconnectedAsync(Exception? exception)
     {
-        var userId = Context.GetHttpContext().Request.Query["userId"].ToString();
-        var pizarras = _service.ObtenerPizarrasChat(userId);
-        var userName = await ObtenerUserNameAsync(userId);
+        var userId = Context.User?.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+        var pizarraId = Context.GetHttpContext()?.Request.Query["pizarraId"].ToString();
 
-        foreach (var pizarra in pizarras)
+        if (!string.IsNullOrWhiteSpace(userId) && !string.IsNullOrWhiteSpace(pizarraId))
         {
-            await Clients.Group(pizarra.Nombre).SendAsync("UsuarioDesconectado", userId, userName);
+            var user = await _userManager.FindByIdAsync(userId);
+            await Clients.Group(pizarraId).SendAsync("UsuarioDesconectado", userId, user.UserName);
         }
 
         await base.OnDisconnectedAsync(exception);
     }
 
-    public async Task EnviarMensaje(string pizarraId, string userId, string mensaje)
+    public async Task EnviarMensaje(string pizarraId, string mensaje)
     {
-        var userName = await ObtenerUserNameAsync(userId);
-        await Clients.Group(pizarraId).SendAsync("RecibirMensaje", userId, userName, mensaje, pizarraId);
+        var userId = Context.User?.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+        if (string.IsNullOrWhiteSpace(userId) || string.IsNullOrWhiteSpace(pizarraId)) return;
+
+        var user = await _userManager.FindByIdAsync(userId);
+
+        var mensajeGuardado = await _service.GuardarMensajeAsync(new MensajeDTO
+        {
+            PizarraId = Guid.Parse(pizarraId),
+            UsuarioId = userId,
+            NombreUsuario = user.UserName,
+            Descripcion = mensaje
+        });
+
+        await Clients.Group(pizarraId).SendAsync("RecibirMensaje", userId, user.UserName, mensajeGuardado.Descripcion, pizarraId);
     }
 
-    public async Task UsuarioEscribiendo(string pizarraId, string userId)
+    public async Task MarcarTodosComoVistos(string pizarraId)
     {
-        var userName = await ObtenerUserNameAsync(userId);
-        await Clients.Group(pizarraId).SendAsync("UsuarioEscribiendo", userName, pizarraId);
+        var userId = Context.User?.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+        if (string.IsNullOrWhiteSpace(userId)) return;
+
+        await _service.MarcarTodosLosMensajesComoVistosAsync(Guid.Parse(pizarraId), userId);
     }
 
-    public async Task UsuarioDejoDeEscribir(string pizarraId, string userId)
+    public async Task UsuarioEscribiendo(string pizarraId)
     {
-        await Clients.Group(pizarraId).SendAsync("UsuarioDejoDeEscribir", userId, pizarraId);
+        var userId = Context.User?.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+        if (!string.IsNullOrWhiteSpace(userId) && !string.IsNullOrWhiteSpace(pizarraId))
+        {
+            var user = await _userManager.FindByIdAsync(userId);
+            await Clients.Group(pizarraId).SendAsync("UsuarioEscribiendo", user?.UserName, pizarraId);
+        }
+    }
+    
+    public async Task UsuarioDejoDeEscribir(string pizarraId)
+    {
+        if (string.IsNullOrWhiteSpace(pizarraId)) return;
+        await Clients.Group(pizarraId).SendAsync("UsuarioDejoDeEscribir", pizarraId);
     }
 }

@@ -1,0 +1,42 @@
+USE ProyectoPizarra;
+GO
+
+-- Tabla Mensaje
+CREATE TABLE Mensaje (
+    Id INT IDENTITY(1,1) PRIMARY KEY,
+    PizarraId UNIQUEIDENTIFIER NOT NULL,
+    UsuarioId NVARCHAR(450) NOT NULL,
+    NombreUsuario NVARCHAR(100) NOT NULL,
+    Descripcion NVARCHAR(MAX) NOT NULL,
+    FechaPublicacion DATETIME NOT NULL DEFAULT GETDATE(),
+
+    CONSTRAINT FK_Mensaje_Pizarra FOREIGN KEY (PizarraId)
+        REFERENCES Pizarra(Id) ON DELETE CASCADE,
+
+    CONSTRAINT FK_Mensaje_Usuario FOREIGN KEY (UsuarioId)
+        REFERENCES AspNetUsers(Id) ON DELETE CASCADE
+);
+
+CREATE INDEX IX_Mensaje_Pizarra_Usuario_Fecha
+ON Mensaje (PizarraId, UsuarioId, FechaPublicacion);
+GO
+
+-- Tabla MensajeVisto
+CREATE TABLE MensajeVisto (
+    MensajeId INT NOT NULL,
+    UsuarioId NVARCHAR(450) NOT NULL,
+    FechaVisto DATETIME NOT NULL DEFAULT GETDATE(),
+
+    CONSTRAINT PK_MensajeVisto PRIMARY KEY NONCLUSTERED (MensajeId, UsuarioId),
+
+    CONSTRAINT FK_MensajeVisto_Mensaje FOREIGN KEY (MensajeId)
+        REFERENCES Mensaje(Id) ON DELETE CASCADE,
+
+    CONSTRAINT FK_MensajeVisto_Usuario FOREIGN KEY (UsuarioId)
+        REFERENCES AspNetUsers(Id) ON DELETE NO ACTION
+);
+GO
+
+ALTER TABLE [dbo].[Pizarra]
+ADD [ColorFondo] NVARCHAR(100) NULL;
+GO

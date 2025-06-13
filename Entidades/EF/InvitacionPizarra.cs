@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using DTO;
+using Microsoft.AspNetCore.Identity;
 
 namespace Entidades.EF;
 
@@ -22,5 +23,5 @@ public partial class InvitacionPizarra
 
     public virtual Pizarra Pizarra { get; set; } = null!;
 
-
+    public virtual IdentityUser UsuarioRemitente { get; set; } = null!;
 }

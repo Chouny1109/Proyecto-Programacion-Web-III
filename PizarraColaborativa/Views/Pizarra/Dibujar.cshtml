@@ -1,5 +1,11 @@
 ﻿@{
-    ViewData["Title"] = "Pizarra";
+    ViewData["Title"] = ViewData["PizarraNombre"];
+    var chatData = new {
+        userId = ViewData["UserId"],
+        userName = ViewData["UserName"],
+        pizarraId = ViewData["PizarraId"],
+        mensajesNoVistos = ViewData["MensajesNoVistos"]
+    };
 }
 @if (ViewData["EsAdmin"] != null && (bool)ViewData["EsAdmin"])
 {
@@ -87,10 +93,35 @@
     </div>
 </div>
 
+<!-- FLOATING CHAT  -->
+<button id="chatToggleBtn" class="chat-toggle-btn">
+    <span id="chatToggleIcon" class="material-symbols-outlined">chat</span>
+    <span id="chatBadge" class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger d-none"></span>
+</button>
+
+<div id="floatingChatPanel" class="floating-chat-panel">
+    <div class="chat-header p-2 fw-bold">
+        <span class="fs-6">@ViewData["PizarraNombre"]</span>
+    </div>
+
+    <div class="chat-body p-2">
+        <div class="chat-messages" id="chat-@ViewData["PizarraId"]"></div>
+        <div id="writing-msg" class="chat-writing"></div>
+    </div>
+
+    <div class="chat-footer p-2">
+        <div class="input-group rounded">
+            <input type="text" id="chatInput" class="form-control form-control-sm border-0 rounded-start" placeholder="Escribe tu mensaje..." style="box-shadow: none;">
+            <span class="input-group-text border-0 bg-white rounded-end" id="sendMsg" style="cursor: pointer; box-shadow: none;">
+                <span class="material-symbols-outlined">send</span>
+            </span>
+        </div>
+    </div>
+</div>
 
 @section Scripts {
-
     <script>
+        window.chatData = @Html.Raw(System.Text.Json.JsonSerializer.Serialize(chatData));
 
         document.getElementById('formInvitacion').addEventListener('submit',async function (e){
             e.preventDefault();
@@ -111,6 +142,5 @@
             }
 
         });
-
     </script>
 }

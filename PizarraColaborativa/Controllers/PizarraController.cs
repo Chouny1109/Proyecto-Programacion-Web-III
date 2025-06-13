@@ -3,76 +3,59 @@ using Entidades.EF;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 using Services;
 
 namespace PizarraColaborativa.Controllers
 {
     [Authorize(Roles ="Usuario")]
-    public class PizarraController : Controller
+    public class PizarraController(IPizarraService service, UserManager<IdentityUser> userManager) : Controller
     {
-        private readonly IPizarraService _service;
-        private readonly UserManager<IdentityUser> _userManager;
-
-
-        public PizarraController(IPizarraService service, UserManager<IdentityUser> userManager)
-        {
-            _service= service;
-            _userManager= userManager;
-        }
-
-        [HttpGet]
-        public IActionResult CrearPizarra()
-        {
-            return View();
-        }
+        private readonly IPizarraService _service = service;
+        private readonly UserManager<IdentityUser> _userManager = userManager;
 
         [HttpPost]
         public async Task<IActionResult> Crear(string nombre)
         {
             var creadorId = _userManager.GetUserId(User);
-            var idPizarra = Guid.NewGuid();
-            var pizarra = new Pizarra
+            var nuevaPizarra = new Pizarra
             {
-                Id = idPizarra,
+                Id = Guid.NewGuid(),
                 CreadorId = creadorId,
                 NombrePizarra = nombre,
+                FechaCreacion = DateTime.UtcNow
+            };
 
-            };
-            var usuarioPizarra = new PizarraUsuario()
-            {
-                PizarraId = idPizarra,
-                UsuarioId = creadorId,
-                Rol = RolEnPizarra.Admin
-            };
-            await _service.CrearPizarra(pizarra);
-            await _service.AgregarUsuarioALaPizarra(usuarioPizarra);
-            return RedirectToAction("Dibujar", new { id = pizarra.Id });
+            await _service.CrearPizarraAsync(nuevaPizarra, creadorId);
+
+            return RedirectToAction("Dibujar", new { id = nuevaPizarra.Id });
         }
 
         public async Task<IActionResult> Dibujar(Guid id)
         {
+            var userId = _userManager.GetUserId(User);
+
             var pizarra = await _service.ObtenerPizarra(id);
-            if (pizarra == null)
-            {
-                return NotFound("La pizarra no existe");
-            }
+            if (pizarra == null) return NotFound("La pizarra no existe");
 
-            var idUsuario = _userManager.GetUserId(User);
-            var existe = await _service.ExisteUsuarioEnPizarra(idUsuario, pizarra.Id);
-
-            if (!existe)
+            var pertenece = await _service.ExisteUsuarioEnPizarra(userId, id);
+            if (!pertenece)
             {
                 TempData["Error"] = "No tiene permiso para acceder a esta pizarra.";
                 return RedirectToAction("Index");
             }
 
-            var esAdmin = await _service.EsAdminDeLaPizarra(idUsuario, pizarra.Id);
+            var esAdmin = await _service.EsAdminDeLaPizarraAsync(userId, id);
             ViewData["EsAdmin"] = esAdmin;
+            
             ViewData["PizarraId"] = id;
+            ViewData["PizarraNombre"] = pizarra.NombrePizarra;
+            ViewData["UserId"] = userId;
+            ViewData["UserName"] = _userManager.GetUserName(User);
+
+            var mensajesNoVistos = await _service.ObtenerCantidadMensajesNoVistosAsync(userId, id);
+            ViewData["MensajesNoVistos"] = mensajesNoVistos;
 
             return View(); 
         }
-
     }
 }

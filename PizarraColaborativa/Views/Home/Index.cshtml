@@ -2,16 +2,16 @@
 @model List<PizarraColaborativa.DTO.PizarraResumenDTO>
 @{
     ViewData["Title"] = "Mis Proyectos";
-    var busqueda = ViewBag.Busqueda as string ?? "";
-    int? filtroRol = ViewBag.FiltroRol as int?;
+    var busqueda = ViewData["Busqueda"] as string;
+    int? filtroRol = ViewData["FiltroRol"] as int?;
 }
 
 <div class="container mt-4">
 
-<div class="p-4 mb-4 bg-jumbotron rounded shadow">
+<div class="p-4 mb-4 bg-jumbotron rounded shadow ">
     <h2 class="text-white">Mis Proyectos</h2>
-    <div class="row align-items-center mb-3">
-        <div class="col-md-4">
+    <div class="row align-items-center mb-3 gx-0 gy-3 gy-md-0">
+        <div class="col-md-3 mb-md-0">
             <form method="get" class="d-flex gap-2">
                 @if (!string.IsNullOrWhiteSpace(busqueda))
                 {
@@ -32,7 +32,7 @@
             </form>
         </div>
 
-        <div class="col-md-8">
+        <div class="col-md-9">
             <form method="get">
                 @if (filtroRol != null)
                 {
@@ -50,14 +50,14 @@
     </div>
 </div>
 
-@if (ViewBag.Mensaje != null)
+@if (TempData["Mensaje"] != null)
 {
     <div class="text-center mt-5">
         <div class="p-4 rounded bg-warning text-white shadow-sm mx-auto custom-alert">
-            <p class="mb-3">@ViewBag.Mensaje</p>
-            <a asp-controller="Pizarra" asp-action="CrearPizarra" class="btn btn-primary">
+            <p class="mb-3">@TempData["Mensaje"]</p>
+            <button type="button" class="btn btn-success" data-bs-toggle="modal" data-bs-target="#modalCrearPizarra">
                 Crear una nueva pizarra
-            </a>
+            </button>
         </div>
     </div>
 }
@@ -67,7 +67,7 @@
     {
         <div class="col">
             <div class="position-relative">
-                <a href="@Url.Action("Dibujar", "Pizarra", new { id = pizarra.Id })" class="text-decoration-none d-block">
+                <a asp-controller="Pizarra" asp-action="Dibujar" asp-route-id="@pizarra.Id" class="text-decoration-none d-block">
                     <div class="bg-items text-white p-3 rounded shadow-sm">
                         <h5 class="text-white mb-1">@pizarra.Nombre</h5>
                         <p class="mb-0"><small>@pizarra.FechaCreacion.ToShortDateString()</small></p>
@@ -97,7 +97,7 @@
                                 </div>
                                 <div class="modal-footer">
                                     <form asp-action="EliminarPizarra" method="post">
-                                        <input type="hidden" name="id" value="@pizarra.Id" />
+                                        <input type="hidden" name="pizarraId" value="@pizarra.Id" />
                                         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
                                         <button type="submit" class="btn btn-danger">Eliminar</button>
                                     </form>

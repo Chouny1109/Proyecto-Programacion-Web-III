@@ -16,15 +16,19 @@ namespace PizarraColaborativa.Controllers
         [HttpGet]
         public IActionResult Registrar()
         {
+            if (User.Identity != null && User.Identity.IsAuthenticated)
+                return RedirectToAction("Index", "Home");
+
             return View();
         }
 
         [HttpPost]
         public async Task<IActionResult> Registrar(RegistroUsuarioViewModel model)
         {
-            if (!ModelState.IsValid) return View(model);
+            if (!ModelState.IsValid)
+                return View(model);
 
-            if (!await _roleManager.RoleExistsAsync(model.Rol)) 
+            if (!await _roleManager.RoleExistsAsync(model.Rol))
                 await _roleManager.CreateAsync(new IdentityRole(model.Rol));
 
             var usuario = new IdentityUser
@@ -35,6 +39,7 @@ namespace PizarraColaborativa.Controllers
             };
 
             var resultado = await _userManager.CreateAsync(usuario, model.Password);
+
             if (resultado.Succeeded)
             {
                 await _userManager.AddToRoleAsync(usuario, model.Rol);
@@ -42,7 +47,8 @@ namespace PizarraColaborativa.Controllers
                 return RedirectToAction("Index", "Home");
             }
 
-            foreach (var error in resultado.Errors) ModelState.AddModelError("", error.Description);
+            foreach (var error in resultado.Errors)
+                ModelState.AddModelError(string.Empty, error.Description);
 
             return View(model);
         }
@@ -50,6 +56,9 @@ namespace PizarraColaborativa.Controllers
         [HttpGet]
         public IActionResult Login()
         {
+            if (User.Identity != null && User.Identity.IsAuthenticated)
+                return RedirectToAction("Index", "Home");
+
             return View();
         }
 
@@ -57,9 +66,11 @@ namespace PizarraColaborativa.Controllers
         public async Task<IActionResult> Login(string userName, string password)
         {
             var result = await _signInManager.PasswordSignInAsync(userName, password, false, false);
-            if (result.Succeeded) return RedirectToAction("Index", "Home");
 
-            ModelState.AddModelError("", "Login inválido. Verifica tus credenciales.");
+            if (result.Succeeded)
+                return RedirectToAction("Index", "Home");
+
+            ModelState.AddModelError(string.Empty, "Login inválido. Verifica tus credenciales.");
             return View();
         }
 

@@ -26,7 +26,7 @@ namespace PizarraColaborativa.Controllers
         public async Task<IActionResult> GenerarInvitacion(Guid pizarraId,int rol)
         {
             var usuario = await _userManager.GetUserAsync(User);
-            var esAdmin = await _pizarraService.EsAdminDeLaPizarra(usuario.Id,pizarraId);
+            var esAdmin = await _pizarraService.EsAdminDeLaPizarraAsync(usuario.Id,pizarraId);
             if (!esAdmin) return Forbid();
 
             var codigo= Guid.NewGuid().ToString("N");
@@ -91,7 +91,7 @@ namespace PizarraColaborativa.Controllers
                     Rol= invitacion.Rol
                     
                 };
-               await _pizarraService.AgregarUsuarioALaPizarra(pizarraUsuario);
+               await _pizarraService.AgregarOActualizarUsuarioEnPizarraAsync(pizarraUsuario);
             }
             return RedirectToAction("Dibujar", "Pizarra", new { id = invitacion.PizarraId });
 

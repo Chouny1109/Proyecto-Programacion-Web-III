@@ -20,96 +20,112 @@ document.addEventListener("DOMContentLoaded", function () {
     });
 
     // --- FLOATING CHAT ---
-    const selector = document.getElementById("chatSelector");
     const input = document.getElementById("chatInput");
     const sendBtn = document.getElementById("sendMsg");
     const writingMsg = document.getElementById("writing-msg");
     const chatToggleBtn = document.getElementById("chatToggleBtn");
     const chatPanel = document.getElementById("floatingChatPanel");
     const chatIcon = document.getElementById("chatToggleIcon");
+    const chatBadge = document.getElementById("chatBadge");
 
-    const chatMessagesContainers = document.querySelectorAll(".chat-messages");
+    if (!window.chatData) return;
 
-    function mostrarChatSeleccionado() {
-        chatMessagesContainers.forEach(c => c.classList.add("d-none"));
-        const selectedChat = document.getElementById(`chat-${selector.value}`);
-        if (selectedChat) selectedChat.classList.remove("d-none");
-        writingMsg.innerText = "";
+    const { userId, userName, pizarraId, mensajesNoVistos } = window.chatData;
+    let contadorNoVistos = mensajesNoVistos;
+
+    function actualizarBadge() {
+        if (contadorNoVistos > 0) {
+            chatBadge.textContent = contadorNoVistos;
+            chatBadge.classList.remove("d-none");
+        } else {
+            chatBadge.classList.add("d-none");
+        }
     }
+    actualizarBadge();
 
-    mostrarChatSeleccionado();
-    selector.addEventListener("change", mostrarChatSeleccionado);
+    const chat = document.getElementById(`chat-${pizarraId}`);
+    const writingTimers = {};
+
+    const connection = new signalR.HubConnectionBuilder()
+        .withUrl(`/chathub?pizarraId=${encodeURIComponent(pizarraId)}`)
+        .build();
+
+    connection.on("HistorialMensajes", (pizarraChatId, mensajes) => {
+        if (pizarraChatId !== pizarraId) return;
+        mensajes.forEach(msg => {
+            const nuevoMsg = document.createElement("div");
+            nuevoMsg.innerHTML = `<b>${msg.nombreUsuario}:</b> ${msg.descripcion}`;
+            chat.appendChild(nuevoMsg);
+        });
+        chat.scrollTop = chat.scrollHeight;
+    });
+
+    connection.on("RecibirMensaje", (userIdChat, userNameChat, mensaje, pizarraChatId) => {
+        if (pizarraChatId !== pizarraId) return;
+
+        const nuevoMsg = document.createElement("div");
+        nuevoMsg.innerHTML = `<b>${userNameChat}:</b> ${mensaje}`;
+        chat.appendChild(nuevoMsg);
+        chat.scrollTop = chat.scrollHeight;
+
+        if (!chatPanel.classList.contains("show")) {
+            contadorNoVistos++;
+            actualizarBadge();
+        }
+    });
+
+    connection.on("UsuarioEscribiendo", (userName, pizarraChatId) => {
+        if (pizarraChatId === pizarraId) {
+            writingMsg.innerText = `${userName} está escribiendo...`;
+        }
+    });
+
+    connection.on("UsuarioDejoDeEscribir", (pizarraChatId) => {
+        if (pizarraChatId === pizarraId) {
+            writingMsg.innerText = "";
+        }
+    });
+
+    window.enviarMensaje = async function (mensaje) {
+        if (!mensaje) return;
+        await connection.invoke("EnviarMensaje", pizarraId, mensaje);
+        await connection.invoke("UsuarioDejoDeEscribir", pizarraId);
+    };
+
+    window.usuarioEscribiendo = function () {
+        connection.invoke("UsuarioEscribiendo", pizarraId);
+        clearTimeout(writingTimers[pizarraId]);
+        writingTimers[pizarraId] = setTimeout(() => {
+            connection.invoke("UsuarioDejoDeEscribir", pizarraId);
+        }, 1500);
+    };
 
     sendBtn.addEventListener("click", () => {
         const mensaje = input.value.trim();
         if (mensaje === "") return;
-
-        const selected = selector.value;
-        window.enviarMensaje(selected, mensaje);
+        window.enviarMensaje(mensaje);
         input.value = "";
     });
 
     input.addEventListener("keydown", (e) => {
         if (e.key === "Enter") {
-            e.preventDefault(); 
+            e.preventDefault();
             sendBtn.click();
         } else {
-            window.usuarioEscribiendo(selector.value);
+            window.usuarioEscribiendo();
         }
     });
 
     chatToggleBtn.addEventListener("click", () => {
-        chatPanel.classList.toggle("show");
-        chatIcon.textContent = chatPanel.classList.contains("show") ? "close" : "chat";
-    });
-
-    // --- SIGNALR ---
-    if (!window.chatData) return;
-
-    const { userId, userName, pizarras } = window.chatData;
-    const writingTimers = {};
-
-    const connection = new signalR.HubConnectionBuilder()
-        .withUrl(`/chathub?userId=${encodeURIComponent(userId)}`)
-        .build();
-
-    connection.on("RecibirMensaje", (userIdRemitente, userNameRemitente, mensaje, pizarraId) => {
-        const chat = document.getElementById(`chat-${pizarraId}`);
-        if (chat) {
-            const nuevoMsg = document.createElement("div");
-            nuevoMsg.innerHTML = `<b>${userNameRemitente}:</b> ${mensaje}`;
-            chat.appendChild(nuevoMsg);
-            chat.scrollTop = chat.scrollHeight;
+        const isOpen = chatPanel.classList.toggle("show");
+        chatIcon.textContent = isOpen ? "close" : "chat";
+        
+        if (isOpen) {
+            contadorNoVistos = 0;
+            actualizarBadge();
+            connection.invoke("MarcarTodosComoVistos", pizarraId);
         }
     });
-
-    connection.on("UsuarioEscribiendo", (userNamewriting, pizarraId) => {
-        if (selector.value === pizarraId) {
-            writingMsg.innerText = `${userNamewriting} está escribiendo...`;
-        }
-    });
-
-    connection.on("UsuarioDejoDeEscribir", (userIdEscribio, pizarraId) => {
-        if (selector.value === pizarraId) {
-            writingMsg.innerText = "";
-        }
-    });
-
-    window.enviarMensaje = async function (pizarraId, mensaje) {
-        if (!mensaje) return;
-        await connection.invoke("EnviarMensaje", pizarraId, userId, mensaje);
-        await connection.invoke("UsuarioDejoDeEscribir", pizarraId, userId);
-    };
-
-    window.usuarioEscribiendo = function (pizarraId) {
-        connection.invoke("UsuarioEscribiendo", pizarraId, userId);
-        if (writingTimers[pizarraId]) {
-            clearTimeout(writingTimers[pizarraId]);
-        }
-        writingTimers[pizarraId] = setTimeout(() => {
-            connection.invoke("UsuarioDejoDeEscribir", pizarraId, userId);
-        }, 1500);
-    };
 
     connection.start()
         .then(() => console.log("Conexión SignalR iniciada"))

@@ -11,11 +11,13 @@ public partial class Pizarra
 
     public string? NombrePizarra { get; set; }
 
-    public string? ColorFondo { get; set; }
-
     public DateTime FechaCreacion { get; set; }
 
+    public string? ColorFondo { get; set; }
+
     public virtual ICollection<InvitacionPizarra> InvitacionPizarras { get; set; } = new List<InvitacionPizarra>();
+
+    public virtual ICollection<Mensaje> Mensajes { get; set; } = new List<Mensaje>();
 
     public virtual ICollection<PizarraUsuario> PizarraUsuarios { get; set; } = new List<PizarraUsuario>();
 

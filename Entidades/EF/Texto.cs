@@ -5,7 +5,7 @@ namespace Entidades.EF;
 
 public partial class Texto
 {
-    public string Id { get; set; }
+    public string Id { get; set; } = null!;
 
     public Guid PizarraId { get; set; }
 
