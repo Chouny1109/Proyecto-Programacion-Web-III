@@ -100,8 +100,16 @@ function presionaMouse(event) {
 
     if (!presionMouse || (nuevoX === x && nuevoY === y)) return;
 
-    if (modoGoma) {
-        dibujar(colorFondo, x, y, nuevoX, nuevoY, 12);
+        if (modoGoma) {
+            dibujar(colorFondo, x, y, nuevoX, nuevoY, 12);         
+            if (conexion.state === signalR.HubConnectionState.Connected) {
+                const centroX = (x + nuevoX) / 2;
+                const centroY = (y + nuevoY) / 2;
+                const radioGoma = 10;
+
+                conexion.invoke("BorrarTrazosEnRango", pizarraId, centroX, centroY, radioGoma)
+                    .catch(err => console.error("Error al borrar con goma:", err));
+            }
     } else {
         const segmento = {
             xinicio: x,
