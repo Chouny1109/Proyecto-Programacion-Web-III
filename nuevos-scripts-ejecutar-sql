@@ -1,6 +1,9 @@
 USE ProyectoPizarra;
 GO
 
+ALTER TABLE Trazos
+ADD GrupoTrazoId UNIQUEIDENTIFIER NULL;
+
 -- Tabla Mensaje
 CREATE TABLE Mensaje (
     Id INT IDENTITY(1,1) PRIMARY KEY,
