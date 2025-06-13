@@ -353,16 +353,8 @@ namespace Services
                 .CountAsync();
 
             return mensajesNoVistos;
-        public async Task CambiarColorFondoPizarra(string pizarraId, string colorFondo)
-        {
-            var pizarra = await ObtenerPizarra(Guid.Parse(pizarraId));
-            if (pizarra != null)
-            {
-                pizarra.ColorFondo = colorFondo;
-                await _context.SaveChangesAsync();
-            }
-           
         }
+   
 
         public async Task SetColorBlancoPizarra(Guid pizarraGUID)
         {
