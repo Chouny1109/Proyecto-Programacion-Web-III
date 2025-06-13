@@ -32,6 +32,7 @@ namespace Services
         Task<bool> EliminarPizarra(Guid pizarraId);
         Task<string?> ObtenerColorFondoDeUnaPizarra(Guid guid);
         Task CambiarColorFondoPizarra(string pizarraId, string colorFondo);
+        Task SetColorBlancoPizarra(Guid pizarraGUID);
     }
     public class PizarraService : IPizarraService
     {
@@ -262,6 +263,17 @@ namespace Services
                 await _context.SaveChangesAsync();
             }
            
+        }
+
+        public async Task SetColorBlancoPizarra(Guid pizarraGUID)
+        {
+            var pizarra = await ObtenerPizarra(pizarraGUID);
+
+            if (pizarra != null)
+            {
+                pizarra.ColorFondo = "#ffffff";
+                await _context.SaveChangesAsync();
+            }
         }
     }
 }

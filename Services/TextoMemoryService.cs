@@ -77,5 +77,20 @@ namespace Services
             }
             return null;
         }
+
+        public void EliminarTexto(string pizarraId, string id)
+        {
+            if (_textosPorPizarra.TryGetValue(pizarraId, out var listaTextos))
+            {
+                lock (listaTextos)
+                {
+                    var textoAEliminar = listaTextos.FirstOrDefault(t => t.Id == id);
+                    if (textoAEliminar != null)
+                    {
+                        listaTextos.Remove(textoAEliminar);
+                    }
+                }
+            }
+        }
     }
 }
