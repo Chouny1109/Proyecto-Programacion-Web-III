@@ -1,8 +1,5 @@
 ﻿let pizarraId = document.getElementById("info-pizarra").dataset.pizarraid;
-let linesDB = [];
-let redoLinesDB = [];
 let isPenDown = false;
-let line = [];
 let conexion = new signalR.HubConnectionBuilder()
     .withUrl("/dibujohub?pizarraid=" + encodeURIComponent(pizarraId))
     .build();
@@ -25,6 +22,8 @@ conexion.on("NombrePizarraCambiado", function (nuevoNombre) {
 
 //Cargar trazos guardados
 conexion.on("CargarTrazos", function (trazos) {
+    papel.clearRect(0, 0, canvas.width, canvas.height); 
+
     trazos.forEach(t => dibujarTrazo(t));
 });
 
@@ -61,9 +60,20 @@ conexion.on("CargarTextos", function (textos) {
 });
 
 
+conexion.on("DibujarTrazoCompleto", function (segmentos) {
+    for (const s of segmentos) {
+        dibujar(s.color, s.xinicio, s.yinicio, s.xfin, s.yfin, s.grosor);
+    }
+});
 
 
-function dibujar(color1, corX, corY, corXFinal, corYFinal, tamanioLinea, enviar = true) {
+let presionMouse = false;
+let x = 0;
+let y = 0;
+let trazoActual = [];      
+let grupoTrazoId = null;
+
+function dibujar(color1, corX, corY, corXFinal, corYFinal, tamanioLinea) {
         papel.beginPath();
         papel.strokeStyle = color1;
         papel.lineWidth = tamanioLinea
@@ -72,75 +82,58 @@ function dibujar(color1, corX, corY, corXFinal, corYFinal, tamanioLinea, enviar 
         papel.stroke();
         papel.closePath();
 
-    let pointObject = {
-        x: corXFinal,
-        y: corYFinal,
-        type: "mm",
-    };
-    line.push(pointObject);
-
-        if (enviar && conexion.state === signalR.HubConnectionState.Connected) {
-            conexion.invoke("SendDibujo", pizarraId, color1, corX, corY, corXFinal, corYFinal, tamanioInicial)
-                .catch(function (err) {
-                    return console.error("Error al enviar dibujo:", err.toString());
-                });
-        } else if (!enviar) {
-            // solo dibuja  
-        }
-
-
     }
 
+canvas.addEventListener("mousedown", presionaMouse)
+function presionaMouse(event) {
+    presionMouse = true;
+    x = event.offsetX;
+    y = event.offsetY;
+    trazoActual = [];
+    grupoTrazoId = crypto.randomUUID();
+}
 
-    canvas.addEventListener("mousemove", dibujarConMouse)
-function dibujarConMouse(event) {
-    const nuevoX = event.offsetX;
-    const nuevoY = event.offsetY;
+ canvas.addEventListener("mousemove", dibujarConMouse)
+    function dibujarConMouse(event) {
+         const nuevoX = event.offsetX;
+         const nuevoY = event.offsetY;
 
     if (!presionMouse || (nuevoX === x && nuevoY === y)) return;
 
     if (modoGoma) {
-        dibujar(colorFondo, x, y, nuevoX, nuevoY, 12, true);
+        dibujar(colorFondo, x, y, nuevoX, nuevoY, 12);
     } else {
-        dibujar(color, x, y, nuevoX, nuevoY, tamanioInicial);
+        const segmento = {
+            xinicio: x,
+            yinicio: y,
+            xfin: nuevoX,
+            yfin: nuevoY,
+            color: color,
+            grosor: tamanioInicial
+        };
+        dibujar(segmento.color, segmento.xinicio, segmento.yinicio, segmento.xfin, segmento.yfin, segmento.grosor);
+        trazoActual.push(segmento);
     }
 
     x = nuevoX;
     y = nuevoY;
 }
 
-    let presionMouse = false;
-
-    canvas.addEventListener("mousedown", presionaMouse)
-function presionaMouse(event) {
-    if (redoLinesDB.length) {
-        redoLinesDB = [];
-    }
-        presionMouse = true;
-        x = event.offsetX;
-        y = event.offsetY;
-
-    let pointObject = {
-        x: x,
-        y: y,
-        type: "md",
-        lineWidth: tamanioInicial,
-        strokeStyle: color,
-    };
-    line.push(pointObject);
-
-
-    }
+   
 
     canvas.addEventListener("mouseup", soltoMouse)
     function soltoMouse(event) {
         presionMouse = false;
-
         x = event.offsetX;
         y = event.offsetY;
 
-        linesDB.push(line);
-        line = [];
+        if (trazoActual.length > 0 && conexion.state === signalR.HubConnectionState.Connected) {
+        conexion.invoke("EnviarTrazoCompleto", pizarraId, trazoActual, grupoTrazoId)
+            .catch(err => console.error("Error al enviar trazo completo:", err));
+    }
+    trazoActual = [];
+
+
     }
 
     let tamanioLapiz = document.getElementById("tamanio_lapiz")
@@ -210,12 +203,9 @@ function limpiarTextos() {
 conexion.on("ReceiveLimpiar", function () {
     papel.clearRect(0, 0, canvas.width, canvas.height);
     limpiarTextos(); // 
-});
+    colorFondo = 'white'; 
 
-conexion.on("ReceivePosition", function (colorHub, xInicial, yInicial, xFinal, yFinal, tamanioInicialHub) {
-    console.log("Dibujo recibido:", colorHub, xInicial, yInicial, xFinal, yFinal, tamanioInicialHub);
-    dibujar(colorHub, xInicial, yInicial, xFinal, yFinal, tamanioInicialHub, false);
-
+    canvas.style.backgroundColor = colorFondo;
 });
 
 //insertar Texto
@@ -364,6 +354,46 @@ document.getElementById("btnInsertarTexto").addEventListener("click", () => {
     const tamano = parseInt(document.getElementById("tamanioTexto").value) || 20;
     crearTextoEditable(texto, 100, 100, color, tamano, null, true);
 });
+
+let undo = document.getElementById("undo");
+let redo = document.getElementById("redo");
+undo.addEventListener("click", deshacerUltimaAccion);
+redo.addEventListener("click", rehacerAccion);
+
+function deshacerUltimaAccion() {
+    if (conexion.state === signalR.HubConnectionState.Connected) {
+        conexion.invoke("DeshacerUltimaAccion", pizarraId)
+            .catch(err => console.error("Error al hacer undo:", err.toString()));
+    }
+}
+
+function rehacerAccion() {
+
+    if (conexion.state === signalR.HubConnectionState.Connected) {
+        conexion.invoke("RehacerUltimaAccion", pizarraId)
+            .catch(err => console.error("Error al hacer redo:", err.toString()));
+    }
+}
+conexion.on("TextoEliminado", function (id) {
+    if (textos[id]) {
+        textos[id].div.remove(); // eliminar el div visualmente
+        delete textos[id]; // eliminar del diccionario local
+    }
+});
+
+conexion.on("TrazoRehecho", (trazo) => {
+    dibujar(trazo.color, trazo.xinicio, trazo.yinicio, trazo.xfin, trazo.yfin, trazo.grosor, false);
+});
+
+conexion.on("TrazoEliminado",
+    function (trazoEliminado) {
+    // Limpiar todo el canvas
+    papel.clearRect(0, 0, canvas.width, canvas.height);
+
+    // Solicitar al servidor todos los trazos actualizados
+    conexion.invoke("SolicitarTrazos", pizarraId).catch(console.error);
+});
+
 
 // empieza la conexión
 conexion.start().then(() => {

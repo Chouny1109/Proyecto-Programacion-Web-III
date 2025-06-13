@@ -35,6 +35,7 @@ namespace Services
         Task<MensajeDTO> GuardarMensajeAsync(MensajeDTO mensaje);
         Task MarcarTodosLosMensajesComoVistosAsync(Guid pizarraId, string userId);
         Task<int> ObtenerCantidadMensajesNoVistosAsync(string userId, Guid pizarraId);
+        Task SetColorBlancoPizarra(Guid pizarraGUID);
     }
 
     public class PizarraService : IPizarraService
@@ -352,6 +353,26 @@ namespace Services
                 .CountAsync();
 
             return mensajesNoVistos;
+        public async Task CambiarColorFondoPizarra(string pizarraId, string colorFondo)
+        {
+            var pizarra = await ObtenerPizarra(Guid.Parse(pizarraId));
+            if (pizarra != null)
+            {
+                pizarra.ColorFondo = colorFondo;
+                await _context.SaveChangesAsync();
+            }
+           
+        }
+
+        public async Task SetColorBlancoPizarra(Guid pizarraGUID)
+        {
+            var pizarra = await ObtenerPizarra(pizarraGUID);
+
+            if (pizarra != null)
+            {
+                pizarra.ColorFondo = "#ffffff";
+                await _context.SaveChangesAsync();
+            }
         }
     }
 }

@@ -19,5 +19,6 @@ public partial class Texto
 
     public int? Tamano { get; set; }
 
+
     public virtual Pizarra Pizarra { get; set; } = null!;
 }

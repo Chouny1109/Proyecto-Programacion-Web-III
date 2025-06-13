@@ -142,6 +142,7 @@ public partial class ProyectoPizarraContext : IdentityDbContext<IdentityUser>
             entity.Property(e => e.Xinicio).HasColumnName("XInicio");
             entity.Property(e => e.Yfin).HasColumnName("YFin");
             entity.Property(e => e.Yinicio).HasColumnName("YInicio");
+            entity.Property(e => e.GrupoTrazoId);
 
             entity.HasOne(d => d.Pizarra).WithMany(p => p.Trazos)
                 .HasForeignKey(d => d.PizarraId)

@@ -10,6 +10,7 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddControllersWithViews();
 builder.Services.AddSingleton<TrazoMemoryService>();
 builder.Services.AddSingleton<TextoMemoryService>();
+builder.Services.AddSingleton<IAccionMemoryService,AccionMemoryService>();
 
 builder.Services.AddHostedService<PizarraPersistenceService>();
 

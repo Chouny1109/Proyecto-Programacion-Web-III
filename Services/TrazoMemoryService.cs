@@ -37,13 +37,24 @@ namespace Services
 
         public bool Existe(string pizarraId)
         {
-          return _trazosPorPizarra.ContainsKey(pizarraId);
+            return _trazosPorPizarra.ContainsKey(pizarraId);
         }
 
         public void LimpiarPizarra(string pizarraId)
         {
             _trazosPorPizarra.TryRemove(pizarraId, out _);
         }
+
+        public void EliminarTrazo(string pizarraId, Guid grupoTrazoId)
+        {
+            if (_trazosPorPizarra.TryGetValue(pizarraId, out var lista))
+            {
+                lock (lista)
+                {
+                    lista.RemoveAll(t => t.GrupoTrazoId == grupoTrazoId);
+                }
+            }
+        }
     }
 
-}
+        }

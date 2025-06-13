@@ -3,6 +3,7 @@ using System.Drawing;
 using Entidades.EF;
 using Microsoft.AspNetCore.SignalR;
 using Services;
+using Services.Acciones;
 
 namespace PizarraColaborativa.Hubs
 {
@@ -10,16 +11,18 @@ namespace PizarraColaborativa.Hubs
     {
         private readonly TextoMemoryService _textoService;
         private readonly TrazoMemoryService _trazoService;
+        private readonly IAccionMemoryService _actionsMemoryService;
         private readonly IPizarraService _pizarraService;
        
 
         public DibujoHub(TrazoMemoryService memoriaService
-            , TextoMemoryService textoService, IPizarraService pizarraService
-            )
+            , TextoMemoryService textoService, IPizarraService pizarraService,
+            IAccionMemoryService actionsMemoryService)
         {
             _textoService = textoService;
             _trazoService = memoriaService;
             _pizarraService = pizarraService;
+            _actionsMemoryService = actionsMemoryService;
         }
 
         public override async Task OnConnectedAsync()
@@ -97,22 +100,20 @@ namespace PizarraColaborativa.Hubs
 
 
 
-        public async Task SendDibujo(string pizarraId, string color, int xInicial, int yInicial, int xFinal, int yFinal, int tamanioInicial)
+        public async Task EnviarTrazoCompleto(string pizarraId, List<Trazo> segmentos, Guid grupoTrazoId)
         {
-            var trazo = new Trazo
+            foreach (var trazo in segmentos)
             {
-                Color = color,
-                Xinicio = xInicial,
-                Yinicio = yInicial,
-                Xfin = xFinal,
-                Yfin = yFinal,
-                Grosor = tamanioInicial
-            };
-            _trazoService.AgregarTrazo(pizarraId, trazo);
+                trazo.GrupoTrazoId = grupoTrazoId;
+                _trazoService.AgregarTrazo(pizarraId, trazo);
+            }
+
+            _actionsMemoryService.RegistrarAccion(pizarraId, new AccionTrazo(segmentos));
 
             await Clients.GroupExcept(pizarraId, Context.ConnectionId)
-                .SendAsync("ReceivePosition", color, xInicial, yInicial, xFinal, yFinal, tamanioInicial);
+                .SendAsync("DibujarTrazoCompleto", segmentos);
         }
+
 
         public async Task SendLimpiar(string pizarraId)
         {
@@ -125,6 +126,10 @@ namespace PizarraColaborativa.Hubs
 
             await _pizarraService.BorrarTrazosExistentesPizarra(trazosExistentesEnBD);
             await _pizarraService.BorrarTextosExistentesPizarra(textosExistentesEnBD);
+            await _pizarraService.SetColorBlancoPizarra(pizarraGUID);
+
+
+
             await Clients.Group(pizarraId).SendAsync("ReceiveLimpiar");
         }
 
@@ -147,6 +152,15 @@ namespace PizarraColaborativa.Hubs
             else
             {
                 _textoService.AgregarTextoALaPizarra(texto.Id, texto.X, texto.Y, texto.Tamano, texto.Contenido, texto.Color, pizarraId);
+                _actionsMemoryService.RegistrarAccion(pizarraId, new AccionTexto(new Entidades.EF.Texto
+                {
+                    Id = texto.Id,
+                    PosX = texto.X,
+                    PosY = texto.Y,
+                    Tamano = texto.Tamano,
+                    Contenido = texto.Contenido,
+                    Color = texto.Color
+                }));
 
 
             }
@@ -154,6 +168,21 @@ namespace PizarraColaborativa.Hubs
 
         }
 
+        public async Task SolicitarTrazos(string pizarraId)
+        {
+            var trazos = _trazoService.ObtenerTrazos(pizarraId);
+            await Clients.Caller.SendAsync("CargarTrazos", trazos);
+        }
+
+        public async Task DeshacerUltimaAccion(string pizarraId)
+        {
+            await _actionsMemoryService.Deshacer(pizarraId, Clients, _trazoService, _textoService);
+        }
+
+        public async Task RehacerUltimaAccion(string pizarraId)
+        {
+            await _actionsMemoryService.Rehacer(pizarraId, Clients, _trazoService, _textoService);
+        }
 
         public async Task MoverTexto(string pizarraId, string id, int x, int y)
         {
@@ -171,7 +200,12 @@ namespace PizarraColaborativa.Hubs
             }
 
         }
+
+
+       
     }
+
+   
 
 
 }
