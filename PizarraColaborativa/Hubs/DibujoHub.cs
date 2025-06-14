@@ -9,14 +9,14 @@ namespace PizarraColaborativa.Hubs
 {
     public class DibujoHub : Hub
     {
-        private readonly TextoMemoryService _textoService;
-        private readonly TrazoMemoryService _trazoService;
+        private readonly ITextoMemoryService _textoService;
+        private readonly ITrazoMemoryService _trazoService;
         private readonly IAccionMemoryService _actionsMemoryService;
         private readonly IPizarraService _pizarraService;
        
 
-        public DibujoHub(TrazoMemoryService memoriaService
-            , TextoMemoryService textoService, IPizarraService pizarraService,
+        public DibujoHub(ITrazoMemoryService memoriaService
+            , ITextoMemoryService textoService, IPizarraService pizarraService,
             IAccionMemoryService actionsMemoryService)
         {
             _textoService = textoService;
@@ -53,6 +53,7 @@ namespace PizarraColaborativa.Hubs
                 }
 
             }
+
             var trazosEnMemoria = _trazoService.ObtenerTrazos(pizarraId);
             await Clients.Caller.SendAsync("CargarTrazos", trazosEnMemoria);
 

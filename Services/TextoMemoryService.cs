@@ -9,7 +9,18 @@ using Microsoft.Extensions.Primitives;
 
 namespace Services
 {
-    public class TextoMemoryService
+    public interface ITextoMemoryService
+    {
+        void AgregarTextoALaPizarra(string id, int x, int y, int tamano, string? contenido, string? color, string pizarraId);
+        void EditarTextoEnPizarra(Texto textoEncontrado, string pizarraId);
+        bool Existe(string pizarraId);
+        void LimpiarPizarra(string pizarraId);
+        List<Texto> ObtenerTextos(string pizarraId);
+        Dictionary<string, List<Texto>> ObtenerTodas();
+        Texto? ObtenerTextoPorIdEnMemoria(string pizarraId, string textoId);
+        void EliminarTexto(string pizarraId, string id);
+    }
+    public class TextoMemoryService : ITextoMemoryService
     {
         private readonly ConcurrentDictionary<string, List<Texto>> _textosPorPizarra = new();
 
@@ -93,4 +104,6 @@ namespace Services
             }
         }
     }
+
+   
 }

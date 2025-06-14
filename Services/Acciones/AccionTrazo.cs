@@ -16,7 +16,7 @@ namespace Services.Acciones
             GrupoTrazoId = segmentos.First().GrupoTrazoId ?? Guid.NewGuid();
         }
 
-        public Task Deshacer(string pizarraId, IHubCallerClients clients, TrazoMemoryService trazoService, TextoMemoryService textoService)
+        public Task Deshacer(string pizarraId, IHubCallerClients clients, ITrazoMemoryService trazoService, ITextoMemoryService textoService)
         {
 
             trazoService.EliminarTrazo(pizarraId, GrupoTrazoId);
@@ -24,7 +24,7 @@ namespace Services.Acciones
             return clients.Group(pizarraId).SendAsync("CargarTrazos", trazosActuales);
         }
 
-        public Task Rehacer(string pizarraId, IHubCallerClients clients, TrazoMemoryService trazoService, TextoMemoryService textoService)
+        public Task Rehacer(string pizarraId, IHubCallerClients clients, ITrazoMemoryService trazoService, ITextoMemoryService textoService)
         {
             foreach (var trazo in Segmentos)
                 trazoService.AgregarTrazo(pizarraId, trazo);
