@@ -13,13 +13,13 @@ namespace Services
     public class PizarraPersistenceService : BackgroundService
     {
         private readonly IServiceScopeFactory _scopeFactory;
-        private readonly TrazoMemoryService _trazoMemoryService;
-        private readonly TextoMemoryService _textoMemoryService;
+        private readonly ITrazoMemoryService _trazoMemoryService;
+        private readonly ITextoMemoryService _textoMemoryService;
    
         private readonly ILogger<PizarraPersistenceService> _logger;    
 
-        public PizarraPersistenceService(IServiceScopeFactory scopeFactory, TrazoMemoryService trazoService,
-            TextoMemoryService textoMemoryService,
+        public PizarraPersistenceService(IServiceScopeFactory scopeFactory, ITrazoMemoryService trazoService,
+            ITextoMemoryService textoMemoryService,
             ILogger<PizarraPersistenceService> logger)
         {
            _scopeFactory = scopeFactory;

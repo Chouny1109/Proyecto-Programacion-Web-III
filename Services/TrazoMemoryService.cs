@@ -9,7 +9,16 @@ using Microsoft.Extensions.Primitives;
 
 namespace Services
 {
-    public class TrazoMemoryService
+    public interface ITrazoMemoryService
+    {
+        void AgregarTrazo(string pizarraId, Trazo trazo);
+        List<Trazo> ObtenerTrazos(string pizarraId);
+        Dictionary<string, List<Trazo>> ObtenerTodas();
+        bool Existe(string pizarraId);
+        void LimpiarPizarra(string pizarraId);
+        void EliminarTrazo(string pizarraId, Guid grupoTrazoId);
+    }
+    public class TrazoMemoryService : ITrazoMemoryService
     {
         private readonly ConcurrentDictionary<string, List<Trazo>> _trazosPorPizarra = new();
 
@@ -57,4 +66,5 @@ namespace Services
         }
     }
 
-        }
+    
+}

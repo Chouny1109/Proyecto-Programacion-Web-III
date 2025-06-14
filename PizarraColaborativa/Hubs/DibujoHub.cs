@@ -9,14 +9,14 @@ namespace PizarraColaborativa.Hubs
 {
     public class DibujoHub : Hub
     {
-        private readonly TextoMemoryService _textoService;
-        private readonly TrazoMemoryService _trazoService;
+        private readonly ITextoMemoryService _textoService;
+        private readonly ITrazoMemoryService _trazoService;
         private readonly IAccionMemoryService _actionsMemoryService;
         private readonly IPizarraService _pizarraService;
        
 
-        public DibujoHub(TrazoMemoryService memoriaService
-            , TextoMemoryService textoService, IPizarraService pizarraService,
+        public DibujoHub(ITrazoMemoryService memoriaService
+            , ITextoMemoryService textoService, IPizarraService pizarraService,
             IAccionMemoryService actionsMemoryService)
         {
             _textoService = textoService;
@@ -53,6 +53,7 @@ namespace PizarraColaborativa.Hubs
                 }
 
             }
+
             var trazosEnMemoria = _trazoService.ObtenerTrazos(pizarraId);
             await Clients.Caller.SendAsync("CargarTrazos", trazosEnMemoria);
 
@@ -83,6 +84,32 @@ namespace PizarraColaborativa.Hubs
 
             await base.OnConnectedAsync();
         }
+        public async Task BorrarTrazosEnRango(string pizarraId, int x, int y, int radio)
+        {
+            var trazos = _trazoService.ObtenerTrazos(pizarraId);
+
+            // Detectamos trazos cuyo punto inicial esté dentro del rango
+            var gruposParaBorrar = trazos
+                .Where(t => EstaCercaDelPunto(t, x, y, radio))
+                .Select(t => t.GrupoTrazoId)
+                .Where(g => g.HasValue)
+                .Distinct()
+                .ToList();
+
+            foreach (var grupoId in gruposParaBorrar)
+            {
+                var trazosDelGrupo = trazos.Where(t => t.GrupoTrazoId == grupoId).ToList();
+
+                _trazoService.EliminarTrazo(pizarraId, grupoId.Value);
+
+                // Registrar acción para Undo
+                _actionsMemoryService.RegistrarAccion(pizarraId, new AccionTrazo(trazosDelGrupo));
+            }
+
+            var trazosActuales = _trazoService.ObtenerTrazos(pizarraId);
+            await Clients.Group(pizarraId).SendAsync("CargarTrazos", trazosActuales);
+        }
+
 
         public async Task CambiarColorFondo(string pizarraId, string colorFondo)
         {
@@ -201,11 +228,17 @@ namespace PizarraColaborativa.Hubs
 
         }
 
+        private bool EstaCercaDelPunto(Trazo t, int x, int y, int radio)
+        {
+            int dx = (int)t.Xinicio.GetValueOrDefault() - x;
+            int dy = (int)t.Yinicio.GetValueOrDefault() - y;
+            return (dx * dx + dy * dy) <= (radio * radio);
+        }
 
-       
+
     }
 
-   
+
 
 
 }

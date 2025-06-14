@@ -12,8 +12,8 @@ namespace Services
     public interface IAccionMemoryService
     {
         void RegistrarAccion(string pizarraId, IAccionPizarra accion);
-        Task Deshacer(string pizarraId, IHubCallerClients clients, TrazoMemoryService trazoService, TextoMemoryService textoService);
-        Task Rehacer(string pizarraId, IHubCallerClients clients, TrazoMemoryService trazoService, TextoMemoryService textoService);
+        Task Deshacer(string pizarraId, IHubCallerClients clients, ITrazoMemoryService trazoService, ITextoMemoryService textoService);
+        Task Rehacer(string pizarraId, IHubCallerClients clients, ITrazoMemoryService trazoService, ITextoMemoryService textoService);
     }
     public class AccionMemoryService : IAccionMemoryService
     {
@@ -31,7 +31,7 @@ namespace Services
             }
         }
 
-        public async Task Deshacer(string pizarraId, IHubCallerClients clients, TrazoMemoryService trazoService, TextoMemoryService textoService)
+        public async Task Deshacer(string pizarraId, IHubCallerClients clients, ITrazoMemoryService trazoService, ITextoMemoryService textoService)
         {
             if (!_accionesUndo.TryGetValue(pizarraId, out var pilaUndo) || pilaUndo.Count == 0)
                 return;
@@ -41,7 +41,7 @@ namespace Services
             await accion.Deshacer(pizarraId, clients, trazoService, textoService);
         }
 
-        public async Task Rehacer(string pizarraId, IHubCallerClients clients, TrazoMemoryService trazoService, TextoMemoryService textoService)
+        public async Task Rehacer(string pizarraId, IHubCallerClients clients, ITrazoMemoryService trazoService, ITextoMemoryService textoService)
         {
             if (!_accionesRedo.TryGetValue(pizarraId, out var pilaRedo) || pilaRedo.Count == 0)
                 return;

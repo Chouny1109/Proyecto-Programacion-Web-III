@@ -14,13 +14,13 @@ namespace Services.Acciones
         {
             Texto = texto;
         }
-        public Task Deshacer(string pizarraId, IHubCallerClients clients, TrazoMemoryService trazoService, TextoMemoryService textoService)
+        public Task Deshacer(string pizarraId, IHubCallerClients clients, ITrazoMemoryService trazoService, ITextoMemoryService textoService)
         {
             textoService.EliminarTexto(pizarraId, Texto.Id);
             return clients.Group(pizarraId).SendAsync("TextoEliminado", Texto.Id);
         }
 
-        public Task Rehacer(string pizarraId, IHubCallerClients clients, TrazoMemoryService trazoService, TextoMemoryService textoService)
+        public Task Rehacer(string pizarraId, IHubCallerClients clients, ITrazoMemoryService trazoService, ITextoMemoryService textoService)
         {
             textoService.AgregarTextoALaPizarra(Texto.Id,(int)Texto.PosX, (int)Texto.PosY, Texto.Tamano ?? 20, Texto.Contenido, Texto.Color, pizarraId);
             return clients.Group(pizarraId).SendAsync("TextoActualizado", Texto);

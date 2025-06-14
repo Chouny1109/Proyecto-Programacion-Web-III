@@ -8,8 +8,8 @@ var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();
-builder.Services.AddSingleton<TrazoMemoryService>();
-builder.Services.AddSingleton<TextoMemoryService>();
+builder.Services.AddSingleton<ITrazoMemoryService,TrazoMemoryService>();
+builder.Services.AddSingleton<ITextoMemoryService,TextoMemoryService>();
 builder.Services.AddSingleton<IAccionMemoryService,AccionMemoryService>();
 
 builder.Services.AddHostedService<PizarraPersistenceService>();
