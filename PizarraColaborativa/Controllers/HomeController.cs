@@ -17,7 +17,7 @@ namespace PizarraColaborativa.Controllers
         private readonly IPizarraService _service = service;
         private readonly UserManager<IdentityUser> _userManager = userManager;
 
-        public async Task<IActionResult> Index(int? filtroRol, string busqueda)
+        public async Task<IActionResult> Index(string? filtroRol, string busqueda)
         {
             if (User.Identity != null && User.Identity.IsAuthenticated)
             {

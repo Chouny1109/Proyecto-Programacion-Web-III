@@ -25,27 +25,23 @@ namespace Services
         Task PersistirTrazosBD(Dictionary<string, List<Trazo>> dictionary);
         Task<string?> ObtenerColorFondoDeUnaPizarra(Guid guid);
         Task CambiarColorFondoPizarra(string pizarraId, string colorFondo);
+        Task SetColorBlancoPizarra(Guid pizarraGUID);
+        Task<int> ObtenerRolIdAsync(string nombreRol);
         Task CrearPizarraAsync(Pizarra pizarra, string creadorId);
         Task AgregarOActualizarUsuarioEnPizarraAsync(PizarraUsuario pizarraUsuario);
         Task<bool> EsAdminDeLaPizarraAsync(string userId, Guid pizarraId);
         Task<List<PizarraResumenDTO>> ObtenerPizarrasDelUsuarioAsync(string userId);
-        Task<List<PizarraResumenDTO>> ObtenerPizarrasFiltradasAsync(string userId, int? filtroRol, string busqueda);
+        Task<List<PizarraResumenDTO>> ObtenerPizarrasFiltradasAsync(string userId, string? filtroRol, string busqueda);
         Task<bool> EliminarPizarraAsync(Guid pizarraId);
         Task<List<MensajeDTO>> ObtenerMensajesAsync(Guid pizarraId, string userId);
         Task<MensajeDTO> GuardarMensajeAsync(MensajeDTO mensaje);
         Task MarcarTodosLosMensajesComoVistosAsync(Guid pizarraId, string userId);
         Task<int> ObtenerCantidadMensajesNoVistosAsync(string userId, Guid pizarraId);
-        Task SetColorBlancoPizarra(Guid pizarraGUID);
     }
 
-    public class PizarraService : IPizarraService
+    public class PizarraService(ProyectoPizarraContext context) : IPizarraService
     {
-        private readonly ProyectoPizarraContext _context;
-
-        public PizarraService(ProyectoPizarraContext context)
-        {
-            _context = context;
-        }
+        private readonly ProyectoPizarraContext _context = context;
 
         public void AgregarTrazo(Trazo trazo)
         {
@@ -176,16 +172,37 @@ namespace Services
                 pizarra.ColorFondo = colorFondo;
                 await _context.SaveChangesAsync();
             }
-           
+
+        }
+
+        public async Task SetColorBlancoPizarra(Guid pizarraGUID)
+        {
+            var pizarra = await ObtenerPizarra(pizarraGUID);
+
+            if (pizarra != null)
+            {
+                pizarra.ColorFondo = "#ffffff";
+                await _context.SaveChangesAsync();
+            }
+        }
+
+        public async Task<int> ObtenerRolIdAsync(string nombreRol)
+        {
+            var rol = await _context.RolEnPizarras
+                .FirstOrDefaultAsync(r => r.Nombre == nombreRol)
+                    ?? throw new InvalidOperationException($"El rol '{nombreRol}' no existe.");
+            return rol.Id;
         }
 
         public async Task CrearPizarraAsync(Pizarra pizarra, string creadorId)
         {
+            int rolAdminId = await ObtenerRolIdAsync("Admin");
+
             var usuarioAdmin = new PizarraUsuario
             {
                 PizarraId = pizarra.Id,
                 UsuarioId = creadorId,
-                Rol = RolEnPizarra.Admin
+                RolId = rolAdminId
             };
 
             await _context.Pizarras.AddAsync(pizarra);
@@ -195,8 +212,11 @@ namespace Services
 
         public async Task AgregarOActualizarUsuarioEnPizarraAsync(PizarraUsuario usuarioPizarra)
         {
+            int rolAdminId = await ObtenerRolIdAsync("Admin");
+
             var existente = await _context.PizarraUsuarios
-                .FirstOrDefaultAsync(pu => pu.PizarraId == usuarioPizarra.PizarraId && pu.UsuarioId == usuarioPizarra.UsuarioId);
+                .FirstOrDefaultAsync(pu => pu.PizarraId == usuarioPizarra.PizarraId
+                    && pu.UsuarioId == usuarioPizarra.UsuarioId);
 
             if (existente is null)
             {
@@ -204,12 +224,12 @@ namespace Services
             }
             else
             {
-                if (existente.Rol == RolEnPizarra.Admin)
+                if (existente.RolId == rolAdminId)
                 {
                     throw new InvalidOperationException("No se puede modificar el rol del administrador de la pizarra.");
                 }
 
-                existente.Rol = usuarioPizarra.Rol;
+                existente.RolId = usuarioPizarra.RolId;
                 _context.PizarraUsuarios.Update(existente);
             }
 
@@ -218,10 +238,12 @@ namespace Services
 
         public async Task<bool> EsAdminDeLaPizarraAsync(string userId, Guid pizarraId)
         {
+            int rolAdminId = await ObtenerRolIdAsync("Admin");
+
             return await _context.PizarraUsuarios
                 .AnyAsync(pu => pu.UsuarioId == userId &&
                     pu.PizarraId == pizarraId &&
-                    pu.Rol == RolEnPizarra.Admin);
+                    pu.RolId == rolAdminId);
         }
 
         public async Task<List<PizarraResumenDTO>> ObtenerPizarrasDelUsuarioAsync(string userId)
@@ -235,12 +257,12 @@ namespace Services
                     Id = pu.Pizarra.Id,
                     FechaCreacion = pu.Pizarra.FechaCreacion,
                     Nombre = pu.Pizarra.NombrePizarra,
-                    Rol = Enum.Parse<RolEnPizarra>(pu.Rol.ToString())
+                    Rol = pu.Rol.Nombre
                 })
                 .ToListAsync();
         }
 
-        public async Task<List<PizarraResumenDTO>> ObtenerPizarrasFiltradasAsync(string userId, int? filtroRol, string busqueda)
+        public async Task<List<PizarraResumenDTO>> ObtenerPizarrasFiltradasAsync(string userId, string? filtroRol, string busqueda)
         {
             var pizarras = await ObtenerPizarrasDelUsuarioAsync(userId);
 
@@ -251,17 +273,23 @@ namespace Services
                     .ToList();
             }
 
-            if (filtroRol.HasValue)
+            if (!string.IsNullOrWhiteSpace(filtroRol))
             {
-                var rolFiltrado = (RolEnPizarra)filtroRol;
+                string nombreRolAdmin = await _context.RolEnPizarras
+                    .Where(r => r.Nombre.ToLower().Contains("admin"))
+                    .Select(r => r.Nombre)
+                    .FirstOrDefaultAsync();
 
-                if (rolFiltrado == RolEnPizarra.Admin)
+                if (!string.IsNullOrEmpty(nombreRolAdmin))
                 {
-                    pizarras = pizarras.Where(p => p.Rol == RolEnPizarra.Admin).ToList();
-                }
-                else
-                {
-                    pizarras = pizarras.Where(p => p.Rol != RolEnPizarra.Admin).ToList();
+                    if (filtroRol == "admin")
+                    {
+                        pizarras = pizarras.Where(p => p.Rol == nombreRolAdmin).ToList();
+                    }
+                    else if (filtroRol == "noAdmin")
+                    {
+                        pizarras = pizarras.Where(p => p.Rol != nombreRolAdmin).ToList();
+                    }
                 }
             }
 
@@ -353,18 +381,6 @@ namespace Services
                 .CountAsync();
 
             return mensajesNoVistos;
-        }
-   
-
-        public async Task SetColorBlancoPizarra(Guid pizarraGUID)
-        {
-            var pizarra = await ObtenerPizarra(pizarraGUID);
-
-            if (pizarra != null)
-            {
-                pizarra.ColorFondo = "#ffffff";
-                await _context.SaveChangesAsync();
-            }
         }
     }
 }

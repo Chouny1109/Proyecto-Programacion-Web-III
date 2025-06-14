@@ -21,7 +21,7 @@ public partial class Trazo
 
     public int? Grosor { get; set; }
 
-
     public Guid? GrupoTrazoId { get; set; }
+
     public virtual Pizarra Pizarra { get; set; } = null!;
 }

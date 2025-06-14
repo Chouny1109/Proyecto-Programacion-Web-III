@@ -3,7 +3,7 @@
 @{
     ViewData["Title"] = "Mis Proyectos";
     var busqueda = ViewData["Busqueda"] as string;
-    int? filtroRol = ViewData["FiltroRol"] as int?;
+    string? filtroRol = ViewData["FiltroRol"] as string;
 }
 
 <div class="container mt-4">
@@ -22,11 +22,11 @@
                     <span class="material-symbols-outlined">view_module</span>
                 </button>
 
-                <button type="submit" name="filtroRol" value="3" class="btn btn-outline-dark @(filtroRol == 3 ? "active" : "")" title="Propias">
+                <button type="submit" name="filtroRol" value="admin" class="btn btn-outline-dark @(filtroRol == "admin" ? "active" : "")" title="Propias">
                     <span class="material-symbols-outlined">person</span>
                 </button>
 
-                <button type="submit" name="filtroRol" value="1" class="btn btn-outline-dark @(filtroRol == 1 ? "active" : "")" title="Compartidas">
+                <button type="submit" name="filtroRol" value="noAdmin" class="btn btn-outline-dark @(filtroRol == "noAdmin" ? "active" : "")" title="Compartidas">
                     <span class="material-symbols-outlined">groups</span>
                 </button>
             </form>
@@ -74,7 +74,7 @@
                     </div>
                 </a>
 
-                @if (pizarra.Rol == RolEnPizarra.Admin)
+                @if (pizarra.Rol == "Admin")
                 {
                     <button type="button"
                             class="btn btn-sm btn-danger position-absolute border-0"
