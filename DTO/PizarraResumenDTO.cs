@@ -7,6 +7,6 @@ namespace PizarraColaborativa.DTO
         public Guid Id{ get; set; }
         public string? Nombre { get; set; }
         public DateTime FechaCreacion { get; set; }
-        public RolEnPizarra Rol { get; set; }
+        public string Rol { get; set; } = string.Empty;
     }
 }

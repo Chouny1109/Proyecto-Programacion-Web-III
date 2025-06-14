@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using DTO;
 using Microsoft.AspNetCore.Identity;
 
 namespace Entidades.EF;
@@ -19,9 +18,11 @@ public partial class InvitacionPizarra
 
     public DateTime? FechaExpiracion { get; set; }
 
-    public RolEnPizarra Rol { get; set; }
+    public int RolId { get; set; }
 
     public virtual Pizarra Pizarra { get; set; } = null!;
+
+    public virtual RolEnPizarra Rol { get; set; } = null!;
 
     public virtual IdentityUser UsuarioRemitente { get; set; } = null!;
 }

@@ -23,32 +23,26 @@ namespace PizarraColaborativa.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> GenerarInvitacion(Guid pizarraId,int rol)
+        public async Task<IActionResult> GenerarInvitacion(Guid pizarraId, int rolId)
         {
             var usuario = await _userManager.GetUserAsync(User);
-            var esAdmin = await _pizarraService.EsAdminDeLaPizarraAsync(usuario.Id,pizarraId);
+    
+            var esAdmin = await _pizarraService.EsAdminDeLaPizarraAsync(usuario.Id, pizarraId);
             if (!esAdmin) return Forbid();
 
-            var codigo= Guid.NewGuid().ToString("N");
-
-            var invitacion = new InvitacionPizarra
+            try
             {
-                PizarraId = pizarraId,
-                UsuarioRemitenteId = usuario.Id,
-                CodigoInvitacion = codigo,
-                FechaInvitacion = DateTime.UtcNow,
-                Rol = (RolEnPizarra)rol,
-                FechaExpiracion = DateTime.UtcNow.AddDays(1)
-               
-            };
+                var codigo = await _invitacionService.CrearInvitacionAsync(pizarraId, usuario.Id, rolId);
 
-            _invitacionService.AgregarInvitacion(invitacion);
-
-            var url = Url.Action("VerInvitacion", "Invitacion", 
-                new { codigo = codigo }, Request.Scheme);
-
-         return Content(url);
+                var url = Url.Action("VerInvitacion", "Invitacion", new { codigo }, Request.Scheme);
+                return Content(url);
+            }
+            catch (ArgumentException ex)
+            {
+                return BadRequest(ex.Message);
+            }
         }
+
         [HttpGet]
         [Authorize]
         public async Task<IActionResult> VerInvitacion(string codigo)
@@ -88,7 +82,7 @@ namespace PizarraColaborativa.Controllers
                 {
                     PizarraId = invitacion.PizarraId,
                     UsuarioId = usuarioInvitado.Id,
-                    Rol= invitacion.Rol
+                    RolId= invitacion.RolId
                     
                 };
                await _pizarraService.AgregarOActualizarUsuarioEnPizarraAsync(pizarraUsuario);
