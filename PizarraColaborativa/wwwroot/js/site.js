@@ -220,6 +220,10 @@ conexion.on("ReceiveLimpiar", function () {
 
 let textos = {}; // guardamos textos por id
 
+let textoSeleccionadoId = null;
+let textoInicialX = 0;
+let textoInicialY = 0;
+
 function crearTextoEditable(texto, x, y, color = 'black', tamano = 20, id = null, enviar = true) {
     if (!id) id = crypto.randomUUID();
 
@@ -276,6 +280,11 @@ function crearTextoEditable(texto, x, y, color = 'black', tamano = 20, id = null
         offsetX = e.clientX - div.offsetLeft;
         offsetY = e.clientY - div.offsetTop;
         div.style.userSelect = "none";
+
+        textoSeleccionadoId = id;
+        textoInicialX = parseInt(div.style.left);
+        textoInicialY = parseInt(div.style.top);
+
     });
 
 
@@ -287,11 +296,6 @@ function crearTextoEditable(texto, x, y, color = 'black', tamano = 20, id = null
         div.style.top = ny + "px";
         textos[id].x = nx;
         textos[id].y = ny;
-
-        if (conexion.state === signalR.HubConnectionState.Connected) {
-            conexion.invoke("MoverTexto", pizarraId, id, nx, ny)
-                .catch(e => console.error(e));
-        }
     });
 
 
@@ -300,11 +304,21 @@ function crearTextoEditable(texto, x, y, color = 'black', tamano = 20, id = null
             isDragging = false;
             div.style.userSelect = "text";
 
+        }
+
+            if (textoSeleccionadoId) {
+                const texto = textos[textoSeleccionadoId];
+                const xFinal = texto.x;
+                const yFinal = texto.y;
+
             // Enviar posición nueva al servidor
             if (conexion.state === signalR.HubConnectionState.Connected) {
-                conexion.invoke("MoverTexto", pizarraId, id, textos[id].x, textos[id].y)
+                conexion.invoke("MoverTexto", pizarraId,textoSeleccionadoId, textoInicialX, textoInicialY,
+                xFinal,yFinal)
                     .catch(e => console.error(e));
-            }
+                }
+                textoSeleccionadoId = null;
+
         }
     });
 

@@ -211,19 +211,17 @@ namespace PizarraColaborativa.Hubs
             await _actionsMemoryService.Rehacer(pizarraId, Clients, _trazoService, _textoService);
         }
 
-        public async Task MoverTexto(string pizarraId, string id, int x, int y)
+        public async Task MoverTexto(string pizarraId, string id, int xAnt, int yAnt, int xFinal, int yFinal)
         {
 
             var textoMemoria = _textoService.ObtenerTextoPorIdEnMemoria(pizarraId, id);
             if (textoMemoria != null)
             {
-                textoMemoria.PosX = x;
-                textoMemoria.PosY = y;
-
-            
                
+                _actionsMemoryService.RegistrarAccion(pizarraId, new AccionTextoMovido(id, xAnt, yAnt, xFinal, yFinal));
 
-                await Clients.Group(pizarraId).SendAsync("TextoMovido", id, x, y);
+
+                await Clients.Group(pizarraId).SendAsync("TextoMovido", id, xFinal, yFinal);
             }
 
         }
