@@ -340,11 +340,99 @@ textarea {
 
 /* --- Canvas --- */
 .canvas {
+    position: relative; s
     border-radius: 5px;
+    width: 100%; 
+    height: 600px; 
+    overflow: hidden;
+    background-color: #f0f0f0;
 }
+
 
 canvas {
     margin-top: 5px;
     background-color: white;
     border-radius: 10px;
 }
+.sticky {
+    cursor: move;
+    user-select: none;
+    position: absolute;
+    top: 100px;
+    left: 100px;
+    width: auto;
+    max-width: 300px;
+    background-color: #fef68a;
+    border: 1px solid #ccc;
+    box-shadow: 2px 2px 6px rgba(0, 0, 0, 0.2);
+    z-index: 1000;
+}
+
+.sticky-image-div img {
+    width: 100%;
+    height: auto;
+    display: block;
+}
+
+.sticky-header {
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    background-color: #f0f0f0;
+    padding: 5px;
+    border-bottom: 1px solid #ccc;
+    cursor: move;
+    border-radius: 5px 5px 0 0;
+}
+
+    .sticky-header .minimize,
+    .sticky-header .close {
+        width: 16px;
+        height: 16px;
+        margin-left: 6px;
+        border-radius: 50%;
+        cursor: pointer;
+        position: relative;
+    }
+
+    .sticky-header .minimize {
+        background-color: #f4c430; /* amarillo */
+    }
+
+    .sticky-header .close {
+        background-color: #e74c3c; /* rojo */
+    }
+
+        .sticky-header .minimize::before,
+        .sticky-header .close::before {
+            content: "";
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 8px;
+            height: 2px;
+            background-color: #333;
+            transform: translate(-50%, -50%);
+        }
+
+        .sticky-header .close::before {
+            transform: translate(-50%, -50%) rotate(45deg);
+        }
+
+        .sticky-header .close::after {
+            content: "";
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 8px;
+            height: 2px;
+            background-color: #333;
+            transform: translate(-50%, -50%) rotate(-45deg);
+        }
+
+    .hide{
+        display:none;
+    }
+    .tool{
+        cursor:pointer;
+    }
