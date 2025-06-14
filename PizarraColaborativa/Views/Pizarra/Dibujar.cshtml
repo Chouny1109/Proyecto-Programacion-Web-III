@@ -51,8 +51,16 @@
     <button id="btnInsertarTexto">Insertar texto</button>
     <input type="submit" id="limpiar" value="Limpiar" />
 
+    <div class="tool btn btn-light d-flex align-items-center" id="photo" onclick="document.getElementById('photo-upload').click();">
+        <i class="bi bi-image me-1"></i> Imagen
+        <input type="file" class="d-none" id="photo-upload" accept="image/*" />
+    </div>
+
+
+
 
 </div>
+
 
 
 
@@ -64,8 +72,11 @@
 <div class="d-flex justify-content-center align-items-center canvas" style="position: relative;">
     <canvas id="area" width="950" height="500"></canvas>
     <div id="contenedorTextos" style="position: absolute; top: 0; left: 0; pointer-events: none;"></div>
-
+    <div class="tool" id="sticky">
+        <img src="./NewIcons/StickyNote.svg" alt="" />
+    </div>
 </div>
+
 
 <!-- Modal -->
 <div class="modal fade" id="modalInvitacion" tabindex="-1" aria-labelledby="modalLabel" aria-hidden="true">

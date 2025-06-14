@@ -225,6 +225,34 @@ namespace PizarraColaborativa.Hubs
             }
 
         }
+        public async Task EnviarImagen(string pizarraId, string base64, int posX, int posY, string idImg)
+        {
+
+            await Clients.GroupExcept(pizarraId, Context.ConnectionId)
+                .SendAsync("RecibirImagen", base64, posX, posY, idImg);
+        }
+
+        public async Task MoverImagen(string pizarraId, string idImg, int posX, int posY)
+        {
+            try
+            {
+                await Clients.GroupExcept(pizarraId, Context.ConnectionId)
+                    .SendAsync("ActualizarPosicionImagen", idImg, posX, posY);
+            }
+            catch (Exception ex)
+            {
+                // Loggear ex.Message si tenés un logger
+                throw new HubException("Error en MoverImagen: " + ex.Message);
+            }
+        }
+
+        public async Task CerrarImagen(string idPizarra, string idImg)
+        {
+            await Clients.GroupExcept(idPizarra, Context.ConnectionId)
+                    .SendAsync("SacarImagen", idImg);
+        }
+
+
 
         private bool EstaCercaDelPunto(Trazo t, int x, int y, int radio)
         {

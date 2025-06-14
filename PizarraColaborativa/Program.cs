@@ -18,6 +18,12 @@ builder.Services.AddSignalR();
 builder.Services.AddScoped<IPizarraService, PizarraService>();
 builder.Services.AddScoped<IInvitacionService, InvitacionService>();
 
+builder.Services.AddSignalR(options =>
+{
+    options.MaximumReceiveMessageSize = 1024 * 1024 * 5;
+});
+
+
 builder.Services.AddDbContext<ProyectoPizarraContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("Connection")));
 

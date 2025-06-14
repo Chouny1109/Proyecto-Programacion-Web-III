@@ -27,6 +27,49 @@ conexion.on("CargarTrazos", function (trazos) {
     trazos.forEach(t => dibujarTrazo(t));
 });
 
+conexion.on("ActualizarPosicionImagen", (idImg, posX, posY) => {
+    // Buscar el sticky div con ese id
+    const stickyDiv = document.querySelector(`div.sticky[data-id-imagen='${idImg}']`);
+    if (!stickyDiv) {
+
+        console.log("entro al if");
+
+        return;
+    }
+
+    stickyDiv.style.left = posX + "px";
+    stickyDiv.style.top = posY + "px";
+
+    console.log(posX + " x " + posY);
+
+});
+
+conexion.on("SacarImagen", (idImg) => {
+    // Buscar el sticky div con ese id
+    const stickyDiv = document.querySelector(`div.sticky[data-id-imagen='${idImg}']`);
+    if (!stickyDiv) {
+
+        console.log("entro al if");
+
+        return;
+    }
+    stickyDiv.remove();
+
+});
+
+
+
+conexion.on("RecibirImagen", function (base64, x, y, idImg) {
+    let img = new Image();
+    img.src = base64;
+    addSticky(img, idImg);
+});
+
+
+
+
+
+
 // Dibuja los trazos traidos.
 function dibujarTrazo(trazo) {
     const xInicio = trazo.xinicio ?? 0;
@@ -434,8 +477,78 @@ document.getElementById("btnGoma").addEventListener("click", () => {
         canvas.style.cursor = "crosshair";
     }
 });
+document.getElementById("photo-upload").addEventListener("change", function (event) {
+const file = event.target.files[0];
+if (!file) return;
 
 
 
+const reader = new FileReader();
+reader.onload = function (e) {
+    const base64 = e.target.result;
+
+    redimensionarImagen(base64, 300, 300, function (base64Reducida) {
+        const img = new Image();
+        const blob = base64ToBlob(base64Reducida);
+        const url = URL.createObjectURL(blob);
+        img.src = url;
+
+        img.onload = () => {
+            const idImg = "img-" + Date.now() + "-" + Math.floor(Math.random() * 10000);
+
+       
+            addSticky(img, idImg);
+
+            const posX = 100;
+            const posY = 100;
+
+    
+            conexion.invoke("EnviarImagen", pizarraId, base64Reducida, posX, posY, idImg)
+                .catch(err => console.error("Error al enviar:", err.toString()));
+        };
+    });
+};
+reader.readAsDataURL(file);
+
+event.target.value = ""; 
+});
+function base64ToBlob(base64) {
+    const parts = base64.split(';base64,');
+    const mime = parts[0].split(':')[1];
+    const binary = atob(parts[1]);
+    const array = new Uint8Array(binary.length);
+    for (let i = 0; i < binary.length; i++) {
+        array[i] = binary.charCodeAt(i);
+    }
+    return new Blob([array], { type: mime });
+}
+
+function redimensionarImagen(base64Original, maxAncho, maxAlto, callback) {
+    const img = new Image();
+    img.onload = () => {
+        let ratio = Math.min(maxAncho / img.width, maxAlto / img.height, 1); 
+        const ancho = Math.round(img.width * ratio);
+        const alto = Math.round(img.height * ratio);
+
+        const canvas = document.createElement("canvas");
+        canvas.width = ancho;
+        canvas.height = alto;
+
+        const ctx = canvas.getContext("2d");
+        ctx.clearRect(0, 0, ancho, alto);
+
+        ctx.imageSmoothingEnabled = true;
+        ctx.imageSmoothingQuality = "high";
+
+        ctx.drawImage(img, 0, 0, ancho, alto);
+
+
+        const base64Reducida = canvas.toDataURL("image/jpeg", 1);
+
+        console.log("Tamaño final:", base64Reducida.length);
+        callback(base64Reducida);
+    };
+    img.src = base64Original;
+}
 
 
