@@ -103,7 +103,7 @@ namespace PizarraColaborativa.Hubs
                 _trazoService.EliminarTrazo(pizarraId, grupoId.Value);
 
                 // Registrar acción para Undo
-                _actionsMemoryService.RegistrarAccion(pizarraId, new AccionTrazo(trazosDelGrupo));
+                _actionsMemoryService.RegistrarAccion(pizarraId, new AccionTrazoBorrado(trazosDelGrupo));
             }
 
             var trazosActuales = _trazoService.ObtenerTrazos(pizarraId);
