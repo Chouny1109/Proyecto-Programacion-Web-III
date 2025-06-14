@@ -217,7 +217,11 @@ namespace PizarraColaborativa.Hubs
             var textoMemoria = _textoService.ObtenerTextoPorIdEnMemoria(pizarraId, id);
             if (textoMemoria != null)
             {
-               
+                textoMemoria.PosX = xFinal;
+                textoMemoria.PosY = yFinal;
+
+                _textoService.EditarTextoEnPizarra(textoMemoria, pizarraId);
+
                 _actionsMemoryService.RegistrarAccion(pizarraId, new AccionTextoMovido(id, xAnt, yAnt, xFinal, yFinal));
 
 
