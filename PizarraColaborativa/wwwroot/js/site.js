@@ -218,17 +218,35 @@ conexion.on("ReceiveLimpiar", function () {
 
 //insertar Texto
 
-let textos = {}; // guardamos textos por id
-
+let textos = {}; // diccionario de textos por id
 let textoSeleccionadoId = null;
 let textoInicialX = 0;
 let textoInicialY = 0;
 
+// Función para seleccionar texto
+function seleccionarTexto(id) {
+    textoSeleccionadoId = id;
+
+    // Quitar resaltado de todos
+    for (const t of Object.values(textos)) {
+        t.div.style.outline = "none";
+    }
+
+    const texto = textos[id];
+    if (!texto) return;
+
+    texto.div.style.outline = "2px dashed gray";
+
+    // Actualizar inputs
+    document.getElementById("colorTexto").value = texto.color;
+    document.getElementById("tamanioTexto").value = texto.tamano;
+}
+
+// Crear texto editable
 function crearTextoEditable(texto, x, y, color = 'black', tamano = 20, id = null, enviar = true) {
     if (!id) id = crypto.randomUUID();
 
-
-    // Si ya existe el div, solo actualiza sus propiedades
+    // Si ya existe, solo actualizarlo
     if (textos[id] && textos[id].div) {
         let div = textos[id].div;
         div.textContent = texto;
@@ -240,7 +258,6 @@ function crearTextoEditable(texto, x, y, color = 'black', tamano = 20, id = null
         return;
     }
 
-    // Crear un div para el texto editable
     let div = document.createElement("div");
     div.contentEditable = true;
     div.textContent = texto;
@@ -259,7 +276,6 @@ function crearTextoEditable(texto, x, y, color = 'black', tamano = 20, id = null
 
     textos[id] = { div, x, y, texto, color, tamano };
 
-    // Enviar al servidor si corresponde
     if (enviar && conexion.state === signalR.HubConnectionState.Connected) {
         conexion.invoke("CrearOEditarTexto", pizarraId, {
             id: id,
@@ -271,22 +287,22 @@ function crearTextoEditable(texto, x, y, color = 'black', tamano = 20, id = null
         }).catch(e => console.error(e));
     }
 
-    // Drag para mover el texto
-    let isDragging = false;
-    let offsetX, offsetY;
-
+    // Manejo de selección
     div.addEventListener("mousedown", (e) => {
         isDragging = true;
         offsetX = e.clientX - div.offsetLeft;
         offsetY = e.clientY - div.offsetTop;
         div.style.userSelect = "none";
 
-        textoSeleccionadoId = id;
+        seleccionarTexto(id);
         textoInicialX = parseInt(div.style.left);
         textoInicialY = parseInt(div.style.top);
-
+        e.stopPropagation();
     });
 
+    let isDragging = false;
+    let offsetX = 0;
+    let offsetY = 0;
 
     window.addEventListener("mousemove", (e) => {
         if (!isDragging) return;
@@ -298,46 +314,117 @@ function crearTextoEditable(texto, x, y, color = 'black', tamano = 20, id = null
         textos[id].y = ny;
     });
 
-
     window.addEventListener("mouseup", (e) => {
         if (isDragging) {
             isDragging = false;
             div.style.userSelect = "text";
-
-        }
 
             if (textoSeleccionadoId) {
                 const texto = textos[textoSeleccionadoId];
                 const xFinal = texto.x;
                 const yFinal = texto.y;
 
-            // Enviar posición nueva al servidor
-            if (conexion.state === signalR.HubConnectionState.Connected) {
-                conexion.invoke("MoverTexto", pizarraId,textoSeleccionadoId, textoInicialX, textoInicialY,
-                xFinal,yFinal)
-                    .catch(e => console.error(e));
+                if (conexion.state === signalR.HubConnectionState.Connected) {
+                    conexion.invoke("MoverTexto", pizarraId, textoSeleccionadoId, textoInicialX, textoInicialY, xFinal, yFinal)
+                        .catch(e => console.error(e));
                 }
-                textoSeleccionadoId = null;
-
+            }
         }
     });
 
-    // Escuchar cuando el texto cambia para enviar edición
-    div.addEventListener("input", () => {
-        textos[id].texto = div.textContent;
+    // Guardar contenido original al hacer foco
+    let contenidoOriginal = texto;
+    div.addEventListener("focus", () => {
+        contenidoOriginal = div.textContent.trim();
+    });
 
-        if (conexion.state === signalR.HubConnectionState.Connected) {
-            conexion.invoke("CrearOEditarTexto",pizarraId ,{
-                id: id,
-                contenido: textos[id].texto,
-                x: textos[id].x,
-                y: textos[id].y,
-                color: textos[id].color,
-                tamano: textos[id].tamano
-            }).catch(e => console.error(e));
+    // Manejar cuando se deja de editar
+    div.addEventListener("blur", () => {
+        const nuevoContenido = div.textContent.trim();
+
+        if (nuevoContenido === "") {
+            div.remove();
+            delete textos[id];
+            if (conexion.state === signalR.HubConnectionState.Connected) {
+                conexion.invoke("EliminarTexto", pizarraId, id)
+                    .catch(e => console.error("Error al eliminar texto vacío:", e));
+            }
+            return;
+        }
+
+        if (nuevoContenido !== contenidoOriginal) {
+            textos[id].texto = nuevoContenido;
+
+            if (conexion.state === signalR.HubConnectionState.Connected) {
+                conexion.invoke("CrearOEditarTexto", pizarraId, {
+                    id: id,
+                    contenido: nuevoContenido,
+                    x: textos[id].x,
+                    y: textos[id].y,
+                    color: textos[id].color,
+                    tamano: textos[id].tamano
+                }).catch(e => console.error(e));
+            }
         }
     });
 }
+
+
+// Aplicar color automáticamente al cambiar el input
+document.getElementById("colorTexto").addEventListener("input", () => {
+    if (!textoSeleccionadoId) return;
+    const nuevoColor = document.getElementById("colorTexto").value;
+    const texto = textos[textoSeleccionadoId];
+    texto.color = nuevoColor;
+    texto.div.style.color = nuevoColor;
+
+    if (conexion.state === signalR.HubConnectionState.Connected) {
+        conexion.invoke("CrearOEditarTexto", pizarraId, {
+            id: textoSeleccionadoId,
+            contenido: texto.div.textContent,
+            x: texto.x,
+            y: texto.y,
+            color: nuevoColor,
+            tamano: texto.tamano
+        }).catch(e => console.error(e));
+    }
+});
+
+// Aplicar tamaño automáticamente al cambiar el input
+document.getElementById("tamanioTexto").addEventListener("input", () => {
+    if (!textoSeleccionadoId) return;
+    const nuevoTamano = parseInt(document.getElementById("tamanioTexto").value);
+    const texto = textos[textoSeleccionadoId];
+    texto.tamano = nuevoTamano;
+    texto.div.style.fontSize = `${nuevoTamano}px`;
+
+    if (conexion.state === signalR.HubConnectionState.Connected) {
+        conexion.invoke("CrearOEditarTexto", pizarraId, {
+            id: textoSeleccionadoId,
+            contenido: texto.div.textContent,
+            x: texto.x,
+            y: texto.y,
+            color: texto.color,
+            tamano: nuevoTamano
+        }).catch(e => console.error(e));
+    }
+});
+
+// Deseleccionar texto al hacer clic fuera
+document.addEventListener("mousedown", function (e) {
+    if (
+        !e.target.closest("div[contenteditable='true']") &&
+        !e.target.closest("#colorTexto") &&
+        !e.target.closest("#tamanioTexto")
+    ) {
+        for (const t of Object.values(textos)) {
+            t.div.style.outline = "none";
+        }
+        textoSeleccionadoId = null;
+    }
+});
+
+
 
 // Recibir textos actualizados desde el servidor
 conexion.on("TextoActualizado", (texto) => {
@@ -374,7 +461,7 @@ document.getElementById("btnInsertarTexto").addEventListener("click", () => {
     const texto = document.getElementById("textoContenido").value || "Nuevo texto";
     const color = document.getElementById("colorTexto").value;
     const tamano = parseInt(document.getElementById("tamanioTexto").value) || 20;
-    crearTextoEditable(texto, 100, 100, color, tamano, null, true);
+    crearTextoEditable(texto, 500, 250, color, tamano, null, true);
 });
 
 let undo = document.getElementById("undo");
