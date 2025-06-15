@@ -76,15 +76,31 @@ namespace Services
 
         public async Task PersistirTextosBD(Dictionary<string, List<Texto>> dictionary)
         {
-            foreach (var (pizarraId, textos) in dictionary)
+            foreach (var (pizarraId, textosMemoria) in dictionary)
             {
                 var pizarraguid = Guid.Parse(pizarraId);
-                var existentes = await ObtenerTextosDeUnaPizarra(pizarraguid);
 
-                foreach (var texto in textos)
+                // 1. Traer textos actuales de la base
+                var textosBD = await _context.Textos
+                    .Where(t => t.PizarraId == pizarraguid)
+                    .ToListAsync();
+
+                // 2. Identificar los textos que fueron eliminados de memoria
+                var textosAEliminar = textosBD
+                    .Where(tbd => !textosMemoria.Any(tm => tm.Id == tbd.Id))
+                    .ToList();
+
+                // 3. Eliminar esos textos de la base
+                if (textosAEliminar.Any())
+                {
+                    _context.Textos.RemoveRange(textosAEliminar);
+                }
+
+                // 4. Actualizar existentes y agregar nuevos
+                foreach (var texto in textosMemoria)
                 {
                     texto.PizarraId = pizarraguid;
-                    var textoExistente = existentes.FirstOrDefault(t => t.Id == texto.Id);
+                    var textoExistente = textosBD.FirstOrDefault(t => t.Id == texto.Id);
                     if (textoExistente != null)
                     {
                         textoExistente.Contenido = texto.Contenido;
@@ -102,6 +118,7 @@ namespace Services
                     }
                 }
             }
+
             await _context.SaveChangesAsync();
         }
 
