@@ -159,23 +159,64 @@ namespace PizarraColaborativa.Hubs
 
             await Clients.Group(pizarraId).SendAsync("ReceiveLimpiar");
         }
+        public async Task EliminarTexto(string pizarraId, string id)
+        {
+            var texto = _textoService.ObtenerTextoPorIdEnMemoria(pizarraId, id);
+            if (texto != null)
+            {
+                _textoService.EliminarTexto(pizarraId, id);
+
+                // Registrar en undo
+                _actionsMemoryService.RegistrarAccion(pizarraId, new AccionTextoEliminado(texto));
+
+                await Clients.Group(pizarraId).SendAsync("TextoEliminado", id);
+            }
+        }
 
         public async Task CrearOEditarTexto(string pizarraId, Texto texto)
         {
 
-            var textoEncontrado = await _pizarraService.ObtenerTextoPorId(texto.Id, pizarraId);
+            var textoEncontrado = _textoService.ObtenerTextoPorIdEnMemoria(pizarraId, texto.Id);
 
 
             if (textoEncontrado != null)
             {
+                var antes = new Entidades.EF.Texto
+                {
+                    Id = texto.Id,
+                    Contenido = textoEncontrado.Contenido,
+                    Color = textoEncontrado.Color,
+                    Tamano = textoEncontrado.Tamano,
+                    PosX = textoEncontrado.PosX,
+                    PosY = textoEncontrado.PosY
+                };
+
+                if (antes.Contenido != texto.Contenido || antes.Color != texto.Color || antes.Tamano != texto.Tamano)
+                {
+                    _actionsMemoryService.RegistrarAccion(pizarraId,
+                        new AccionTextoEditado(
+                            texto.Id,
+                            antes.Contenido, texto.Contenido,
+                            antes.Color, texto.Color,
+                            antes.Tamano ?? 20,
+                            texto.Tamano
+                        )
+                    );
+                }
+
+                // Actualizar valores
+                textoEncontrado.Contenido = texto.Contenido;
+                textoEncontrado.Color = texto.Color;
+                textoEncontrado.Tamano = texto.Tamano;
                 textoEncontrado.PosX = texto.X;
                 textoEncontrado.PosY = texto.Y;
-                textoEncontrado.Tamano = texto.Tamano;
-                textoEncontrado.Color = texto.Color;
-                textoEncontrado.Contenido = texto.Contenido;
 
                 _textoService.EditarTextoEnPizarra(textoEncontrado, pizarraId);
+
+             
+                
             }
+
             else
             {
                 _textoService.AgregarTextoALaPizarra(texto.Id, texto.X, texto.Y, texto.Tamano, texto.Contenido, texto.Color, pizarraId);
