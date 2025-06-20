@@ -54,8 +54,8 @@ VALUES
     (3, 'Admin');
 GO
 
--- UPDATE InvitacionPizarra(RolId)
-ALTER TABLE dbo.InvitacionPizarra DROP CONSTRAINT DF__InvitacionP__Rol__60A75C0F;
+-- UPDATE InvitacionPizarra(RolId)                                
+ALTER TABLE dbo.InvitacionPizarra DROP CONSTRAINT DF__InvitacionP__Rol__628FA481;  -- <-----------------   aca tiraba error y actualice esto 628FA481
 
 ALTER TABLE dbo.InvitacionPizarra DROP COLUMN Rol;
 
