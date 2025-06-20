@@ -12,7 +12,10 @@ namespace PizarraColaborativa.Controllers
     {
         private readonly IPizarraService _service = service;
         private readonly UserManager<IdentityUser> _userManager = userManager;
-
+        public IActionResult Index()
+        {
+            return RedirectToAction("Index", "Home");
+        }
         [HttpPost]
         public async Task<IActionResult> Crear(string nombre)
         {

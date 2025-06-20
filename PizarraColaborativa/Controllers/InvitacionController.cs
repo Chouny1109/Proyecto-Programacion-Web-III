@@ -54,12 +54,20 @@ namespace PizarraColaborativa.Controllers
                 return View("InvitacionExpirada");
             }
 
-            var pizarra = await _pizarraService.ObtenerPizarra(invitacion.PizarraId);
+            var perteneceAPizarra = await _pizarraService.ExisteUsuarioEnPizarra(_userManager.GetUserId(User), invitacion.PizarraId);
+            if (perteneceAPizarra)
+            {
+                return RedirectToAction("Dibujar", "Pizarra", new { id = invitacion.PizarraId });
+            }
+            else
+            {
+                var pizarra = await _pizarraService.ObtenerPizarra(invitacion.PizarraId);
 
-            ViewBag.NombrePizarra = pizarra?.NombrePizarra ?? "Pizarra Sin Nombre";
-            ViewBag.Rol = invitacion.Rol;
+                ViewBag.NombrePizarra = pizarra?.NombrePizarra ?? "Pizarra Sin Nombre";
+                ViewBag.Rol = invitacion.Rol.Nombre;
 
-            return View("AceptarInvitacion", invitacion);
+                return View("AceptarInvitacion", invitacion);
+            } 
         }
 
         [HttpPost]

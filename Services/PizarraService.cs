@@ -37,6 +37,8 @@ namespace Services
         Task<MensajeDTO> GuardarMensajeAsync(MensajeDTO mensaje);
         Task MarcarTodosLosMensajesComoVistosAsync(Guid pizarraId, string userId);
         Task<int> ObtenerCantidadMensajesNoVistosAsync(string userId, Guid pizarraId);
+        Task<List<UserNameIDPizarraDTO>> ObtenerUsuariosDePizarra(Guid pizarraId);
+        Task EliminarUsuarioDePizarra(string userIdExpulsado, Guid guid);
     }
 
     public class PizarraService(ProyectoPizarraContext context) : IPizarraService
@@ -399,5 +401,33 @@ namespace Services
 
             return mensajesNoVistos;
         }
+
+        public async Task<List<UserNameIDPizarraDTO>> ObtenerUsuariosDePizarra(Guid pizarraId)
+        {
+            return await _context.PizarraUsuarios
+                .Where(up => up.PizarraId == pizarraId && up.RolId != 3)
+                .Select(up => new UserNameIDPizarraDTO
+                {
+                    UserId = up.UsuarioId,
+                    UserName = _context.Users
+                        .Where(u => u.Id == up.UsuarioId )
+                        .Select(u => u.UserName)
+                        .FirstOrDefault()
+                })
+                .ToListAsync();
+        }
+
+        public async Task EliminarUsuarioDePizarra(string userId, Guid pizarraId)
+        {
+            var relacion = await _context.PizarraUsuarios
+                .FirstOrDefaultAsync(up => up.UsuarioId == userId && up.PizarraId == pizarraId);
+
+            if (relacion != null)
+            {
+                _context.PizarraUsuarios.Remove(relacion);
+                await _context.SaveChangesAsync();
+            }
+        }
+
     }
 }

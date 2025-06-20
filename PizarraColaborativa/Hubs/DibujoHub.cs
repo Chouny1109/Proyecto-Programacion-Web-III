@@ -9,6 +9,8 @@ namespace PizarraColaborativa.Hubs
 {
     public class DibujoHub : Hub
     {
+        private static readonly Dictionary<string, (string userId, string pizarraId)> _conexiones
+         = new(StringComparer.OrdinalIgnoreCase);
         private readonly ITextoMemoryService _textoService;
         private readonly ITrazoMemoryService _trazoService;
         private readonly IAccionMemoryService _actionsMemoryService;
@@ -29,6 +31,12 @@ namespace PizarraColaborativa.Hubs
         {
             var httpContext = Context.GetHttpContext();
             var pizarraId = httpContext.Request.Query["pizarraId"];
+
+            var userId = Context.UserIdentifier;
+            Console.WriteLine($"[DEBUG] Conexión ID: {Context.ConnectionId}, UserId: {Context.UserIdentifier}, Pizarra: {pizarraId}");
+
+            _conexiones[Context.ConnectionId] = (userId, pizarraId);
+
             await Groups.AddToGroupAsync(Context.ConnectionId, pizarraId);
 
             //Cargar nombre pizarra al conectarse
@@ -236,6 +244,36 @@ namespace PizarraColaborativa.Hubs
 
         }
 
+        public async Task ObtenerUsuariosDePizarra(string pizarraId)
+        {
+            var guid = Guid.Parse(pizarraId);
+            var usuarios = await _pizarraService.ObtenerUsuariosDePizarra(guid);
+
+            await Clients.Caller.SendAsync("ListaUsuariosPizarra", usuarios);
+        }
+        public async Task ExpulsarUsuarioDePizarra(string userIdExpulsado, string pizarraId)
+        {
+            var guid = Guid.Parse(pizarraId);
+            await _pizarraService.EliminarUsuarioDePizarra(userIdExpulsado, guid);
+
+         //si esta conectado, se le avisa en tiempo real
+            var conexiones = _conexiones
+                .Where(c => c.Value.pizarraId == pizarraId && c.Value.userId == userIdExpulsado)
+                .Select(c => c.Key)
+                .ToList();
+
+            foreach (var conn in conexiones)
+            {
+                await Clients.Client(conn).SendAsync("UsuarioExpulsado", "Fuiste eliminado de la pizarra.");
+                await Groups.RemoveFromGroupAsync(conn, pizarraId);
+            }
+            ///
+           
+            //lista actualziada con los usuarios
+            var usuariosActualizados = await _pizarraService.ObtenerUsuariosDePizarra(guid);
+            await Clients.Caller.SendAsync("ListaUsuariosPizarra", usuariosActualizados);
+        }
+
         public async Task SolicitarTrazos(string pizarraId)
         {
             var trazos = _trazoService.ObtenerTrazos(pizarraId);
@@ -306,6 +344,11 @@ namespace PizarraColaborativa.Hubs
             return (dx * dx + dy * dy) <= (radio * radio);
         }
 
+        public override async Task OnDisconnectedAsync(Exception exception)
+        {
+            _conexiones.Remove(Context.ConnectionId);
+            await base.OnDisconnectedAsync(exception);
+        }
 
     }
 

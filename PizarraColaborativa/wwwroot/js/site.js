@@ -8,7 +8,53 @@ let conexion = new signalR.HubConnectionBuilder()
 let canvas = document.getElementById("area");
 let papel = canvas.getContext('2d');
 
+function mostrarListaUsuarios() {
+    document.getElementById("panelUsuarios").style.display = "block";
+    conexion.invoke("ObtenerUsuariosDePizarra", pizarraId);
+}
 
+function cerrarPanelUsuarios() {
+    document.getElementById("panelUsuarios").style.display = "none";
+}
+
+conexion.on("ListaUsuariosPizarra", function (usuarios) {
+    const contenedor = document.getElementById("lista-usuarios");
+    contenedor.innerHTML = "";
+
+    usuarios.forEach(u => {
+        const div = document.createElement("div");
+        div.classList.add("d-flex", "justify-content-between", "align-items-center", "mb-1");
+
+        const nombre = document.createElement("span");
+        nombre.textContent = u.userName;
+
+        const btn = document.createElement("button");
+        btn.textContent = "✖";
+        btn.className = "btn btn-sm btn-outline-danger";
+        btn.title = "Expulsar usuario";
+        btn.onclick = () => {
+            if (confirm(`¿Expulsar a ${u.userName}?`)) {
+                conexion.invoke("ExpulsarUsuarioDePizarra", u.userId, pizarraId);
+            }
+        };
+
+        div.appendChild(nombre);
+        div.appendChild(btn);
+        contenedor.appendChild(div);
+    });
+});
+
+conexion.on("UsuarioExpulsado", function (mensaje) {
+    console.log(" Usuario fue expulsado:", mensaje); 
+    Swal.fire({
+        icon: 'error',
+        title: 'Expulsado',
+        text: mensaje,
+        confirmButtonText: 'Aceptar'
+    }).then(() => {
+        window.location.href = "/Home/Index";
+    });
+});
 //actualizar nombre pizarra 
 function cambiarNombre() {
     const nuevoNombre = document.getElementById("nombrePizarraInput").value;
@@ -636,6 +682,9 @@ function redimensionarImagen(base64Original, maxAncho, maxAlto, callback) {
         callback(base64Reducida);
     };
     img.src = base64Original;
+
+ 
+
 }
 
 
