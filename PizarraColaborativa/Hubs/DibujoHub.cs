@@ -1,7 +1,9 @@
 ﻿using System.Diagnostics;
 using System.Drawing;
 using Entidades.EF;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.SignalR;
+using Microsoft.EntityFrameworkCore;
 using Services;
 using Services.Acciones;
 
@@ -15,16 +17,19 @@ namespace PizarraColaborativa.Hubs
         private readonly ITrazoMemoryService _trazoService;
         private readonly IAccionMemoryService _actionsMemoryService;
         private readonly IPizarraService _pizarraService;
-       
+        private readonly UserManager<IdentityUser> _userManager;
+
 
         public DibujoHub(ITrazoMemoryService memoriaService
             , ITextoMemoryService textoService, IPizarraService pizarraService,
-            IAccionMemoryService actionsMemoryService)
+            IAccionMemoryService actionsMemoryService,
+           UserManager<IdentityUser> userManager )
         {
             _textoService = textoService;
             _trazoService = memoriaService;
             _pizarraService = pizarraService;
             _actionsMemoryService = actionsMemoryService;
+            _userManager = userManager;
         }
 
         public override async Task OnConnectedAsync()
@@ -38,6 +43,7 @@ namespace PizarraColaborativa.Hubs
             _conexiones[Context.ConnectionId] = (userId, pizarraId);
 
             await Groups.AddToGroupAsync(Context.ConnectionId, pizarraId);
+            await NotificarUsuariosConectados(pizarraId);
 
             //Cargar nombre pizarra al conectarse
 
@@ -344,12 +350,35 @@ namespace PizarraColaborativa.Hubs
             return (dx * dx + dy * dy) <= (radio * radio);
         }
 
-        public override async Task OnDisconnectedAsync(Exception exception)
+
+        private async Task NotificarUsuariosConectados(string pizarraId)
         {
-            _conexiones.Remove(Context.ConnectionId);
-            await base.OnDisconnectedAsync(exception);
+            var usuariosConectados = _conexiones
+                .Where(c => c.Value.pizarraId == pizarraId)
+                .Select(c => c.Value.userId)
+                .Distinct()
+                .ToList();
+
+            // Obtener nombres desde BD
+            var lista = await _userManager.Users
+                .Where(u => usuariosConectados.Contains(u.Id))
+                .Select(u => new { userId = u.Id, userName = u.UserName })
+                .ToListAsync();
+
+            await Clients.Group(pizarraId).SendAsync("UsuariosConectados", lista);
         }
 
+
+        public override async Task OnDisconnectedAsync(Exception exception)
+        {
+            if (_conexiones.TryGetValue(Context.ConnectionId, out var datos))
+            {
+                _conexiones.Remove(Context.ConnectionId);
+                await NotificarUsuariosConectados(datos.pizarraId);
+            }
+
+            await base.OnDisconnectedAsync(exception);
+        }
     }
 
 

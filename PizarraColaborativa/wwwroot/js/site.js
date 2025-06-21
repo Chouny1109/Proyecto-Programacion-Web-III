@@ -55,6 +55,46 @@ conexion.on("UsuarioExpulsado", function (mensaje) {
         window.location.href = "/Home/Index";
     });
 });
+
+conexion.on("UsuariosConectados", function (usuarios) {
+    const contenedor = document.getElementById("usuarios-conectados");
+    contenedor.innerHTML = "";
+
+    usuarios.forEach(u => {
+        const wrapper = document.createElement("div");
+        wrapper.className = "usuario-wrapper";
+
+        const burbuja = document.createElement("div");
+        burbuja.className = "usuario-burbuja";
+        burbuja.style.backgroundColor = generarColorDesdeTexto(u.userId);
+        burbuja.textContent = obtenerIniciales(u.userName);
+
+        const nombre = document.createElement("div");
+        nombre.className = "usuario-nombre";
+        nombre.textContent = u.userName;
+
+        wrapper.appendChild(burbuja);
+        wrapper.appendChild(nombre);
+        contenedor.appendChild(wrapper);
+    });
+});
+
+function obtenerIniciales(nombre) {
+    const partes = nombre.trim().split(" ");
+    if (partes.length === 1) return partes[0].substring(0, 2).toUpperCase();
+    return (partes[0][0] + partes[1][0]).toUpperCase();
+}
+
+function generarColorDesdeTexto(texto) {
+    let hash = 0;
+    for (let i = 0; i < texto.length; i++) {
+        hash = texto.charCodeAt(i) + ((hash << 5) - hash);
+    }
+    const hue = hash % 360;
+    return `hsl(${hue}, 70%, 60%)`;
+}
+
+
 //actualizar nombre pizarra 
 function cambiarNombre() {
     const nuevoNombre = document.getElementById("nombrePizarraInput").value;
