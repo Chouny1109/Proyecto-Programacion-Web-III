@@ -183,7 +183,6 @@
             cursor: pointer;
         }
 
-            /* Puntito verde de conexión */
             .usuario-burbuja::after {
                 content: "";
                 position: absolute;
@@ -196,7 +195,6 @@
                 border-radius: 50%;
             }
 
-        /* Nombre completamente oculto por defecto */
         .usuario-nombre {
             margin-top: 4px;
             font-size: 14px;
@@ -208,7 +206,7 @@
             transition: opacity 0.3s ease, max-height 0.3s ease;
         }
 
-        /* Mostrar nombre SOLO al pasar el mouse */
+        
         .usuario-wrapper:hover .usuario-nombre {
             opacity: 1;
             max-height: 20px;
@@ -220,6 +218,12 @@
     </style>
 
     <script>
+        let rolUsuario = "@ViewData["RolUsuario"]";
+                if (rolUsuario === "Lectura") {
+            bloquearUIParaLectores();
+        }
+
+
         window.chatData = @Html.Raw(System.Text.Json.JsonSerializer.Serialize(chatData));
 
         document.getElementById('formInvitacion').addEventListener('submit',async function (e){
@@ -241,5 +245,42 @@
             }
 
         });
+                    function bloquearUIParaLectores() {
+            const botones = [
+                "btnInsertarTexto", "limpiar", "undo", "redo",
+                "btnGoma", "color_lapiz", "tamanio_lapiz",
+                "colorTexto", "tamanioTexto", "photo-upload",
+                "color_fondo" 
+            ];
+
+            botones.forEach(id => {
+                const elem = document.getElementById(id);
+                if (elem) elem.disabled = true;
+            });
+
+            const inputNombre = document.getElementById("nombrePizarraInput");
+            if (inputNombre) inputNombre.disabled = true;
+
+            const btnCambiar = document.querySelector("button[onclick='cambiarNombre()']");
+            if (btnCambiar) btnCambiar.disabled = true;
+
+            const canvas = document.getElementById("area");
+            if (canvas) {
+                canvas.removeEventListener("mousedown", presionaMouse);
+                canvas.removeEventListener("mousemove", dibujarConMouse);
+                canvas.removeEventListener("mouseup", soltoMouse);
+            }
+
+            if (typeof textos === "object") {
+                Object.values(textos).forEach(t => {
+                    if (t.div) {
+                        t.div.contentEditable = false;
+                        t.div.style.cursor = "default";
+                    }
+                });
+            }
+        }
+
+
     </script>
 }

@@ -39,6 +39,8 @@ namespace Services
         Task<int> ObtenerCantidadMensajesNoVistosAsync(string userId, Guid pizarraId);
         Task<List<UserNameIDPizarraDTO>> ObtenerUsuariosDePizarra(Guid pizarraId);
         Task EliminarUsuarioDePizarra(string userIdExpulsado, Guid guid);
+        Task<string> ObtenerRolUsuarioEnPizarra(string userId, Guid id);
+        Task<bool> EsLector(string? userIdentifier, string pizarraId);
     }
 
     public class PizarraService(ProyectoPizarraContext context) : IPizarraService
@@ -429,5 +431,18 @@ namespace Services
             }
         }
 
+        public Task<string> ObtenerRolUsuarioEnPizarra(string userId, Guid id)
+        {
+            return _context.PizarraUsuarios
+                .Where(pu => pu.UsuarioId == userId && pu.PizarraId == id)
+                .Select(pu => pu.Rol.Nombre)
+                .FirstOrDefaultAsync();
+        }
+
+        public Task<bool> EsLector(string? userIdentifier, string pizarraId)
+        {
+           return _context.PizarraUsuarios
+                .AnyAsync(pu => pu.UsuarioId == userIdentifier && pu.PizarraId == Guid.Parse(pizarraId) && pu.Rol.Nombre == "Lector");
+        }
     }
 }

@@ -23,7 +23,7 @@ namespace PizarraColaborativa.Hubs
         public DibujoHub(ITrazoMemoryService memoriaService
             , ITextoMemoryService textoService, IPizarraService pizarraService,
             IAccionMemoryService actionsMemoryService,
-           UserManager<IdentityUser> userManager )
+           UserManager<IdentityUser> userManager)
         {
             _textoService = textoService;
             _trazoService = memoriaService;
@@ -100,7 +100,11 @@ namespace PizarraColaborativa.Hubs
         }
         public async Task BorrarTrazosEnRango(string pizarraId, int x, int y, int radio)
         {
+            if (await _pizarraService.EsLector(Context.UserIdentifier, pizarraId))
+                return;
+
             var trazos = _trazoService.ObtenerTrazos(pizarraId);
+         
 
             // Detectamos trazos cuyo punto inicial esté dentro del rango
             var gruposParaBorrar = trazos
@@ -127,6 +131,9 @@ namespace PizarraColaborativa.Hubs
 
         public async Task CambiarColorFondo(string pizarraId, string colorFondo)
         {
+            if (await _pizarraService.EsLector(Context.UserIdentifier, pizarraId))
+                return;
+
             await _pizarraService.CambiarColorFondoPizarra(pizarraId, colorFondo);
             await Clients.Group(pizarraId).SendAsync("ColorFondoCambiado", colorFondo);
         }
@@ -143,6 +150,9 @@ namespace PizarraColaborativa.Hubs
 
         public async Task EnviarTrazoCompleto(string pizarraId, List<Trazo> segmentos, Guid grupoTrazoId)
         {
+            if (await _pizarraService.EsLector(Context.UserIdentifier, pizarraId))
+                return;
+
             foreach (var trazo in segmentos)
             {
                 trazo.GrupoTrazoId = grupoTrazoId;
@@ -158,6 +168,10 @@ namespace PizarraColaborativa.Hubs
 
         public async Task SendLimpiar(string pizarraId)
         {
+            if (await _pizarraService.EsLector(Context.UserIdentifier, pizarraId))
+                return;
+
+
             _trazoService.LimpiarPizarra(pizarraId);
             _textoService.LimpiarPizarra(pizarraId);
 
@@ -175,6 +189,10 @@ namespace PizarraColaborativa.Hubs
         }
         public async Task EliminarTexto(string pizarraId, string id)
         {
+            if (await _pizarraService.EsLector(Context.UserIdentifier, pizarraId))
+                return;
+
+
             var texto = _textoService.ObtenerTextoPorIdEnMemoria(pizarraId, id);
             if (texto != null)
             {
@@ -189,6 +207,10 @@ namespace PizarraColaborativa.Hubs
 
         public async Task CrearOEditarTexto(string pizarraId, Texto texto)
         {
+            if (await _pizarraService.EsLector(Context.UserIdentifier, pizarraId))
+                return;
+
+
 
             var textoEncontrado = _textoService.ObtenerTextoPorIdEnMemoria(pizarraId, texto.Id);
 
@@ -227,8 +249,8 @@ namespace PizarraColaborativa.Hubs
 
                 _textoService.EditarTextoEnPizarra(textoEncontrado, pizarraId);
 
-             
-                
+
+
             }
 
             else
@@ -262,7 +284,7 @@ namespace PizarraColaborativa.Hubs
             var guid = Guid.Parse(pizarraId);
             await _pizarraService.EliminarUsuarioDePizarra(userIdExpulsado, guid);
 
-         //si esta conectado, se le avisa en tiempo real
+            //si esta conectado, se le avisa en tiempo real
             var conexiones = _conexiones
                 .Where(c => c.Value.pizarraId == pizarraId && c.Value.userId == userIdExpulsado)
                 .Select(c => c.Key)
@@ -274,7 +296,7 @@ namespace PizarraColaborativa.Hubs
                 await Groups.RemoveFromGroupAsync(conn, pizarraId);
             }
             ///
-           
+
             //lista actualziada con los usuarios
             var usuariosActualizados = await _pizarraService.ObtenerUsuariosDePizarra(guid);
             await Clients.Caller.SendAsync("ListaUsuariosPizarra", usuariosActualizados);
@@ -288,16 +310,25 @@ namespace PizarraColaborativa.Hubs
 
         public async Task DeshacerUltimaAccion(string pizarraId)
         {
+            if (await _pizarraService.EsLector(Context.UserIdentifier, pizarraId))
+                return;
+
             await _actionsMemoryService.Deshacer(pizarraId, Clients, _trazoService, _textoService);
         }
 
         public async Task RehacerUltimaAccion(string pizarraId)
         {
+            if (await _pizarraService.EsLector(Context.UserIdentifier, pizarraId))
+                return;
+
             await _actionsMemoryService.Rehacer(pizarraId, Clients, _trazoService, _textoService);
         }
 
         public async Task MoverTexto(string pizarraId, string id, int xAnt, int yAnt, int xFinal, int yFinal)
         {
+            if (await _pizarraService.EsLector(Context.UserIdentifier, pizarraId))
+                return;
+
 
             var textoMemoria = _textoService.ObtenerTextoPorIdEnMemoria(pizarraId, id);
             if (textoMemoria != null)
@@ -342,7 +373,17 @@ namespace PizarraColaborativa.Hubs
         }
 
 
+        public override async Task OnDisconnectedAsync(Exception exception)
+        {
+            if (_conexiones.TryGetValue(Context.ConnectionId, out var datos))
+            {
+                _conexiones.Remove(Context.ConnectionId);
+                await NotificarUsuariosConectados(datos.pizarraId);
+            }
 
+            await base.OnDisconnectedAsync(exception);
+        }
+    
         private bool EstaCercaDelPunto(Trazo t, int x, int y, int radio)
         {
             int dx = (int)t.Xinicio.GetValueOrDefault() - x;
@@ -359,7 +400,7 @@ namespace PizarraColaborativa.Hubs
                 .Distinct()
                 .ToList();
 
-            // Obtener nombres desde BD
+        
             var lista = await _userManager.Users
                 .Where(u => usuariosConectados.Contains(u.Id))
                 .Select(u => new { userId = u.Id, userName = u.UserName })
@@ -369,16 +410,6 @@ namespace PizarraColaborativa.Hubs
         }
 
 
-        public override async Task OnDisconnectedAsync(Exception exception)
-        {
-            if (_conexiones.TryGetValue(Context.ConnectionId, out var datos))
-            {
-                _conexiones.Remove(Context.ConnectionId);
-                await NotificarUsuariosConectados(datos.pizarraId);
-            }
-
-            await base.OnDisconnectedAsync(exception);
-        }
     }
 
 

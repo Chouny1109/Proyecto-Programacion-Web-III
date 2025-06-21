@@ -47,6 +47,9 @@ namespace PizarraColaborativa.Controllers
                 return RedirectToAction("Index");
             }
 
+            var rolUsuario = await _service.ObtenerRolUsuarioEnPizarra(userId, id); 
+            ViewData["RolUsuario"] = rolUsuario;
+
             var esAdmin = await _service.EsAdminDeLaPizarraAsync(userId, id);
             ViewData["EsAdmin"] = esAdmin;
             

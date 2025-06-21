@@ -8,6 +8,7 @@ let conexion = new signalR.HubConnectionBuilder()
 let canvas = document.getElementById("area");
 let papel = canvas.getContext('2d');
 
+
 function mostrarListaUsuarios() {
     document.getElementById("panelUsuarios").style.display = "block";
     conexion.invoke("ObtenerUsuariosDePizarra", pizarraId);
@@ -726,5 +727,4 @@ function redimensionarImagen(base64Original, maxAncho, maxAlto, callback) {
  
 
 }
-
 
