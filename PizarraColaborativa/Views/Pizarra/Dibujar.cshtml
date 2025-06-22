@@ -7,12 +7,7 @@
         mensajesNoVistos = ViewData["MensajesNoVistos"]
     };
 }
-@if (ViewData["EsAdmin"] != null && (bool)ViewData["EsAdmin"])
-{
-    <button class="btn btn-success mb-3" data-bs-toggle="modal" data-bs-target="#modalInvitacion">
-        Generar Invitacion
-    </button>
-}
+
 @if ((bool)ViewData["EsAdmin"])
 {
     <div style="position: absolute; top: 10px; right: 10px; z-index: 999;">
@@ -39,20 +34,63 @@
 
 <div id="info-pizarra" data-pizarraid="@ViewData["PizarraId"]"></div>
 
-<h2 id="tituloPizarra">Nombre Pizarra</h2>
 
-<input type="text" id="nombrePizarraInput" placeholder="Nombre de la pizarra" />
-<button onclick="cambiarNombre()">Cambiar Nombre Pizarra</button>
+<div class="d-flex align-items-center justify-content-between mb-3 px-3 flex-wrap">
+    <div class="d-flex align-items-center gap-2 flex-wrap">
+        <h5 class="mb-0 fw-bold">Pizarra:</h5>
+        <span id="nombrePizarraTexto" class="me-3">@ViewData["PizarraNombre"]</span>
+
+        <input type="text" id="nombrePizarraInput" class="form-control form-control-sm custom-input" placeholder="Nuevo nombre" />
+        <button onclick="cambiarNombre()" class="btn btn-outline-primary btn-sm">Cambiar</button>
+
+        @if (ViewData["EsAdmin"] != null && (bool)ViewData["EsAdmin"])
+        {
+            <button class="btn btn-success btn-sm" data-bs-toggle="modal" data-bs-target="#modalInvitacion">Invitar</button>
+
+        }
+    </div>
+
+    <button id="chatToggleBtn" class="btn btn-primary rounded-pill px-4 py-2 shadow-sm position-relative" style="z-index: 1000;">
+        💬 Chat
+        <span id="chatBadge" class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger d-none"></span>
+    </button>
+
+    <div id="floatingChatPanel" class="floating-chat-panel">
+        <div class="chat-header p-2 fw-bold">
+            <span class="fs-6">@ViewData["PizarraNombre"]</span>
+        </div>
+
+        <div class="chat-body p-2">
+            <div class="chat-messages" id="chat-@ViewData["PizarraId"]"></div>
+            <div id="writing-msg" class="chat-writing"></div>
+        </div>
+
+        <div class="chat-footer p-2">
+            <div class="input-group rounded">
+                <input type="text" id="chatInput" class="form-control form-control-sm border-0 rounded-start" placeholder="Escribe tu mensaje..." style="box-shadow: none;">
+                <span class="input-group-text border-0 bg-white rounded-end" id="sendMsg" style="cursor: pointer; box-shadow: none;">
+                    <span class="material-symbols-outlined">send</span>
+                </span>
+            </div>
+        </div>
+    </div>
+</div>
 
 <div class="d-flex align-items-center gap-2 ">
-    <div>
-        <button class="tool" id="undo">Atras</button>
-    </div>
-    <div >
-        <button class="tool" id="redo">Volver</button>
-       
-    </div>
-    <button id="btnGoma">Goma</button>
+    
+    <button class="btn btn-outline-dark border-2 rounded-circle p-2" id="undo" title="Deshacer">
+        <i class="bi bi-arrow-counterclockwise fs-5"></i>
+    </button>
+
+    <button class="btn btn-outline-dark border-2 rounded-circle p-2" id="redo" title="Rehacer">
+        <i class="bi bi-arrow-clockwise fs-5"></i>
+    </button>
+
+    <button class="btn btn-outline-dark border-2 rounded-circle p-2" id="btnGoma" title="Goma de borrar">
+        <i class="bi bi-eraser fs-5"></i>
+    </button>
+
+
     <label class="text-light" for="color_lapiz">Color</label>
     <input type="color" for="color_lapiz" id="color_lapiz" />
     <label class="text-light" for="color_fondo">Fondo</label>
@@ -129,34 +167,33 @@
     </div>
 </div>
 
-<!-- FLOATING CHAT  -->
-<button id="chatToggleBtn" class="chat-toggle-btn">
-    <span id="chatToggleIcon" class="material-symbols-outlined">chat</span>
-    <span id="chatBadge" class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger d-none"></span>
-</button>
 
-<div id="floatingChatPanel" class="floating-chat-panel">
-    <div class="chat-header p-2 fw-bold">
-        <span class="fs-6">@ViewData["PizarraNombre"]</span>
-    </div>
 
-    <div class="chat-body p-2">
-        <div class="chat-messages" id="chat-@ViewData["PizarraId"]"></div>
-        <div id="writing-msg" class="chat-writing"></div>
-    </div>
-
-    <div class="chat-footer p-2">
-        <div class="input-group rounded">
-            <input type="text" id="chatInput" class="form-control form-control-sm border-0 rounded-start" placeholder="Escribe tu mensaje..." style="box-shadow: none;">
-            <span class="input-group-text border-0 bg-white rounded-end" id="sendMsg" style="cursor: pointer; box-shadow: none;">
-                <span class="material-symbols-outlined">send</span>
-            </span>
-        </div>
-    </div>
-</div>
 
 @section Scripts {
     <style>
+        .custom-input {
+            border: 1px solid #ccc;
+            border-radius: 8px;
+            padding: 6px 10px;
+            font-size: 14px;
+            box-shadow: inset 0 1px 2px rgba(0,0,0,0.1);
+            transition: border-color 0.2s ease;
+        }
+
+            .custom-input:focus {
+                border-color: #007bff;
+                outline: none;
+                box-shadow: 0 0 3px rgba(0,123,255,0.25);
+            }
+
+        #chatToggleBtn:hover {
+            background-color: #0069d9;
+        }
+        .btn:hover {
+            box-shadow: 0 0 5px rgba(0, 0, 0, 0.5);
+        }
+
         .usuario-wrapper {
             display: flex;
             flex-direction: column;

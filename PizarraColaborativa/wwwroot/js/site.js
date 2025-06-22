@@ -103,7 +103,7 @@ function cambiarNombre() {
 }
 
 conexion.on("NombrePizarraCambiado", function (nuevoNombre) {
-    document.getElementById("tituloPizarra").innerText = nuevoNombre;
+    document.getElementById("nombrePizarraTexto").innerText = nuevoNombre;
 });
 
 
