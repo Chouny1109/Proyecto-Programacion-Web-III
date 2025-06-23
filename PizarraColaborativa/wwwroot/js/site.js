@@ -43,7 +43,7 @@ conexion.on("MostrarCursor", function (username, x, y) {
     el.style.top = `${y}px`;
     el.style.display = "block";
 
-    // Si ya había un timeout, lo reseteamos
+    // Si ya había un timeout, se resetea
     if (cursorTimers[username]) clearTimeout(cursorTimers[username]);
 
     // Ocultar después de 5 segundos de inactividad
