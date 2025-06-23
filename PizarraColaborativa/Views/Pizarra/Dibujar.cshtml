@@ -37,11 +37,13 @@
         <input type="text" id="nombrePizarraInput" class="form-control form-control-sm custom-input"
             placeholder="Nuevo nombre" />
         <button onclick="cambiarNombre()" class="btn btn-outline-primary btn-sm">Cambiar</button>
+
     </div>
 
     <!-- FLOATING CHAT  -->
-    <button id="chatToggleBtn" class="chat-toggle-btn" data-pizarra-id="@ViewData["PizarraId"]"
-        data-contador-mensajes="@ViewData["ContadorMensajes"]" title="Chat">
+    <button id="chatToggleBtn" class="btn btn-primary rounded-pill px-4 py-2 shadow-sm position-relative" style="z-index: 1000;" data-pizarra-id="@ViewData["PizarraId"]"
+        data-contador-mensajes="@ViewData["ContadorMensajes"]" >
+        Chat
         <span id="chatToggleIcon" class="material-symbols-outlined">chat</span>
         <span id="chatBadge" class="chat-badge bg-danger d-none"></span>
     </button>
@@ -69,8 +71,8 @@
     </div>
 </div>
 
-<div class="d-flex align-items-center gap-2 ">
-
+<div class="d-flex align-items-center gap-2 ms-5">
+    
     <button id="undo" class="btn btn-outline-dark border-1 rounded-circle p-1 me-1" title="Deshacer">
         <i class="bi bi-arrow-counterclockwise fs-5"></i>
     </button>
@@ -105,11 +107,15 @@
     <button id="btnInsertarTexto" class="btn btn-light btn-outline-dark btn-sm px-2">Insertar texto</button>
     <input type="submit" id="limpiar" value="Limpiar" class="btn btn-light btn-outline-dark btn-sm px-2" />
 
-    <div class="tool btn btn-light d-flex align-items-center" id="photo"
-        onclick="document.getElementById('photo-upload').click();">
+    <!--
+    <div class="tool btn btn-light d-flex align-items-center" id="photo" onclick="document.getElementById('photo-upload').click();">
         <i class="bi bi-image me-1"></i> Imagen
         <input type="file" class="d-none" id="photo-upload" accept="image/*" />
     </div>
+     -->
+
+
+
 </div>
 
 <!--<div class="d-flex justify-content-center align-items-center canvas">
@@ -117,6 +123,8 @@
     <div id="contenedorTextos" style="position: absolute; top: 0; left: 0; width: 950px; height: 500px;"></div>
 
 </div>-->
+<div id="cursors" style="position: absolute; top: 0; left: 0; width: 950px; height: 500px; pointer-events: none;"></div>
+
 <div class="d-flex justify-content-center align-items-center canvas" style="position: relative;">
     <canvas id="area" width="950" height="500"></canvas>
     <div id="contenedorTextos" style="position: absolute; top: 0; left: 0; pointer-events: none;"></div>
@@ -125,8 +133,34 @@
     </div>
 </div>
 
+
 @section Scripts {
     <style>
+        .cursor-remoto {
+            position: absolute;
+            pointer-events: none;
+            transform: translate(-50%, -50%);
+            z-index: 9999;
+            font-size: 10px;
+            text-align: center;
+        }
+
+        .cursor-punto {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            margin: 0 auto 2px;
+        }
+
+        .cursor-nombre {
+            color: white;
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-size: 10px;
+            white-space: nowrap;
+        }
+
+
         .custom-input {
             border: 1px solid #ccc;
             border-radius: 6px;
@@ -211,7 +245,32 @@
             bloquearUIParaLectores();
         }
 
-        function bloquearUIParaLectores() {
+
+       
+
+        window.userName = @Html.Raw(System.Text.Json.JsonSerializer.Serialize(ViewData["UserName"]));
+ 
+
+        document.getElementById('formInvitacion').addEventListener('submit',async function (e){
+            e.preventDefault();
+
+            const form = e.target;
+            const data= new FormData(form);
+            const response=await fetch('/Invitacion/GenerarInvitacion',
+            {
+                method: 'POST',
+                body: data
+            });
+
+            if(response.ok){
+                const url= await response.text();
+                const div= document.getElementById("linkGenerado");
+                div.classList.remove("d-none");
+                div.innerHTML=`<strong>Compartí este link:</strong><br><a href="${url}">${url}</a>`;
+            }
+
+        });
+                    function bloquearUIParaLectores() {
             const botones = [
                 "btnInsertarTexto", "limpiar", "undo", "redo",
                 "btnGoma", "color_lapiz", "tamanio_lapiz",

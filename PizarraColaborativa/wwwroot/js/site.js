@@ -4,11 +4,53 @@ let conexion = new signalR.HubConnectionBuilder()
     .withUrl("/dibujohub?pizarraid=" + encodeURIComponent(pizarraId))
     .build();
 
-
+let username = window.userName;
 let canvas = document.getElementById("area");
 let papel = canvas.getContext('2d');
 
 
+canvas.addEventListener("mousemove", function (e) {
+    const rect = canvas.getBoundingClientRect();
+    const x = e.clientX - rect.left;
+    const y = e.clientY - rect.top;
+
+    conexion.invoke("ActualizarCursor", pizarraId, userName, x, y);
+});
+
+const cursors = {};
+
+const cursorTimers = {}; 
+
+conexion.on("MostrarCursor", function (username, x, y) {
+   
+    if (!cursors[username]) {
+        const div = document.createElement("div");
+        div.className = "cursor-remoto";
+        const color = generarColorDesdeTexto(username);
+
+        div.innerHTML = `
+        <div class="cursor-punto" style="background-color: ${color};"></div>
+        <div class="cursor-nombre" style="background-color: ${color};">${username}</div>`;
+
+        document.getElementById("cursors").appendChild(div);
+        cursors[username] = div;
+    }
+
+
+    // Mover cursor a la nueva posición
+    const el = cursors[username];
+    el.style.left = `${x}px`;
+    el.style.top = `${y}px`;
+    el.style.display = "block";
+
+    // Si ya había un timeout, se resetea
+    if (cursorTimers[username]) clearTimeout(cursorTimers[username]);
+
+    // Ocultar después de 5 segundos de inactividad
+    cursorTimers[username] = setTimeout(() => {
+        el.style.display = "none";
+    }, 5000);
+});
 function mostrarListaUsuarios() {
     document.getElementById("panelUsuarios").style.display = "block";
     conexion.invoke("ObtenerUsuariosDePizarra", pizarraId);
@@ -728,3 +770,11 @@ function redimensionarImagen(base64Original, maxAncho, maxAlto, callback) {
 
 }
 
+function generarColorDesdeTexto(texto) {
+    let hash = 0;
+    for (let i = 0; i < texto.length; i++) {
+        hash = texto.charCodeAt(i) + ((hash << 5) - hash);
+    }
+    const hue = hash % 360;
+    return `hsl(${hue}, 70%, 60%)`;
+}
