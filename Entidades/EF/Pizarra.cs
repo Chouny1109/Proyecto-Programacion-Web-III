@@ -15,9 +15,9 @@ public partial class Pizarra
 
     public string? ColorFondo { get; set; }
 
-    public virtual ICollection<InvitacionPizarra> InvitacionPizarras { get; set; } = new List<InvitacionPizarra>();
-
     public virtual ICollection<Mensaje> Mensajes { get; set; } = new List<Mensaje>();
+
+    public virtual ICollection<Notificacion> Notificacions { get; set; } = new List<Notificacion>();
 
     public virtual ICollection<PizarraUsuario> PizarraUsuarios { get; set; } = new List<PizarraUsuario>();
 

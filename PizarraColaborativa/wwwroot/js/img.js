@@ -39,7 +39,7 @@ function addSticky(imageElement, idImg) {
             .catch(err => console.error(err.toString()));
         stickyDiv.remove();
     });
-      
+
     let isDragging = false;
     let offsetX = 0;
     let offsetY = 0;
@@ -47,7 +47,6 @@ function addSticky(imageElement, idImg) {
     stickyHeader.addEventListener("mousedown", (e) => {
         isDragging = true;
 
-  
         const rect = stickyDiv.getBoundingClientRect();
         offsetX = e.clientX - rect.left;
         offsetY = e.clientY - rect.top;
@@ -62,7 +61,6 @@ function addSticky(imageElement, idImg) {
         const canvasRect = canvas.getBoundingClientRect();
         const stickyRect = stickyDiv.getBoundingClientRect();
 
-     
         let newLeft = e.clientX - offsetX;
         let newTop = e.clientY - offsetY;
 
@@ -80,27 +78,19 @@ function addSticky(imageElement, idImg) {
             newTop = canvasRect.bottom - stickyRect.height;
         }
 
-
         stickyDiv.style.left = (newLeft - canvasRect.left) + "px";
         stickyDiv.style.top = (newTop - canvasRect.top) + "px";
-
-       
     });
 
-
     document.addEventListener("mouseup", () => {
-
         isDragging = false;
         document.body.style.userSelect = "";
 
         const left = parseInt(stickyDiv.style.left);
         const top = parseInt(stickyDiv.style.top);
 
-
-
         conexion.invoke("MoverImagen", pizarraId, idImg, left, top)
             .catch(err => console.error(err.toString()));
-   
     });
 
     document.querySelector(".canvas").append(stickyDiv);

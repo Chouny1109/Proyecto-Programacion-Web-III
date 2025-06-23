@@ -8,21 +8,21 @@ var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();
-builder.Services.AddSingleton<ITrazoMemoryService,TrazoMemoryService>();
-builder.Services.AddSingleton<ITextoMemoryService,TextoMemoryService>();
-builder.Services.AddSingleton<IAccionMemoryService,AccionMemoryService>();
+builder.Services.AddSingleton<ITrazoMemoryService, TrazoMemoryService>();
+builder.Services.AddSingleton<ITextoMemoryService, TextoMemoryService>();
+builder.Services.AddSingleton<IAccionMemoryService, AccionMemoryService>();
 
 builder.Services.AddHostedService<PizarraPersistenceService>();
 
-builder.Services.AddSignalR();
 builder.Services.AddScoped<IPizarraService, PizarraService>();
-builder.Services.AddScoped<IInvitacionService, InvitacionService>();
+builder.Services.AddScoped<IPizarraUsuarioService, PizarraUsuarioService>();
+builder.Services.AddScoped<IMensajeService, MensajeService>();
+builder.Services.AddScoped<INotificacionService, NotificacionService>();
 
 builder.Services.AddSignalR(options =>
 {
     options.MaximumReceiveMessageSize = 1024 * 1024 * 5;
 });
-
 
 builder.Services.AddDbContext<ProyectoPizarraContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("Connection")));
@@ -31,7 +31,7 @@ builder.Services.AddIdentity<IdentityUser, IdentityRole>(options =>
 {
     options.Password.RequireDigit = false;
     options.Password.RequiredLength = 4;
-    options.Password.RequireNonAlphanumeric = false; 
+    options.Password.RequireNonAlphanumeric = false;
     options.Password.RequireUppercase = false;
     options.Password.RequireLowercase = false;
 })
@@ -64,6 +64,7 @@ app.UseAuthorization();
 
 app.MapHub<DibujoHub>("/dibujohub");
 app.MapHub<ChatHub>("/chathub");
+app.MapHub<NotificacionHub>("/notificacionHub");
 
 app.MapControllerRoute(
     name: "default",

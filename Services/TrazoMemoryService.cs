@@ -1,11 +1,5 @@
-﻿using System;
-using System.Collections.Concurrent;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Collections.Concurrent;
 using Entidades.EF;
-using Microsoft.Extensions.Primitives;
 
 namespace Services
 {
@@ -18,6 +12,7 @@ namespace Services
         void LimpiarPizarra(string pizarraId);
         void EliminarTrazo(string pizarraId, Guid grupoTrazoId);
     }
+
     public class TrazoMemoryService : ITrazoMemoryService
     {
         private readonly ConcurrentDictionary<string, List<Trazo>> _trazosPorPizarra = new();
@@ -37,7 +32,6 @@ namespace Services
                 ? new List<Trazo>(lista) // Evita exponer la lista interna
                 : new List<Trazo>();
         }
-
 
         public Dictionary<string, List<Trazo>> ObtenerTodas()
         {
@@ -65,6 +59,4 @@ namespace Services
             }
         }
     }
-
-    
 }

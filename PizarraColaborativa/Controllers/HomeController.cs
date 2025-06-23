@@ -8,26 +8,32 @@ using Services;
 namespace PizarraColaborativa.Controllers
 {
     [Authorize(Roles = "Usuario")]
-    public class HomeController(
-        ILogger<HomeController> logger,
-        IPizarraService service,
+    public class HomeController(IPizarraService service, INotificacionService notifService,
         UserManager<IdentityUser> userManager) : Controller
     {
-        private readonly ILogger<HomeController> _logger = logger;
         private readonly IPizarraService _service = service;
+        private readonly INotificacionService _notifService = notifService;
         private readonly UserManager<IdentityUser> _userManager = userManager;
 
-        public async Task<IActionResult> Index(string? filtroRol, string busqueda)
+        public async Task<IActionResult> Index(string filtroRol, string busqueda)
         {
             if (User.Identity != null && User.Identity.IsAuthenticated)
             {
-                var userId = _userManager.GetUserId(User);
-
-                var pizarrasFiltradas = await _service.ObtenerPizarrasFiltradasAsync(userId, filtroRol, busqueda);
-
                 ViewData["UserName"] = _userManager.GetUserName(User);
-                ViewData["Busqueda"] = busqueda;
+
+                var pizarrasFiltradas = await _service.ObtenerPizarrasFiltradasAsync(_userManager.GetUserId(User), filtroRol, busqueda);
                 ViewData["FiltroRol"] = filtroRol;
+                ViewData["Busqueda"] = busqueda;
+
+                var contadorNotificaciones = await _notifService.ContarNotificacionesNoVistasAsync(_userManager.GetUserId(User));
+                ViewData["ContadorNotificaciones"] = contadorNotificaciones;
+
+                var rolAdminId = await _service.ObtenerRolIdAsync("Admin");
+                ViewData["RolAdminId"] = rolAdminId;
+                var rolEscrituraId = await _service.ObtenerRolIdAsync("Escritura");
+                ViewData["RolEscrituraId"] = rolEscrituraId;
+                var rolLecturaId = await _service.ObtenerRolIdAsync("Lectura");
+                ViewData["RolLecturaId"] = rolLecturaId;
 
                 if (pizarrasFiltradas.Count == 0)
                     TempData["Mensaje"] = "No se han encontrado pizarras disponibles.";
@@ -36,18 +42,6 @@ namespace PizarraColaborativa.Controllers
             }
 
             return RedirectToAction("Login", "Cuenta");
-        }
-
-        [HttpPost]
-        public async Task<IActionResult> EliminarPizarra(Guid pizarraId)
-        {
-            var userId = _userManager.GetUserId(User);
-
-            if (!await _service.EsAdminDeLaPizarraAsync(userId, pizarraId)) return Forbid();
-
-            await _service.EliminarPizarraAsync(pizarraId);
-
-            return RedirectToAction(nameof(Index));
         }
 
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]

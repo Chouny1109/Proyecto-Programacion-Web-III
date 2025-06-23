@@ -1,11 +1,5 @@
-﻿using System;
-using System.Collections.Concurrent;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Collections.Concurrent;
 using Entidades.EF;
-using Microsoft.Extensions.Primitives;
 
 namespace Services
 {
@@ -20,16 +14,17 @@ namespace Services
         Texto? ObtenerTextoPorIdEnMemoria(string pizarraId, string textoId);
         void EliminarTexto(string pizarraId, string id);
     }
+
     public class TextoMemoryService : ITextoMemoryService
     {
         private readonly ConcurrentDictionary<string, List<Texto>> _textosPorPizarra = new();
 
-        public void AgregarTextoALaPizarra(string id, int x, int y, int tamano, string? contenido, string? color,string pizarraId)
+        public void AgregarTextoALaPizarra(string id, int x, int y, int tamano, string? contenido, string? color, string pizarraId)
         {
             var texto = new Texto()
             {
                 Id = id,
-                Color = color, 
+                Color = color,
                 PosX = x,
                 PosY = y,
                 Tamano = tamano,
@@ -60,7 +55,7 @@ namespace Services
         }
 
         public bool Existe(string pizarraId)
-        { 
+        {
             return _textosPorPizarra.ContainsKey(pizarraId);
         }
 
@@ -77,7 +72,7 @@ namespace Services
 
         public Dictionary<string, List<Texto>> ObtenerTodas()
         {
-            return _textosPorPizarra.ToDictionary(kvp => kvp.Key, 
+            return _textosPorPizarra.ToDictionary(kvp => kvp.Key,
                 kvp => new List<Texto>(kvp.Value));
         }
         public Texto? ObtenerTextoPorIdEnMemoria(string pizarraId, string textoId)
@@ -104,6 +99,4 @@ namespace Services
             }
         }
     }
-
-   
 }

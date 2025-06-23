@@ -4,17 +4,14 @@ using PizarraColaborativa.Models;
 
 namespace PizarraColaborativa.Controllers
 {
-    public class CuentaController(
-        UserManager<IdentityUser> userManager,
-        RoleManager<IdentityRole> roleManager,
+    public class CuentaController(UserManager<IdentityUser> userManager, RoleManager<IdentityRole> roleManager,
         SignInManager<IdentityUser> signInManager) : Controller
     {
         private readonly UserManager<IdentityUser> _userManager = userManager;
         private readonly RoleManager<IdentityRole> _roleManager = roleManager;
         private readonly SignInManager<IdentityUser> _signInManager = signInManager;
 
-        [HttpGet]
-        public IActionResult Registrar()
+        public IActionResult Register()
         {
             if (User.Identity != null && User.Identity.IsAuthenticated)
                 return RedirectToAction("Index", "Home");
@@ -23,7 +20,7 @@ namespace PizarraColaborativa.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> Registrar(RegistroUsuarioViewModel model)
+        public async Task<IActionResult> Register(RegistroUsuarioViewModel model)
         {
             if (!ModelState.IsValid)
                 return View(model);
@@ -53,7 +50,6 @@ namespace PizarraColaborativa.Controllers
             return View(model);
         }
 
-        [HttpGet]
         public IActionResult Login()
         {
             if (User.Identity != null && User.Identity.IsAuthenticated)
@@ -65,9 +61,9 @@ namespace PizarraColaborativa.Controllers
         [HttpPost]
         public async Task<IActionResult> Login(string userName, string password)
         {
-            var result = await _signInManager.PasswordSignInAsync(userName, password, false, false);
+            var resultado = await _signInManager.PasswordSignInAsync(userName, password, false, false);
 
-            if (result.Succeeded)
+            if (resultado.Succeeded)
                 return RedirectToAction("Index", "Home");
 
             ModelState.AddModelError(string.Empty, "Login inválido. Verifica tus credenciales.");
@@ -80,7 +76,7 @@ namespace PizarraColaborativa.Controllers
             return RedirectToAction("Login");
         }
 
-        public IActionResult AccesoDenegado()
+        public IActionResult AccesDenied()
         {
             return View();
         }

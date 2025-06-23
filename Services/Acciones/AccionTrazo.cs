@@ -1,6 +1,5 @@
 ﻿using Entidades.EF;
 using Microsoft.AspNetCore.SignalR;
-using Services;
 using Services.Acciones.Interfaces;
 
 namespace Services.Acciones
@@ -18,7 +17,6 @@ namespace Services.Acciones
 
         public Task Deshacer(string pizarraId, IHubCallerClients clients, ITrazoMemoryService trazoService, ITextoMemoryService textoService)
         {
-
             trazoService.EliminarTrazo(pizarraId, GrupoTrazoId);
             var trazosActuales = trazoService.ObtenerTrazos(pizarraId);
             return clients.Group(pizarraId).SendAsync("CargarTrazos", trazosActuales);

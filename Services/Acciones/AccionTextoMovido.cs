@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.SignalR;
+﻿using Microsoft.AspNetCore.SignalR;
 using Services.Acciones.Interfaces;
 
 namespace Services.Acciones
@@ -30,7 +25,7 @@ namespace Services.Acciones
             var texto = textoService.ObtenerTextoPorIdEnMemoria(pizarraId, Id);
             texto.PosX = XAnt;
             texto.PosY = YAnt;
-            textoService.EditarTextoEnPizarra(texto,pizarraId);
+            textoService.EditarTextoEnPizarra(texto, pizarraId);
 
             return clients.Group(pizarraId).SendAsync("TextoMovido", Id, XAnt, YAnt);
         }

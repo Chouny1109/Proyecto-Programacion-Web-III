@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Entidades.EF;
+﻿using Entidades.EF;
 using Microsoft.AspNetCore.SignalR;
 using Services.Acciones.Interfaces;
 
@@ -17,7 +12,6 @@ namespace Services.Acciones
         {
             Texto = texto;
         }
-
 
         public Task Deshacer(string pizarraId, IHubCallerClients clients, ITrazoMemoryService trazoService, ITextoMemoryService textoService)
         {
@@ -33,12 +27,10 @@ namespace Services.Acciones
             return clients.Group(pizarraId).SendAsync("TextoActualizado", Texto);
         }
 
-      
         public Task Rehacer(string pizarraId, IHubCallerClients clients, ITrazoMemoryService trazoService, ITextoMemoryService textoService)
         {
             textoService.EliminarTexto(pizarraId, Texto.Id);
             return clients.Group(pizarraId).SendAsync("TextoEliminado", Texto.Id);
         }
     }
-
 }

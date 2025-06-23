@@ -1,113 +1,183 @@
 ﻿@using DTO
-@model List<PizarraColaborativa.DTO.PizarraResumenDTO>
+@model List<PizarraResumenDTO>
 @{
     ViewData["Title"] = "Mis Proyectos";
     var busqueda = ViewData["Busqueda"] as string;
     string? filtroRol = ViewData["FiltroRol"] as string;
+    int rolAdminId = ViewData["RolAdminId"] != null ? (int)ViewData["RolAdminId"] : 0;
 }
 
 <div class="container mt-4">
+    <div class="p-4 mb-4 bg-jumbotron rounded shadow ">
+        <h2 class="text-white">Mis Proyectos</h2>
+        <div class="row align-items-center mb-3 gx-0 gy-3 gy-md-0">
+            <div class="col-md-3 mb-md-0">
+                <form method="get" class="d-flex gap-2">
+                    @if (!string.IsNullOrWhiteSpace(busqueda))
+                    {
+                        <input type="hidden" name="busqueda" value="@busqueda" />
+                    }
 
-<div class="p-4 mb-4 bg-jumbotron rounded shadow ">
-    <h2 class="text-white">Mis Proyectos</h2>
-    <div class="row align-items-center mb-3 gx-0 gy-3 gy-md-0">
-        <div class="col-md-3 mb-md-0">
-            <form method="get" class="d-flex gap-2">
-                @if (!string.IsNullOrWhiteSpace(busqueda))
-                {
-                    <input type="hidden" name="busqueda" value="@busqueda" />
-                }
-
-                <button type="submit" name="filtroRol" value="" class="btn btn-outline-dark @(filtroRol == null ? "active" : "")" title="Todas">
-                    <span class="material-symbols-outlined">view_module</span>
-                </button>
-
-                <button type="submit" name="filtroRol" value="admin" class="btn btn-outline-dark @(filtroRol == "admin" ? "active" : "")" title="Propias">
-                    <span class="material-symbols-outlined">person</span>
-                </button>
-
-                <button type="submit" name="filtroRol" value="noAdmin" class="btn btn-outline-dark @(filtroRol == "noAdmin" ? "active" : "")" title="Compartidas">
-                    <span class="material-symbols-outlined">groups</span>
-                </button>
-            </form>
-        </div>
-
-        <div class="col-md-9">
-            <form method="get">
-                @if (filtroRol != null)
-                {
-                    <input type="hidden" name="filtroRol" value="@filtroRol" />
-                }
-
-                <div class="input-group rounded">
-                    <input type="text" class="form-control border-0 rounded-start" name="busqueda" placeholder="Buscar por nombre..." value="@busqueda" style="box-shadow: none;" />
-                    <button type="submit" class="input-group-text border-0 bg-white rounded-end" style="cursor: pointer; box-shadow: none;">
-                        <span class="material-symbols-outlined">search</span>
+                    <button type="submit" name="filtroRol" value=""
+                        class="btn btn-outline-dark @(filtroRol == null ? "active" : "")" title="Todas">
+                        <span class="material-symbols-outlined">view_module</span>
                     </button>
-                </div>
-            </form>
-        </div>
-    </div>
-</div>
 
-@if (TempData["Mensaje"] != null)
-{
-    <div class="text-center mt-5">
-        <div class="p-4 rounded bg-warning text-white shadow-sm mx-auto custom-alert">
-            <p class="mb-3">@TempData["Mensaje"]</p>
-            <button type="button" class="btn btn-success" data-bs-toggle="modal" data-bs-target="#modalCrearPizarra">
-                Crear una nueva pizarra
-            </button>
-        </div>
-    </div>
-}
+                    <button type="submit" name="filtroRol" value="admin"
+                        class="btn btn-outline-dark @(filtroRol == "admin" ? "active" : "")" title="Propias">
+                        <span class="material-symbols-outlined">person</span>
+                    </button>
 
-<div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 g-4 mt-4">
-    @foreach (var pizarra in Model)
-    {
-        <div class="col">
-            <div class="position-relative">
-                <a asp-controller="Pizarra" asp-action="Dibujar" asp-route-id="@pizarra.Id" class="text-decoration-none d-block">
-                    <div class="bg-items text-white p-3 rounded shadow-sm">
-                        <h5 class="text-white mb-1">@pizarra.Nombre</h5>
-                        <p class="mb-0"><small>@pizarra.FechaCreacion.ToShortDateString()</small></p>
+                    <button type="submit" name="filtroRol" value="noAdmin"
+                        class="btn btn-outline-dark @(filtroRol == "noAdmin" ? "active" : "")" title="Compartidas">
+                        <span class="material-symbols-outlined">groups</span>
+                    </button>
+                </form>
+            </div>
+
+            <div class="col-md-9">
+                <form method="get">
+                    @if (filtroRol != null)
+                    {
+                        <input type="hidden" name="filtroRol" value="@filtroRol" />
+                    }
+
+                    <div class="input-group rounded">
+                        <input type="text" class="form-control border-0 rounded-start" name="busqueda"
+                            placeholder="Buscar por nombre..." value="@busqueda" style="box-shadow: none;" />
+                        <button type="submit" class="input-group-text border-0 bg-white rounded-end"
+                            style="cursor: pointer; box-shadow: none;">
+                            <span class="material-symbols-outlined">search</span>
+                        </button>
                     </div>
-                </a>
+                </form>
+            </div>
+        </div>
+    </div>
 
-                @if (pizarra.Rol == "Admin")
-                {
-                    <button type="button"
-                            class="btn btn-sm btn-danger position-absolute border-0"
-                            style="top: 10px; right: 10px;"
-                            data-bs-toggle="modal"
-                            data-bs-target="#modalEliminar_@pizarra.Id"
-                            title="Eliminar">
-                        <span class="material-symbols-outlined">delete</span>
-                    </button>
+    @if (TempData["Mensaje"] != null)
+    {
+        <div class="text-center mt-5">
+            <div class="p-4 rounded bg-warning text-white shadow-sm mx-auto custom-alert">
+                <p class="mb-3">@TempData["Mensaje"]</p>
+                <button type="button" class="btn btn-success" data-bs-toggle="modal" data-bs-target="#modalCrearPizarra">
+                    Crear una nueva pizarra
+                </button>
+            </div>
+        </div>
+    }
 
-                    <div class="modal fade" id="modalEliminar_@pizarra.Id" tabindex="-1" aria-labelledby="labelEliminar_@pizarra.Id" aria-hidden="true">
+    <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 g-4 mt-4">
+        @foreach (var pizarra in Model)
+        {
+            <div class="col">
+                <div class="position-relative pizarra-group">
+                    <a asp-controller="Pizarra" asp-action="Dibujar" asp-route-id="@pizarra.Id"
+                        class="text-decoration-none d-block">
+                        <div class="bg-items text-white p-3 rounded shadow-sm"
+                            style="padding-top: 3.5rem; min-height: 120px;">
+                            <h5 class="text-white mb-1">@pizarra.Nombre</h5>
+                            <p class="mb-0"><small>@pizarra.FechaCreacion.ToShortDateString()</small></p>
+                        </div>
+                    </a>
+
+                    @if (pizarra.Rol == rolAdminId)
+                    {
+                        <div class="d-flex flex-column align-items-end position-absolute"
+                            style="top: 12px; right: 12px; z-index: 2;">
+                            <!-- Botón Eliminar -->
+                            <button type="button" class="btn btn-sm btn-danger border-0 mb-2 pizarra-btn" data-bs-toggle="modal"
+                                data-bs-target="#modalEliminar_@pizarra.Id" title="Eliminar">
+                                <span class="material-symbols-outlined">delete</span>
+                            </button>
+                            <!-- Botón Compartir -->
+                            <button type="button" class="btn btn-sm btn-warning border-0 pizarra-btn" data-bs-toggle="modal"
+                                data-bs-target="#modalCompartir_@pizarra.Id" title="Compartir">
+                                <span class="material-symbols-outlined">share</span>
+                            </button>
+                        </div>
+                    }
+
+                    <!-- Modal Eliminar -->
+                    <div class="modal fade" id="modalEliminar_@pizarra.Id" tabindex="-1"
+                        aria-labelledby="labelEliminar_@pizarra.Id" aria-hidden="true">
                         <div class="modal-dialog modal-dialog-centered">
                             <div class="modal-content">
                                 <div class="modal-header bg-danger text-white">
                                     <h5 class="modal-title" id="labelEliminar_@pizarra.Id">¿Eliminar esta pizarra?</h5>
-                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+                                    <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                        aria-label="Cerrar"></button>
                                 </div>
                                 <div class="modal-body">
-                                    <p>¿Estás seguro de que deseas eliminar <strong>@pizarra.Nombre</strong>? Esta acción no se puede deshacer.</p>
+                                    <p>¿Estás seguro de que deseas eliminar <strong>@pizarra.Nombre</strong>? Esta acción no
+                                        se puede deshacer.</p>
                                 </div>
                                 <div class="modal-footer">
-                                    <form asp-action="EliminarPizarra" method="post">
+                                    <form asp-controller="Pizarra" asp-action="EliminarPizarra" method="post"
+                                        data-eliminar-pizarra
+                                        data-remitente-id="@User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value"
+                                        data-destinatarios-ids='@Newtonsoft.Json.JsonConvert.SerializeObject(pizarra.Integrantes)'
+                                        data-pizarranombre="@pizarra.Nombre">
                                         <input type="hidden" name="pizarraId" value="@pizarra.Id" />
-                                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                                        <button type="button" class="btn btn-secondary"
+                                            data-bs-dismiss="modal">Cancelar</button>
                                         <button type="submit" class="btn btn-danger">Eliminar</button>
                                     </form>
                                 </div>
                             </div>
                         </div>
                     </div>
-                }
+
+                    <!-- Modal Compartir -->
+                    <div class="modal fade" id="modalCompartir_@pizarra.Id" tabindex="-1"
+                        aria-labelledby="labelCompartir_@pizarra.Id" aria-hidden="true">
+                        <div class="modal-dialog modal-dialog-centered">
+                            <div class="modal-content">
+                                <div class="modal-header bg-warning text-white">
+                                    <h5 class="modal-title" id="labelCompartir_@pizarra.Id">Compartir pizarra</h5>
+                                    <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                        aria-label="Cerrar"></button>
+                                </div>
+                                <form data-compartir-pizarra
+                                    data-remitente-id="@User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value"
+                                    data-pizarranombre="@pizarra.Nombre">
+                                    <div class="modal-body">
+                                        <input type="hidden" name="pizarraId" value="@pizarra.Id" />
+                                        <div class="mb-3">
+                                            <label class="form-label">Rol de acceso</label>
+                                            <div>
+                                                <div class="form-check form-check-inline">
+                                                    <input class="form-check-input" type="radio" name="rol"
+                                                        id="escritura_@pizarra.Id" value="@ViewData["RolEscrituraId"]"
+                                                        checked>
+                                                    <label class="form-check-label"
+                                                        for="escritura_@pizarra.Id">Escritura</label>
+                                                </div>
+                                                <div class="form-check form-check-inline">
+                                                    <input class="form-check-input" type="radio" name="rol"
+                                                        id="lectura_@pizarra.Id" value="@ViewData["RolLecturaId"]">
+                                                    <label class="form-check-label"
+                                                        for="lectura_@pizarra.Id">Lectura</label>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="mb-3">
+                                            <label for="usuario_@pizarra.Id" class="form-label">Usuario a compartir</label>
+                                            <input type="text" class="form-control" id="usuario_@pizarra.Id" name="usuario"
+                                                placeholder="Nombre de usuario" required />
+                                        </div>
+                                    </div>
+                                    <div class="modal-footer">
+                                        <button type="button" class="btn btn-secondary"
+                                            data-bs-dismiss="modal">Cancelar</button>
+                                        <button type="submit" class="btn btn-info text-white">Compartir</button>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
-        </div>
-    }
-</div>
+        }
+    </div>
 </div>

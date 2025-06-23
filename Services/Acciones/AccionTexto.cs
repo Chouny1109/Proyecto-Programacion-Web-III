@@ -1,19 +1,18 @@
 ﻿using Entidades.EF;
 using Microsoft.AspNetCore.SignalR;
-using Microsoft.EntityFrameworkCore;
-using Services;
 using Services.Acciones.Interfaces;
 
 namespace Services.Acciones
-{ 
+{
     public class AccionTexto : IAccionPizarra
     {
         public Texto Texto { get; set; }
+        
         public AccionTexto(Texto texto)
-
         {
             Texto = texto;
         }
+
         public Task Deshacer(string pizarraId, IHubCallerClients clients, ITrazoMemoryService trazoService, ITextoMemoryService textoService)
         {
             textoService.EliminarTexto(pizarraId, Texto.Id);
@@ -22,7 +21,7 @@ namespace Services.Acciones
 
         public Task Rehacer(string pizarraId, IHubCallerClients clients, ITrazoMemoryService trazoService, ITextoMemoryService textoService)
         {
-            textoService.AgregarTextoALaPizarra(Texto.Id,(int)Texto.PosX, (int)Texto.PosY, Texto.Tamano ?? 20, Texto.Contenido, Texto.Color, pizarraId);
+            textoService.AgregarTextoALaPizarra(Texto.Id, (int)Texto.PosX, (int)Texto.PosY, Texto.Tamano ?? 20, Texto.Contenido, Texto.Color, pizarraId);
             return clients.Group(pizarraId).SendAsync("TextoActualizado", Texto);
         }
     }

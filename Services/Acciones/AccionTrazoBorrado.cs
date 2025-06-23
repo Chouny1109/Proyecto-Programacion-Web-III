@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Entidades.EF;
+﻿using Entidades.EF;
 using Microsoft.AspNetCore.SignalR;
 using Services.Acciones.Interfaces;
 
@@ -22,7 +17,6 @@ namespace Services.Acciones
 
         public Task Deshacer(string pizarraId, IHubCallerClients clients, ITrazoMemoryService trazoService, ITextoMemoryService textoService)
         {
-
             foreach (var trazo in Segmentos)
                 trazoService.AgregarTrazo(pizarraId, trazo);
 

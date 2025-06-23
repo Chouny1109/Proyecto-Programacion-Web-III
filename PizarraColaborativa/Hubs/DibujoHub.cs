@@ -1,6 +1,4 @@
-﻿using System.Diagnostics;
-using System.Drawing;
-using Entidades.EF;
+﻿using Entidades.EF;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.SignalR;
 using Microsoft.EntityFrameworkCore;
@@ -12,18 +10,15 @@ namespace PizarraColaborativa.Hubs
     public class DibujoHub : Hub
     {
         private static readonly Dictionary<string, (string userId, string pizarraId)> _conexiones
-         = new(StringComparer.OrdinalIgnoreCase);
+            = new(StringComparer.OrdinalIgnoreCase);
         private readonly ITextoMemoryService _textoService;
         private readonly ITrazoMemoryService _trazoService;
         private readonly IAccionMemoryService _actionsMemoryService;
         private readonly IPizarraService _pizarraService;
         private readonly UserManager<IdentityUser> _userManager;
 
-
-        public DibujoHub(ITrazoMemoryService memoriaService
-            , ITextoMemoryService textoService, IPizarraService pizarraService,
-            IAccionMemoryService actionsMemoryService,
-           UserManager<IdentityUser> userManager)
+        public DibujoHub(ITrazoMemoryService memoriaService, ITextoMemoryService textoService, IPizarraService pizarraService,
+            IAccionMemoryService actionsMemoryService, UserManager<IdentityUser> userManager)
         {
             _textoService = textoService;
             _trazoService = memoriaService;
@@ -46,7 +41,6 @@ namespace PizarraColaborativa.Hubs
             await NotificarUsuariosConectados(pizarraId);
 
             //Cargar nombre pizarra al conectarse
-
             var pizarra = await _pizarraService.ObtenerPizarra(Guid.Parse(pizarraId));
             await Clients.Caller.SendAsync("NombrePizarraCambiado", pizarra.NombrePizarra);
 
@@ -65,7 +59,6 @@ namespace PizarraColaborativa.Hubs
                     trazo.Pizarra = null; // Evitar circular reference
                     _trazoService.AgregarTrazo(pizarraId, trazo);
                 }
-
             }
 
             var trazosEnMemoria = _trazoService.ObtenerTrazos(pizarraId);
@@ -88,23 +81,20 @@ namespace PizarraColaborativa.Hubs
                      pizarraId
                     );
                 }
-
-
             }
+
             var textosEnMemoria = _textoService.ObtenerTextos(pizarraId);
             await Clients.Caller.SendAsync("CargarTextos", textosEnMemoria);
 
-
-
             await base.OnConnectedAsync();
         }
+
         public async Task BorrarTrazosEnRango(string pizarraId, int x, int y, int radio)
         {
             if (await _pizarraService.EsLector(Context.UserIdentifier, pizarraId))
                 return;
 
             var trazos = _trazoService.ObtenerTrazos(pizarraId);
-         
 
             // Detectamos trazos cuyo punto inicial esté dentro del rango
             var gruposParaBorrar = trazos
@@ -128,7 +118,6 @@ namespace PizarraColaborativa.Hubs
             await Clients.Group(pizarraId).SendAsync("CargarTrazos", trazosActuales);
         }
 
-
         public async Task CambiarColorFondo(string pizarraId, string colorFondo)
         {
             if (await _pizarraService.EsLector(Context.UserIdentifier, pizarraId))
@@ -137,16 +126,13 @@ namespace PizarraColaborativa.Hubs
             await _pizarraService.CambiarColorFondoPizarra(pizarraId, colorFondo);
             await Clients.Group(pizarraId).SendAsync("ColorFondoCambiado", colorFondo);
         }
+
         public async Task CambiarNombrePizarra(string pizarraId, string nuevoNombre)
         {
-
             var pizarraIdGUID = Guid.Parse(pizarraId);
             await _pizarraService.ActualizarPizarra(pizarraIdGUID, nuevoNombre);
             await Clients.Group(pizarraId).SendAsync("NombrePizarraCambiado", nuevoNombre);
-
         }
-
-
 
         public async Task EnviarTrazoCompleto(string pizarraId, List<Trazo> segmentos, Guid grupoTrazoId)
         {
@@ -165,12 +151,10 @@ namespace PizarraColaborativa.Hubs
                 .SendAsync("DibujarTrazoCompleto", segmentos);
         }
 
-
         public async Task SendLimpiar(string pizarraId)
         {
             if (await _pizarraService.EsLector(Context.UserIdentifier, pizarraId))
                 return;
-
 
             _trazoService.LimpiarPizarra(pizarraId);
             _textoService.LimpiarPizarra(pizarraId);
@@ -183,15 +167,13 @@ namespace PizarraColaborativa.Hubs
             await _pizarraService.BorrarTextosExistentesPizarra(textosExistentesEnBD);
             await _pizarraService.SetColorBlancoPizarra(pizarraGUID);
 
-
-
             await Clients.Group(pizarraId).SendAsync("ReceiveLimpiar");
         }
+
         public async Task EliminarTexto(string pizarraId, string id)
         {
             if (await _pizarraService.EsLector(Context.UserIdentifier, pizarraId))
                 return;
-
 
             var texto = _textoService.ObtenerTextoPorIdEnMemoria(pizarraId, id);
             if (texto != null)
@@ -210,10 +192,7 @@ namespace PizarraColaborativa.Hubs
             if (await _pizarraService.EsLector(Context.UserIdentifier, pizarraId))
                 return;
 
-
-
             var textoEncontrado = _textoService.ObtenerTextoPorIdEnMemoria(pizarraId, texto.Id);
-
 
             if (textoEncontrado != null)
             {
@@ -248,11 +227,7 @@ namespace PizarraColaborativa.Hubs
                 textoEncontrado.PosY = texto.Y;
 
                 _textoService.EditarTextoEnPizarra(textoEncontrado, pizarraId);
-
-
-
             }
-
             else
             {
                 _textoService.AgregarTextoALaPizarra(texto.Id, texto.X, texto.Y, texto.Tamano, texto.Contenido, texto.Color, pizarraId);
@@ -265,11 +240,9 @@ namespace PizarraColaborativa.Hubs
                     Contenido = texto.Contenido,
                     Color = texto.Color
                 }));
-
-
             }
-            await Clients.GroupExcept(pizarraId, Context.ConnectionId).SendAsync("TextoActualizado", texto);
 
+            await Clients.GroupExcept(pizarraId, Context.ConnectionId).SendAsync("TextoActualizado", texto);
         }
 
         public async Task ObtenerUsuariosDePizarra(string pizarraId)
@@ -279,6 +252,7 @@ namespace PizarraColaborativa.Hubs
 
             await Clients.Caller.SendAsync("ListaUsuariosPizarra", usuarios);
         }
+
         public async Task ExpulsarUsuarioDePizarra(string userIdExpulsado, string pizarraId)
         {
             var guid = Guid.Parse(pizarraId);
@@ -295,7 +269,6 @@ namespace PizarraColaborativa.Hubs
                 await Clients.Client(conn).SendAsync("UsuarioExpulsado", "Fuiste eliminado de la pizarra.");
                 await Groups.RemoveFromGroupAsync(conn, pizarraId);
             }
-            ///
 
             //lista actualziada con los usuarios
             var usuariosActualizados = await _pizarraService.ObtenerUsuariosDePizarra(guid);
@@ -329,7 +302,6 @@ namespace PizarraColaborativa.Hubs
             if (await _pizarraService.EsLector(Context.UserIdentifier, pizarraId))
                 return;
 
-
             var textoMemoria = _textoService.ObtenerTextoPorIdEnMemoria(pizarraId, id);
             if (textoMemoria != null)
             {
@@ -340,14 +312,12 @@ namespace PizarraColaborativa.Hubs
 
                 _actionsMemoryService.RegistrarAccion(pizarraId, new AccionTextoMovido(id, xAnt, yAnt, xFinal, yFinal));
 
-
                 await Clients.Group(pizarraId).SendAsync("TextoMovido", id, xFinal, yFinal);
             }
-
         }
+
         public async Task EnviarImagen(string pizarraId, string base64, int posX, int posY, string idImg)
         {
-
             await Clients.GroupExcept(pizarraId, Context.ConnectionId)
                 .SendAsync("RecibirImagen", base64, posX, posY, idImg);
         }
@@ -369,9 +339,8 @@ namespace PizarraColaborativa.Hubs
         public async Task CerrarImagen(string idPizarra, string idImg)
         {
             await Clients.GroupExcept(idPizarra, Context.ConnectionId)
-                    .SendAsync("SacarImagen", idImg);
+                .SendAsync("SacarImagen", idImg);
         }
-
 
         public override async Task OnDisconnectedAsync(Exception exception)
         {
@@ -383,14 +352,13 @@ namespace PizarraColaborativa.Hubs
 
             await base.OnDisconnectedAsync(exception);
         }
-    
+
         private bool EstaCercaDelPunto(Trazo t, int x, int y, int radio)
         {
             int dx = (int)t.Xinicio.GetValueOrDefault() - x;
             int dy = (int)t.Yinicio.GetValueOrDefault() - y;
             return (dx * dx + dy * dy) <= (radio * radio);
         }
-
 
         private async Task NotificarUsuariosConectados(string pizarraId)
         {
@@ -400,7 +368,6 @@ namespace PizarraColaborativa.Hubs
                 .Distinct()
                 .ToList();
 
-        
             var lista = await _userManager.Users
                 .Where(u => usuariosConectados.Contains(u.Id))
                 .Select(u => new { userId = u.Id, userName = u.UserName })
@@ -408,11 +375,5 @@ namespace PizarraColaborativa.Hubs
 
             await Clients.Group(pizarraId).SendAsync("UsuariosConectados", lista);
         }
-
-
     }
-
-
-
-
 }

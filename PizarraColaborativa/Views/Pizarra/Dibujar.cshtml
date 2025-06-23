@@ -1,18 +1,13 @@
 ﻿@{
     ViewData["Title"] = ViewData["PizarraNombre"];
-    var chatData = new {
-        userId = ViewData["UserId"],
-        userName = ViewData["UserName"],
-        pizarraId = ViewData["PizarraId"],
-        mensajesNoVistos = ViewData["MensajesNoVistos"]
-    };
 }
 
 @if ((bool)ViewData["EsAdmin"])
 {
     <div style="position: absolute; top: 10px; right: 10px; z-index: 999;">
         <div class="dropdown">
-            <button class="btn btn-light dropdown-toggle" type="button" id="menuOpciones" data-bs-toggle="dropdown" aria-expanded="false">
+            <button class="btn btn-light dropdown-toggle" type="button" id="menuOpciones" data-bs-toggle="dropdown"
+                aria-expanded="false">
                 ⋮
             </button>
             <ul class="dropdown-menu" aria-labelledby="menuOpciones">
@@ -21,40 +16,34 @@
         </div>
     </div>
 }
+
 <!--Panel oculto -->
-<div id="panelUsuarios" class="card shadow p-3" style="position: absolute; top: 60px; right: 10px; width: 250px; z-index: 9999; display: none;">
+<div id="panelUsuarios" class="card shadow p-3"
+    style="position: absolute; top: 60px; right: 10px; width: 250px; z-index: 9999; display: none;">
     <h6 class="mb-2">Usuarios</h6>
     <div id="lista-usuarios"></div>
     <button onclick="cerrarPanelUsuarios()" class="btn btn-sm btn-secondary mt-2">Cerrar</button>
 </div>
 
-
 <div id="usuarios-conectados" style="position: absolute; top: 10px; right: 60px; display: flex; z-index: 999;"></div>
 
-
 <div id="info-pizarra" data-pizarraid="@ViewData["PizarraId"]"></div>
-
 
 <div class="d-flex align-items-center justify-content-between mb-3 px-3 flex-wrap">
     <div class="d-flex align-items-center gap-2 flex-wrap">
         <h5 class="mb-0 fw-bold">Pizarra:</h5>
         <span id="nombrePizarraTexto" class="me-3">@ViewData["PizarraNombre"]</span>
 
-        <input type="text" id="nombrePizarraInput" class="form-control form-control-sm custom-input" placeholder="Nuevo nombre" />
+        <input type="text" id="nombrePizarraInput" class="form-control form-control-sm custom-input"
+            placeholder="Nuevo nombre" />
         <button onclick="cambiarNombre()" class="btn btn-outline-primary btn-sm">Cambiar</button>
-
-        @if (ViewData["EsAdmin"] != null && (bool)ViewData["EsAdmin"])
-        {
-            <button class="btn btn-success btn-sm" data-bs-toggle="modal" data-bs-target="#modalInvitacion">Invitar</button>
-
-        }
     </div>
 
-    <!--FLOATING CHAT-->
-    <button id="chatToggleBtn" class="btn btn-primary rounded-pill px-4 py-2 shadow-sm position-relative" style="z-index: 1000;">
-         Chat
+    <!-- FLOATING CHAT  -->
+    <button id="chatToggleBtn" class="chat-toggle-btn" data-pizarra-id="@ViewData["PizarraId"]"
+        data-contador-mensajes="@ViewData["ContadorMensajes"]" title="Chat">
         <span id="chatToggleIcon" class="material-symbols-outlined">chat</span>
-        <span id="chatBadge" class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger d-none"></span>
+        <span id="chatBadge" class="chat-badge bg-danger d-none"></span>
     </button>
 
     <div id="floatingChatPanel" class="floating-chat-panel">
@@ -64,13 +53,15 @@
 
         <div class="chat-body p-2">
             <div class="chat-messages" id="chat-@ViewData["PizarraId"]"></div>
-            <div id="writing-msg" class="chat-writing"></div>
+            <div id="chatWriting" class="chat-writing"></div>
         </div>
 
         <div class="chat-footer p-2">
             <div class="input-group rounded">
-                <input type="text" id="chatInput" class="form-control form-control-sm border-0 rounded-start" placeholder="Escribe tu mensaje..." style="box-shadow: none;">
-                <span class="input-group-text border-0 bg-white rounded-end" id="sendMsg" style="cursor: pointer; box-shadow: none;">
+                <input type="text" id="chatInput" class="form-control form-control-sm border-0 rounded-start"
+                    placeholder="Escribe tu mensaje..." style="box-shadow: none;">
+                <span class="input-group-text border-0 bg-white rounded-end" id="sendMsg"
+                    style="cursor: pointer; box-shadow: none;">
                     <span class="material-symbols-outlined">send</span>
                 </span>
             </div>
@@ -79,7 +70,7 @@
 </div>
 
 <div class="d-flex align-items-center gap-2 ">
-    
+
     <button id="undo" class="btn btn-outline-dark border-1 rounded-circle p-1 me-1" title="Deshacer">
         <i class="bi bi-arrow-counterclockwise fs-5"></i>
     </button>
@@ -91,8 +82,6 @@
     <button id="btnGoma" class="btn btn-outline-dark border-1 rounded-circle p-1" title="Goma">
         <i class="bi bi-eraser fs-5"></i>
     </button>
-
-
 
     <label class="text-light" for="color_lapiz">Color</label>
     <input type="color" for="color_lapiz" id="color_lapiz" />
@@ -116,18 +105,12 @@
     <button id="btnInsertarTexto" class="btn btn-light btn-outline-dark btn-sm px-2">Insertar texto</button>
     <input type="submit" id="limpiar" value="Limpiar" class="btn btn-light btn-outline-dark btn-sm px-2" />
 
-    <div class="tool btn btn-light d-flex align-items-center" id="photo" onclick="document.getElementById('photo-upload').click();">
+    <div class="tool btn btn-light d-flex align-items-center" id="photo"
+        onclick="document.getElementById('photo-upload').click();">
         <i class="bi bi-image me-1"></i> Imagen
         <input type="file" class="d-none" id="photo-upload" accept="image/*" />
     </div>
-
-
-
-
 </div>
-
-
-
 
 <!--<div class="d-flex justify-content-center align-items-center canvas">
     <canvas id="area" width="950" height="500">F</canvas>
@@ -142,37 +125,6 @@
     </div>
 </div>
 
-
-<!-- Modal -->
-<div class="modal fade" id="modalInvitacion" tabindex="-1" aria-labelledby="modalLabel" aria-hidden="true">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <form id="formInvitacion" method="post">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="modalLabel">Generar invitación</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
-                </div>
-                <div class="modal-body">
-                    <input type="hidden" name="pizarraId" value="@ViewData["PizarraId"]" />
-                    <label for="rolId">Rol a otorgar:</label>
-                    <select name="rolId" class="form-select mb-3">
-                        <option value="1">Escritura</option>
-                        <option value="2">Lectura</option>
-                    </select>
-
-                    <div id="linkGenerado" class="d-none alert alert-success"></div>
-                </div>
-                <div class="modal-footer">
-                    <button type="submit" class="btn btn-primary">Generar invitación</button>
-                </div>
-            </form>
-        </div>
-    </div>
-</div>
-
-
-
-
 @section Scripts {
     <style>
         .custom-input {
@@ -181,18 +133,19 @@
             padding: 6px 10px;
             font-size: 14px;
             min-width: 150px;
-            box-shadow: inset 0 1px 2px rgba(0,0,0,0.1);
+            box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.1);
         }
 
-            .custom-input:focus {
-                border-color: #007bff;
-                outline: none;
-                box-shadow: 0 0 3px rgba(0,123,255,0.25);
-            }
+        .custom-input:focus {
+            border-color: #007bff;
+            outline: none;
+            box-shadow: 0 0 3px rgba(0, 123, 255, 0.25);
+        }
 
         #chatToggleBtn:hover {
             background-color: #0069d9;
         }
+
         .btn:hover {
             box-shadow: 0 0 5px rgba(0, 0, 0, 0.5);
         }
@@ -223,17 +176,17 @@
             cursor: pointer;
         }
 
-            .usuario-burbuja::after {
-                content: "";
-                position: absolute;
-                bottom: 2px;
-                right: 2px;
-                width: 10px;
-                height: 10px;
-                background-color: #00ff00;
-                border: 2px solid white;
-                border-radius: 50%;
-            }
+        .usuario-burbuja::after {
+            content: "";
+            position: absolute;
+            bottom: 2px;
+            right: 2px;
+            width: 10px;
+            height: 10px;
+            background-color: #00ff00;
+            border: 2px solid white;
+            border-radius: 50%;
+        }
 
         .usuario-nombre {
             margin-top: 4px;
@@ -246,51 +199,24 @@
             transition: opacity 0.3s ease, max-height 0.3s ease;
         }
 
-        
         .usuario-wrapper:hover .usuario-nombre {
             opacity: 1;
             max-height: 20px;
         }
-
-
-
-
     </style>
 
     <script>
         let rolUsuario = "@ViewData["RolUsuario"]";
-                if (rolUsuario === "Lectura") {
+        if (rolUsuario === "Lectura") {
             bloquearUIParaLectores();
         }
 
-
-        window.chatData = @Html.Raw(System.Text.Json.JsonSerializer.Serialize(chatData));
-
-        document.getElementById('formInvitacion').addEventListener('submit',async function (e){
-            e.preventDefault();
-
-            const form = e.target;
-            const data= new FormData(form);
-            const response=await fetch('/Invitacion/GenerarInvitacion',
-            {
-                method: 'POST',
-                body: data
-            });
-
-            if(response.ok){
-                const url= await response.text();
-                const div= document.getElementById("linkGenerado");
-                div.classList.remove("d-none");
-                div.innerHTML=`<strong>Compartí este link:</strong><br><a href="${url}">${url}</a>`;
-            }
-
-        });
-                    function bloquearUIParaLectores() {
+        function bloquearUIParaLectores() {
             const botones = [
                 "btnInsertarTexto", "limpiar", "undo", "redo",
                 "btnGoma", "color_lapiz", "tamanio_lapiz",
                 "colorTexto", "tamanioTexto", "photo-upload",
-                "color_fondo" 
+                "color_fondo"
             ];
 
             botones.forEach(id => {
@@ -320,7 +246,5 @@
                 });
             }
         }
-
-
     </script>
 }

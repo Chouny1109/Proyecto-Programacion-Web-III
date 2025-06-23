@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Concurrent;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Collections.Concurrent;
 using Microsoft.AspNetCore.SignalR;
 using Services.Acciones.Interfaces;
 
@@ -15,6 +10,7 @@ namespace Services
         Task Deshacer(string pizarraId, IHubCallerClients clients, ITrazoMemoryService trazoService, ITextoMemoryService textoService);
         Task Rehacer(string pizarraId, IHubCallerClients clients, ITrazoMemoryService trazoService, ITextoMemoryService textoService);
     }
+
     public class AccionMemoryService : IAccionMemoryService
     {
         private readonly ConcurrentDictionary<string, Stack<IAccionPizarra>> _accionesUndo = new();
@@ -51,6 +47,4 @@ namespace Services
             await accion.Rehacer(pizarraId, clients, trazoService, textoService);
         }
     }
-
-   
 }
