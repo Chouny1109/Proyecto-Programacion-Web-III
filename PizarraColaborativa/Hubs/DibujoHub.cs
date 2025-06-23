@@ -38,7 +38,6 @@ namespace PizarraColaborativa.Hubs
             var pizarraId = httpContext.Request.Query["pizarraId"];
 
             var userId = Context.UserIdentifier;
-            Console.WriteLine($"[DEBUG] Conexión ID: {Context.ConnectionId}, UserId: {Context.UserIdentifier}, Pizarra: {pizarraId}");
 
             _conexiones[Context.ConnectionId] = (userId, pizarraId);
 
@@ -370,6 +369,11 @@ namespace PizarraColaborativa.Hubs
         {
             await Clients.GroupExcept(idPizarra, Context.ConnectionId)
                     .SendAsync("SacarImagen", idImg);
+        }
+        public async Task ActualizarCursor(string pizarraId, string userName, double x, double y)
+        {
+            await Clients.GroupExcept(pizarraId, Context.ConnectionId)
+                .SendAsync("MostrarCursor", userName, x, y);
         }
 
 
